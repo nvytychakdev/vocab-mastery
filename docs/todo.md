@@ -1,4 +1,4 @@
-* [ ] FE: Setup Tailwind and Prettier
+* [x] FE: Setup Tailwind and Prettier
 * [ ] FE: Create auth pages for the app: Login, Register
 * [ ] FE: Interface to display dictionaries
 * [ ] FE: Interface to display words. Ability to add words and see the translations
