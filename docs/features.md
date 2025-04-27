@@ -29,3 +29,5 @@
 
 - [ ] Dark Mode / Light Mode Toggle
   - Comfort options for day/night learning.
+
+- [ ] Meanings: https://dictionaryapi.dev/
