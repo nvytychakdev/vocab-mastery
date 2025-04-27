@@ -1,0 +1,18 @@
+<div class="flex min-h-screen bg-gray-950 text-gray-50">
+  <nav class="flex w-56 flex-col">
+    <div class="px-7 py-4 text-2xl font-bold">VocabMastery</div>
+
+    <section class="nav-list">
+      @for (option of navOptions; track $index) {
+        <a class="nav-list-item" [routerLink]="option.link" [routerLinkActive]="'active'">
+          <ng-icon [name]="option.icon" size="20" />
+          <span>{{ option.title }}</span>
+        </a>
+      }
+    </section>
+  </nav>
+
+  <section class="min-h-full flex-1">
+    <router-outlet />
+  </section>
+</div>

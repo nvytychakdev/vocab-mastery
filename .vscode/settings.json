@@ -6,7 +6,12 @@
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[scss]": {
+  "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "angular-schematics.schematicsDefaultOptions": {
+    "angular-*": {
+      "externalTemplate": true
+    }
   }
 }
