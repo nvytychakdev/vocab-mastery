@@ -19,6 +19,7 @@
     "@angular/router": "^19.2.0",
     "@ng-icons/core": "^31.3.0",
     "@ng-icons/lucide": "^31.3.0",
+    "@ng-icons/material-icons": "^31.3.0",
     "@tailwindcss/postcss": "^4.1.4",
     "flag-icons": "^7.3.2",
     "postcss": "^8.5.3",

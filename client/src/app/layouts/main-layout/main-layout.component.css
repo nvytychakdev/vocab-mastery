@@ -9,7 +9,7 @@
 }
 
 .nav-list-item {
-  @apply flex cursor-pointer items-center gap-4 rounded-lg px-3 py-1 hover:bg-gray-800/40 hover:text-gray-50;
+  @apply flex cursor-pointer items-center gap-4 rounded-lg px-4 py-2 text-sm hover:bg-gray-800/40 hover:text-gray-50;
 }
 
 .nav-list-item.active {
