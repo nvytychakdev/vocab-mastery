@@ -1,12 +1,31 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { SignInComponent } from './pages/auth/sign-in/sign-in.component';
+import { SignUpComponent } from './pages/auth/sign-up/sign-up.component';
 import { HomeComponent } from './pages/home/home.component';
 import { MyWordsComponent } from './pages/my-words/my-words.component';
 import { PlayComponent } from './pages/play/play.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'auth',
+    children: [
+      {
+        path: 'sign-in',
+        component: SignInComponent,
+      },
+      {
+        path: 'sign-up',
+        component: SignUpComponent,
+      },
+      {
+        path: '**',
+        redirectTo: 'sign-in',
+      },
+    ],
+  },
+  {
+    path: 'main',
     component: MainLayoutComponent,
     children: [
       {
@@ -23,8 +42,12 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'home',
+        redirectTo: 'auth',
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'auth',
   },
 ];
