@@ -5,7 +5,7 @@
       <span class="fi fi-us"></span>
     </div>
     <div
-      class="flex min-h-40 flex-1 flex-col rounded-2xl bg-gray-900 focus-within:outline-2 focus-within:outline-sky-600 hover:outline-2 hover:outline-sky-600">
+      class="flex min-h-40 flex-1 flex-col rounded-2xl bg-gray-900 focus-within:outline-2 focus-within:outline-sky-500 hover:outline-2 hover:outline-sky-600">
       <textarea
         [formControl]="word"
         placeholder="Enter your word..."
@@ -36,9 +36,7 @@
         }
       </div>
       <div class="absolute right-4 bottom-4 flex justify-end">
-        <button
-          (click)="addWord()"
-          class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-sky-600 p-2 text-white hover:bg-sky-500">
+        <button (click)="addWord()" vmButton appearance="icon">
           <ng-icon name="lucidePlus" size="24" />
         </button>
       </div>

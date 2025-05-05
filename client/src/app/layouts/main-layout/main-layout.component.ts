@@ -13,8 +13,8 @@ import { lucideGamepad, lucideHouse, lucideListPlus } from '@ng-icons/lucide';
 })
 export class MainLayoutComponent {
   readonly navOptions = [
-    { title: 'Home', link: '/home', icon: 'lucideHouse' },
-    { title: 'My Words', link: '/my-words', icon: 'lucideListPlus' },
-    { title: 'Play', link: '/play', icon: 'lucideGamepad' },
+    { title: 'Home', link: '/main/home', icon: 'lucideHouse' },
+    { title: 'My Words', link: '/main/my-words', icon: 'lucideListPlus' },
+    { title: 'Play', link: '/main/play', icon: 'lucideGamepad' },
   ] as const;
 }

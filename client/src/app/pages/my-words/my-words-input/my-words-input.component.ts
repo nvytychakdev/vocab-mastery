@@ -3,11 +3,12 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePlus } from '@ng-icons/lucide';
 import { matTranslate } from '@ng-icons/material-icons/baseline';
+import { ButtonDirective } from '@vm/ui';
 import { Word } from '../../../interfaces/word.interface';
 
 @Component({
   selector: 'app-my-words-input',
-  imports: [ReactiveFormsModule, NgIcon],
+  imports: [ReactiveFormsModule, NgIcon, ButtonDirective],
   providers: [provideIcons({ lucidePlus, matTranslate })],
   templateUrl: './my-words-input.component.html',
   styleUrl: './my-words-input.component.css',

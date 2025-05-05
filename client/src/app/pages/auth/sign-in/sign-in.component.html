@@ -1,11 +1,19 @@
 <div class="flex min-h-screen items-center justify-center bg-gray-950 text-gray-50">
-  <section class="flex min-w-80 flex-col gap-4">
-    <input
-      class="rounded-md border border-gray-700 bg-gray-900 p-2 placeholder-gray-400 outline-sky-500 focus-within:outline-2"
-      placeholder="Username" />
-    <input
-      class="rounded-md border border-gray-700 bg-gray-900 p-2 placeholder-gray-400 outline-sky-500 focus-within:outline-2"
-      placeholder="Password" />
-    <button class="rounded-md bg-sky-600 p-2 outline-offset-2 outline-sky-500 focus-within:outline-2 hover:bg-sky-500">Sign in</button>
-  </section>
+  <div class="flex flex-col items-center gap-4">
+    <section class="flex min-w-80 flex-col text-gray-500">
+      <span class="bg-gradient-to-b from-gray-50 to-gray-400 bg-clip-text text-2xl font-semibold text-transparent">Welcome back</span>
+      <span>Sign in to continue improving your skills</span>
+    </section>
+
+    <section class="flex min-w-80 flex-col gap-4">
+      <input vmInput placeholder="E-mail" type="email" />
+      <input vmInput placeholder="Password" type="password" />
+      <button vmButton routerLink="/main">Sign in</button>
+    </section>
+
+    <section class="flex items-center text-sm text-gray-500">
+      <span>Don't have an account?</span>
+      <a vmButton appearance="link" routerLink="/auth/sign-up">Create</a>
+    </section>
+  </div>
 </div>
