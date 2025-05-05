@@ -13,5 +13,6 @@
     "angular-*": {
       "externalTemplate": true
     }
-  }
+  },
+  "todo-tree.tree.showBadges": false
 }
