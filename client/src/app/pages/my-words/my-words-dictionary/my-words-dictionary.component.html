@@ -1,0 +1,14 @@
+<div class="flex min-h-full max-w-[1280px] flex-1 flex-col items-center justify-center gap-6 p-2">
+  <section class="max-w sticky top-0 -mt-2 w-full bg-linear-to-b from-gray-950 from-80% to-gray-950/0 py-16">
+    <app-my-words-input (wordAdded)="addWord($event)" />
+  </section>
+
+  @if (dictionary().length) {
+    <section class="flex w-full flex-col gap-2">
+      <div class="w-full px-4 text-sm text-gray-400">Words</div>
+      @for (word of dictionary(); track $index) {
+        <app-my-words-card [word]="word" />
+      }
+    </section>
+  }
+</div>

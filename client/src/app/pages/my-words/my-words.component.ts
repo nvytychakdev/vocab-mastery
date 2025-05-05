@@ -1,28 +1,38 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideIcons } from '@ng-icons/core';
-import { lucidePlus } from '@ng-icons/lucide';
-import { matTranslate } from '@ng-icons/material-icons/baseline';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BadgeComponent } from '@vm/ui';
 import { Word } from '../../interfaces/word.interface';
-import { MyWordsCardComponent } from './my-words-card/my-words-card.component';
-import { MyWordsInputComponent } from './my-words-input/my-words-input.component';
 
-type Dictionary = Word[];
+type Dictionary = {
+  name: string;
+  description: string;
+  languages: {
+    from: string;
+    to: string;
+  };
+  words: Word[];
+};
 
 @Component({
   selector: 'app-my-words',
-  imports: [ReactiveFormsModule, MyWordsCardComponent, MyWordsInputComponent],
-  providers: [provideIcons({ lucidePlus, matTranslate })],
+  imports: [ReactiveFormsModule, BadgeComponent],
   templateUrl: './my-words.component.html',
   styleUrl: './my-words.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyWordsComponent {
-  readonly dictionary = signal<Dictionary>([]);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  addWord(word: Word) {
-    this.dictionary.update(value => {
-      return [word, ...value];
-    });
+  readonly dictionaries = signal<Dictionary[]>([
+    { name: 'Test 1', description: 'Test description', languages: { from: 'us', to: 'ua' }, words: [] },
+    { name: 'Test 2', description: 'Test description', languages: { from: 'us', to: 'ua' }, words: [] },
+    { name: 'Test 3', description: 'Test description', languages: { from: 'us', to: 'ua' }, words: [] },
+    { name: 'Test 4', description: 'Test description', languages: { from: 'us', to: 'ua' }, words: [] },
+  ]);
+
+  openDetails(dicationaryId: number) {
+    void this.router.navigate([dicationaryId + 1], { relativeTo: this.activatedRoute });
   }
 }

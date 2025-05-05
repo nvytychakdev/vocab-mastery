@@ -1,7 +1,6 @@
 @reference "tailwindcss";
 
 :host {
-  display: block;
   @apply flex min-h-full items-center justify-center;
 }
 

@@ -1,5 +1,5 @@
 .vm-button {
-  @apply cursor-pointer rounded-md bg-sky-600 p-2 outline-offset-2 outline-sky-500 transition-colors focus-within:outline-2 hover:bg-sky-500;
+  @apply cursor-pointer rounded-md bg-sky-600 p-2 outline-offset-2 outline-sky-500 transition-colors focus-within:outline-2 hover:bg-sky-500 disabled:bg-gray-600;
 }
 
 .vm-button-link {

@@ -4,7 +4,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePlus } from '@ng-icons/lucide';
 import { matTranslate } from '@ng-icons/material-icons/baseline';
 import { ButtonDirective } from '@vm/ui';
-import { Word } from '../../../interfaces/word.interface';
+import { Word } from '../../../../interfaces/word.interface';
 
 @Component({
   selector: 'app-my-words-input',
