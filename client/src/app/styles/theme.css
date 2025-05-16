@@ -5,15 +5,7 @@
 }
 
 @utility bg-gradient-primary {
-  --tw-gradient-position: at 50% 0%;
-  --tw-gradient-from: var(--color-gray-900);
-  --tw-gradient-to-position: 60%;
-  --tw-gradient-to: var(--color-gray-950);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
-  background-image: radial-gradient(var(--tw-gradient-stops, at 50% 0%));
+  background:
+    radial-gradient(circle at 50% -25%, var(--color-gray-900), transparent 50%),
+    radial-gradient(circle at 50% 125%, var(--color-gray-900), transparent 50%), var(--color-gray-950);
 }
