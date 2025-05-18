@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BadgeComponent } from '@vm/ui';
-import { Word } from '../../interfaces/word.interface';
+import { Word } from '../../core/interfaces/word.interface';
 
 type Dictionary = {
   name: string;

@@ -33,7 +33,7 @@ func ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
 	return token, claims, err
 }
 
-func CreateAccessToken(userId string) (string, string, error) {
+func CreateAccessToken(userId string) (string, int64, error) {
 	claims := &TokenClaims{
 		Type:   TOKEN_TYPE_ACCESS,
 		UserId: userId,
@@ -48,7 +48,7 @@ func CreateAccessToken(userId string) (string, string, error) {
 	return createToken(claims)
 }
 
-func CreateRefreshToken(sessionId string, jti string) (string, string, error) {
+func CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
 	claims := &TokenClaims{
 		Type:      TOKEN_TYPE_REFRESH,
 		SessionId: sessionId,
@@ -64,12 +64,13 @@ func CreateRefreshToken(sessionId string, jti string) (string, string, error) {
 	return createToken(claims)
 }
 
-func createToken(claims *TokenClaims) (string, string, error) {
+func createToken(claims *TokenClaims) (string, int64, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(tokenSecret))
 	if err != nil {
-		return "", "", err
+		return "", 0, err
 	}
 
-	return tokenString, claims.ExpiresAt.Format(time.RFC3339), nil
+	expiresIn := claims.ExpiresAt.Unix() - time.Now().Unix()
+	return tokenString, expiresIn, nil
 }

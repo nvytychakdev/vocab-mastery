@@ -5,13 +5,13 @@
       <span>Please tell ups a bit about yourself</span>
     </section>
 
-    <section class="flex min-w-80 flex-col gap-4">
-      <input vmInput placeholder="Name" />
-      <input vmInput placeholder="E-mail" />
-      <input vmInput placeholder="Password" type="password" />
-      <input vmInput placeholder="Repeat password" type="password" />
-      <button vmButton routerLink="/auth/sign-in">Sign up</button>
-    </section>
+    <form [formGroup]="form" (submit)="submit()" class="flex min-w-80 flex-col gap-4">
+      <input vmInput formControlName="name" placeholder="Name" />
+      <input vmInput formControlName="email" placeholder="E-mail" />
+      <input vmInput formControlName="password" placeholder="Password" type="password" />
+      <input vmInput formControlName="passwordRepeat" placeholder="Repeat password" type="password" />
+      <button vmButton [disabled]="form.invalid">Sign up</button>
+    </form>
 
     <section class="flex items-center text-gray-500">
       <span>Already have an account?</span>

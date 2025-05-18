@@ -26,9 +26,9 @@ func (rt *RefreshTokenRequest) Bind(r *http.Request) error {
 
 type RefreshTokenResponse struct {
 	AccessToken           string `json:"accessToken"`
-	AccessTokenExpiresIn  string `json:"accessTokenExpiresIn"`
+	AccessTokenExpiresIn  int64  `json:"accessTokenExpiresIn"`
 	RefreshToken          string `json:"refreshToken"`
-	RefreshTokenExpiresIn string `json:"refreshTokenExpiresIn"`
+	RefreshTokenExpiresIn int64  `json:"refreshTokenExpiresIn"`
 }
 
 func (s *RefreshTokenResponse) Render(w http.ResponseWriter, r *http.Request) error {

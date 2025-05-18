@@ -33,9 +33,9 @@ func (s *SignInRequest) Bind(r *http.Request) error {
 // Response
 type SignInResponse struct {
 	AccessToken           string     `json:"accessToken"`
-	AccessTokenExpiresIn  string     `json:"accessTokenExpiresIn"`
+	AccessTokenExpiresIn  int64      `json:"accessTokenExpiresIn"`
 	RefreshToken          string     `json:"refreshToken"`
-	RefreshTokenExpiresIn string     `json:"refreshTokenExpiresIn"`
+	RefreshTokenExpiresIn int64      `json:"refreshTokenExpiresIn"`
 	User                  SignInUser `json:"user"`
 }
 

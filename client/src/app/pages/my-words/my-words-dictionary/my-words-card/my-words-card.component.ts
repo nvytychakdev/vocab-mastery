@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
-import { Word } from '../../../../interfaces/word.interface';
+import { Word } from '../../../../core/interfaces/word.interface';
 
 @Component({
   selector: 'app-my-words-card',
