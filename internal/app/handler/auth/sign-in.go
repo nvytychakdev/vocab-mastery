@@ -7,9 +7,8 @@ import (
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/auth"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model/session"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model/user"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/utils"
 )
 
@@ -54,49 +53,49 @@ func signIn(w http.ResponseWriter, r *http.Request) {
 	data := &SignInRequest{}
 
 	if err := render.Bind(r, data); err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusBadRequest, httpError.ErrInvalidPayload, err))
 		return
 	}
 
-	userExists, err := user.UserExists(data.Email)
+	userExists, err := db.UserExists(data.Email)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	if !userExists {
-		render.Render(w, r, httpError.NewErrorResponse(errors.New("user does not exists"), http.StatusUnauthorized))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrUserNotFound, nil))
 		return
 	}
 
-	user, err := user.GetUserWithPawdByEmail(data.Email)
+	user, err := db.GetUserWithPawdByEmail(data.Email)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	passwordMatch := utils.ComparePassword(user.Password, data.Password)
 	if !passwordMatch {
-		render.Render(w, r, httpError.NewErrorResponse(errors.New("password does not match"), http.StatusUnauthorized))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrPasswordMismatch, nil))
 		return
 	}
 
 	accessToken, accessTokenExpiresIn, err := auth.CreateAccessToken(user.ID)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	refreshTokenId := uuid.NewString()
-	sessionId, err := session.CraeteSession(user.ID, refreshTokenId)
+	sessionId, err := db.CraeteSession(user.ID, refreshTokenId)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	refreshToken, refreshTokenExpiresIn, err := auth.CreateRefreshToken(sessionId, refreshTokenId)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 

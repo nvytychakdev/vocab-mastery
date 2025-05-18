@@ -1,18 +1,10 @@
-package session
+package db
 
 import (
 	"time"
 
-	"github.com/nvytychakdev/vocab-mastery/internal/app/database"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
-
-type Session struct {
-	ID             string    `json:"id,omitempty"`
-	UserID         string    `json:"userId"`
-	RefreshTokenID string    `json:"jti,omitempty"`
-	ExpiresAt      time.Time `json:"expiresAt,omitempty"`
-	CreatedAt      time.Time `json:"createdAt,omitempty"`
-}
 
 func CraeteSession(userId string, jti string) (string, error) {
 	expiresAt := time.Now().Add(90 * 24 * time.Hour)
@@ -23,7 +15,7 @@ func CraeteSession(userId string, jti string) (string, error) {
 	`
 
 	var sessionId string
-	err := database.DBConn.QueryRow(query, userId, jti, expiresAt).Scan(&sessionId)
+	err := DBConn.QueryRow(query, userId, jti, expiresAt).Scan(&sessionId)
 	return sessionId, err
 }
 
@@ -35,7 +27,7 @@ func SessionExists(id string) (bool, error) {
 	`
 
 	var exists bool
-	err := database.DBConn.QueryRow(query, id).Scan(&exists)
+	err := DBConn.QueryRow(query, id).Scan(&exists)
 	return exists, err
 }
 
@@ -46,19 +38,19 @@ func UpdateSessionJti(id string, jti string) error {
 		WHERE id = $1;
 	`
 
-	_, err := database.DBConn.Exec(query, id, jti)
+	_, err := DBConn.Exec(query, id, jti)
 	return err
 }
 
-func GetSessionByID(id string) (*Session, error) {
+func GetSessionByID(id string) (*model.Session, error) {
 	const query = `
 		SELECT id, jti, user_id, expires_at, created_at
 		FROM sessions 
 		WHERE id = $1;
 	`
 
-	var session Session
-	err := database.DBConn.QueryRow(query, id).Scan(&session.ID, &session.RefreshTokenID, &session.UserID, &session.ExpiresAt, &session.CreatedAt)
+	var session model.Session
+	err := DBConn.QueryRow(query, id).Scan(&session.ID, &session.RefreshTokenID, &session.UserID, &session.ExpiresAt, &session.CreatedAt)
 	return &session, err
 }
 
@@ -68,6 +60,6 @@ func DeleteSessionByID(id string) error {
 		WHERE id = $1;
 	`
 
-	_, err := database.DBConn.Exec(query, id)
+	_, err := DBConn.Exec(query, id)
 	return err
 }

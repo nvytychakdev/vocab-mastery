@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model/user"
 )
 
 // Request
@@ -45,24 +45,24 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 	var data = &SignUpRequest{}
 
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusBadRequest))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusBadRequest, httpError.ErrInvalidPayload, err))
 		return
 	}
 
-	existingUser, err := user.UserExists(data.Email)
+	existingUser, err := db.UserExists(data.Email)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	if existingUser {
-		render.Render(w, r, httpError.NewErrorResponse(errors.New("user with following email already exists"), http.StatusBadRequest))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusConflict, httpError.ErrUserAlreadyExists, nil))
 		return
 	}
 
-	userId, err := user.CreateUser(data.Email, data.Password, data.Name)
+	userId, err := db.CreateUser(data.Email, data.Password, data.Name)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusInternalServerError))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 

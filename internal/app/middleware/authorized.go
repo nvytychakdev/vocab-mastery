@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
 
@@ -20,13 +19,8 @@ func Authorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 
-		if authHeader == "" {
-			render.Render(w, r, httpError.NewErrorResponse(errors.New("access token is missing"), http.StatusUnauthorized))
-			return
-		}
-
-		if !strings.HasPrefix(authHeader, "Bearer ") {
-			render.Render(w, r, httpError.NewErrorResponse(errors.New("invalid token"), http.StatusUnauthorized))
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, nil))
 			return
 		}
 
@@ -34,7 +28,7 @@ func Authorized(next http.Handler) http.Handler {
 
 		token, claims, err := auth.ParseToken(tokenString)
 		if err != nil || !token.Valid {
-			render.Render(w, r, httpError.NewErrorResponse(errors.New("invalid token"), http.StatusUnauthorized))
+			render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, nil))
 			return
 		}
 

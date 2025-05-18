@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-chi/render"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/auth"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model/session"
 )
 
 // Request
@@ -36,19 +36,19 @@ func signOut(w http.ResponseWriter, r *http.Request) {
 	var data = &SignOutRequest{}
 
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusBadRequest))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusBadRequest, httpError.ErrInvalidPayload, err))
 		return
 	}
 
 	token, claims, err := auth.ParseToken(data.RefreshToken)
 	if err != nil || !token.Valid {
-		render.Render(w, r, httpError.NewErrorResponse(errors.New("invalid token"), http.StatusUnauthorized))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidPayload, err))
 		return
 	}
 
-	err = session.DeleteSessionByID(claims.SessionId)
+	err = db.DeleteSessionByID(claims.SessionId)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(errors.New("session does not exists"), http.StatusUnauthorized))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 

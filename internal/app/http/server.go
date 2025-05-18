@@ -1,17 +1,16 @@
 package http
 
 import (
-	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/handlers/auth"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
 )
 
 func StartServer() {
-	fmt.Println("Started server...")
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
@@ -22,4 +21,5 @@ func StartServer() {
 
 	router.Mount("/api/v1/auth", auth.AuthRouter())
 	http.ListenAndServe(":8080", router)
+	slog.Info("Started server...")
 }

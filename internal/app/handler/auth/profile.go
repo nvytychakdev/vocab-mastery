@@ -1,14 +1,13 @@
 package auth
 
 import (
-	"errors"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/render"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model/user"
 )
 
 type ProfileResponse struct {
@@ -26,13 +25,13 @@ func profile(w http.ResponseWriter, r *http.Request) {
 	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(string)
 
 	if !ok {
-		render.Render(w, r, httpError.NewErrorResponse(errors.New("user is not authorized"), http.StatusUnauthorized))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusForbidden, httpError.ErrUnauthorized, nil))
 		return
 	}
 
-	user, err := user.GetUserByID(userId)
+	user, err := db.GetUserByID(userId)
 	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(err, http.StatusUnauthorized))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInternalServer, err))
 		return
 	}
 
