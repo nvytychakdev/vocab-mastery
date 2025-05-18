@@ -6,6 +6,8 @@
 /client/out-tsc
 /client/bazel-out
 
+/postgres-data
+
 # Node
 /client/node_modules
 /client/npm-debug.log
@@ -40,3 +42,5 @@
 # System files
 .DS_Store
 Thumbs.db
+
+.env
