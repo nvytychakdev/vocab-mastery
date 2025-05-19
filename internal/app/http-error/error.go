@@ -7,14 +7,17 @@ import (
 
 const (
 	// External
-	ErrInvalidToken      = 1001
-	ErrSessionExpired    = 1002
-	ErrTokenRevoked      = 1003
-	ErrUserNotFound      = 1004
-	ErrPasswordMismatch  = 1005
-	ErrUnauthorized      = 1006
-	ErrInvalidPayload    = 1007
-	ErrUserAlreadyExists = 1008
+	ErrInvalidToken            = 1001
+	ErrSessionExpired          = 1002
+	ErrTokenRevoked            = 1003
+	ErrUserNotFound            = 1004
+	ErrPasswordMismatch        = 1005
+	ErrUnauthorized            = 1006
+	ErrInvalidPayload          = 1007
+	ErrUserAlreadyExists       = 1008
+	ErrConfirmTokenNotFound    = 1009
+	ErrConfirmTokenExpired     = 1010
+	ErrConfirmTokenAlreadyUsed = 1011
 
 	// Internal
 	ErrInternalServer = 2001

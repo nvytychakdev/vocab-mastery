@@ -12,6 +12,10 @@ export type SignInResponse = RefreshTokenResponse & {
   user: SignInUser;
 };
 
+export type SignInConfirmResponse = {
+  sent: boolean;
+};
+
 export type SignUpRequest = {
   email: string;
   password: string;
@@ -39,4 +43,17 @@ export type RefreshTokenResponse = {
   accessTokenExpiresIn: number;
   refreshToken: string;
   refreshTokenExpiresIn: number;
+};
+
+export type ConfirmEmailRequest = {
+  token: string;
+};
+export type ConfirmEmailResponse = SignInResponse;
+
+export type ResendConfirmEmailRequest = {
+  email: string;
+};
+
+export type ResendConfirmEmailResponse = {
+  sent: boolean;
 };

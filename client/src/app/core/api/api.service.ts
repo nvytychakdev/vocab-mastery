@@ -4,8 +4,13 @@ import { environment } from '../../../environments/environment';
 import { IS_AUTHORIZED_REQUEST } from '../auth/auth.interfaces';
 import { User } from '../interfaces/user.interface';
 import {
+  ConfirmEmailRequest,
+  ConfirmEmailResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
+  ResendConfirmEmailRequest,
+  ResendConfirmEmailResponse,
+  SignInConfirmResponse,
   SignInRequest,
   SignInResponse,
   SignOutRequest,
@@ -20,6 +25,8 @@ enum ApiEndpoint {
   SignOut = 'api/v1/auth/sign-out',
   SignUp = 'api/v1/auth/sign-up',
   RefreshToken = 'api/v1/auth/refresh-token',
+  ConfirmEmail = 'api/v1/auth/confirm-email',
+  ResendConfirmEmail = 'api/v1/auth/resend-confirm-email',
 }
 
 const IsAuthorizedContext = new HttpContext().set(IS_AUTHORIZED_REQUEST, true);
@@ -41,12 +48,12 @@ export class ApiService {
 
   signIn(request: SignInRequest) {
     const url = this.getApiUrl(ApiEndpoint.SignIn);
-    return this.http.post<SignInResponse>(url, request);
+    return this.http.post<SignInResponse | SignInConfirmResponse>(url, request);
   }
 
   signUp(request: SignUpRequest) {
     const url = this.getApiUrl(ApiEndpoint.SignUp);
-    return this.http.post<SignUpResponse>(url, request);
+    return this.http.post<SignUpResponse | SignInConfirmResponse>(url, request);
   }
 
   signOut(request: SignOutRequest) {
@@ -57,5 +64,15 @@ export class ApiService {
   refreshToken(request: RefreshTokenRequest) {
     const url = this.getApiUrl(ApiEndpoint.RefreshToken);
     return this.http.post<RefreshTokenResponse>(url, request);
+  }
+
+  confirmEmail(request: ConfirmEmailRequest) {
+    const url = this.getApiUrl(ApiEndpoint.ConfirmEmail);
+    return this.http.post<ConfirmEmailResponse>(url, request);
+  }
+
+  resendConfirmEmail(request: ResendConfirmEmailRequest) {
+    const url = this.getApiUrl(ApiEndpoint.ResendConfirmEmail);
+    return this.http.post<ResendConfirmEmailResponse>(url, request);
   }
 }

@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonDirective, InputDirective } from '@vm/ui';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthService, isConfirmResponse } from '../../../core/auth/auth.service';
 import { FullscreenLayoutComponent } from '../../../layouts/fullscreen-layout/fullscreen-layout.component';
 
 const passwordsMatch = (group: AbstractControl): ValidationErrors | null => {
@@ -52,7 +52,12 @@ export class SignUpComponent {
     if (!email || !password || !name) throw new Error('No password, name or email provided');
     if (passwordRepeat !== password) throw new Error('Password does not match');
 
-    this.auth.signUp({ email, password, name }).subscribe(() => {
+    this.auth.signUp({ email, password, name }).subscribe(res => {
+      if (isConfirmResponse(res)) {
+        void this.router.navigate(['/auth/confirm-email'], { state: { email } });
+        return;
+      }
+
       void this.router.navigate(['/auth/sign-in']);
     });
   }

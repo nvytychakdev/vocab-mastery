@@ -45,14 +45,37 @@ func GetUserByID(id string) (*model.User, error) {
 	return &user, err
 }
 
+func GetUserByEmail(email string) (*model.User, error) {
+	const query = `
+		SELECT id, email, name, created_at
+		FROM users
+		WHERE email = $1;
+	`
+
+	var user model.User
+	err := DBConn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
+	return &user, err
+}
+
 func GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error) {
 	const query = `
-		SELECT id, email, password_hash, created_at
+		SELECT id, email, password_hash, is_email_confirmed, created_at
 		FROM users
 		WHERE email = $1;
 	`
 
 	var user model.UserWithPwd
-	err := DBConn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.CreatedAt)
+	err := DBConn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
 	return &user, err
+}
+
+func SetUserEmailConfirmed(id string) error {
+	const query = `
+		UPDATE users 
+		SET is_email_confirmed = TRUE 
+		WHERE id = $1;
+	`
+
+	_, err := DBConn.Exec(query, id)
+	return err
 }

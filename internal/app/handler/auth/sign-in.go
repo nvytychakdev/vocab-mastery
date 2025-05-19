@@ -9,6 +9,7 @@ import (
 	"github.com/nvytychakdev/vocab-mastery/internal/app/auth"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/utils"
 )
 
@@ -30,6 +31,11 @@ func (s *SignInRequest) Bind(r *http.Request) error {
 	return nil
 }
 
+type SignInUser struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+}
+
 // Response
 type SignInResponse struct {
 	AccessToken           string     `json:"accessToken"`
@@ -39,47 +45,69 @@ type SignInResponse struct {
 	User                  SignInUser `json:"user"`
 }
 
-type SignInUser struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
+func (s *SignInResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
 }
 
-func (s *SignInResponse) Render(w http.ResponseWriter, r *http.Request) error {
+type EmailConfirmResponse struct {
+	Sent bool `json:"sent"`
+}
+
+func (e *EmailConfirmResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
 // Handler
 func signIn(w http.ResponseWriter, r *http.Request) {
+	user, data := verifyUser(w, r)
+
+	if !user.IsEmailConfirmed {
+		sendEmailConfirmation(w, r, user.ID)
+		return
+	}
+
+	signInAuthorize(w, r, user, data)
+}
+
+func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *SignInRequest) {
 	data := &SignInRequest{}
 
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusBadRequest, httpError.ErrInvalidPayload, err))
-		return
+		return nil, nil
 	}
 
 	userExists, err := db.UserExists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
-		return
+		return nil, nil
 	}
 
 	if !userExists {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrUserNotFound, nil))
-		return
+		return nil, nil
 	}
 
 	user, err := db.GetUserWithPawdByEmail(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
-		return
+		return nil, nil
 	}
 
+	return user, data
+}
+
+func signInAuthorize(w http.ResponseWriter, r *http.Request, user *model.UserWithPwd, data *SignInRequest) {
 	passwordMatch := utils.ComparePassword(user.Password, data.Password)
 	if !passwordMatch {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrPasswordMismatch, nil))
 		return
 	}
 
+	signInComplete(w, r, &user.User)
+}
+
+func signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
 	accessToken, accessTokenExpiresIn, err := auth.CreateAccessToken(user.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
@@ -108,6 +136,20 @@ func signIn(w http.ResponseWriter, r *http.Request) {
 			ID:    user.ID,
 			Email: user.Email,
 		},
+	}
+
+	render.Render(w, r, response)
+}
+
+func sendEmailConfirmation(w http.ResponseWriter, r *http.Request, userId string) {
+	_, err := db.CreateUserToken(userId, model.EMAIL_CONFIRM_TOKEN)
+	if err != nil {
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
+		return
+	}
+
+	response := &EmailConfirmResponse{
+		Sent: true,
 	}
 
 	render.Render(w, r, response)

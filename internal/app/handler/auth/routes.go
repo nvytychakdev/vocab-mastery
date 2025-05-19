@@ -10,6 +10,8 @@ func AuthRouter() *chi.Mux {
 	router.Post("/sign-in", signIn)
 	router.Post("/sign-up", signUp)
 	router.Post("/refresh-token", refreshToken)
+	router.Post("/confirm-email", confirmEmail)
+	router.Post("/resend-confirm-email", resendEmailConfirm)
 
 	authorizedRouter := chi.NewRouter()
 	authorizedRouter.Use(middleware.Authorized)

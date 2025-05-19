@@ -33,7 +33,8 @@ func (s *SignUpRequest) Bind(r *http.Request) error {
 
 // Response
 type SignUpResponse struct {
-	ID string `json:"id"`
+	ID             string `json:"id"`
+	EmailConfirmed bool   `json:"emailConfirmed"`
 }
 
 func (s *SignUpResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -66,9 +67,5 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response = &SignUpResponse{
-		ID: userId,
-	}
-
-	render.Render(w, r, response)
+	sendEmailConfirmation(w, r, userId)
 }

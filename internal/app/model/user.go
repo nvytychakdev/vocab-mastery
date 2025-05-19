@@ -17,5 +17,6 @@ type User struct {
 
 type UserWithPwd struct {
 	User
-	Password string `json:"-"`
+	Password         string `json:"-"`
+	IsEmailConfirmed bool   `json:"-"`
 }

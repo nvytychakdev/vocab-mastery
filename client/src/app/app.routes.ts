@@ -1,7 +1,11 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
+import { map } from 'rxjs';
 import { authProfileResolve } from './core/auth/auth-profile.resolver';
+import { AuthService } from './core/auth/auth.service';
 import { authRedirectGuards } from './core/auth/guards/auth.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { ConfirmEmailComponent } from './pages/auth/confirm-email/confirm-email.component';
 import { SignInComponent } from './pages/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth/sign-up/sign-up.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -14,6 +18,17 @@ const { redirectIfAuthenticated, redirectIfUnauthenticated } = authRedirectGuard
   redirectUnauth: '/auth',
 });
 
+const confirmEmailRedirect = (route: ActivatedRouteSnapshot) => {
+  const router = inject(Router);
+  const auth = inject(AuthService);
+
+  const token = route.queryParamMap.get('token');
+  if (token) {
+    return auth.confirmEmail(token).pipe(map(() => router.createUrlTree(['/main'])));
+  }
+
+  return true;
+};
 export const routes: Routes = [
   {
     path: 'auth',
@@ -26,6 +41,11 @@ export const routes: Routes = [
       {
         path: 'sign-up',
         component: SignUpComponent,
+      },
+      {
+        path: 'confirm-email',
+        canActivate: [confirmEmailRedirect],
+        component: ConfirmEmailComponent,
       },
       {
         path: '**',
