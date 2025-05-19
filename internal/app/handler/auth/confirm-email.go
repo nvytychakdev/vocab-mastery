@@ -103,13 +103,6 @@ type EmailTemplateData struct {
 }
 
 func sendEmailConfirmMessage(email string, token string) error {
-	if _, err := os.Stat("templates/email-confirm-tpl.html"); os.IsNotExist(err) {
-		fmt.Println("Template file not found at expected path!")
-	} else if err != nil {
-		fmt.Println("Error checking file: %v", err)
-	} else {
-		fmt.Println("Template file found.")
-	}
 	tmpl, err := template.ParseFiles("templates/email-confirm-tpl.html")
 	if err != nil {
 		slog.Error("Erorr", "err", err)
