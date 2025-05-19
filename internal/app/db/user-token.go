@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateUserToken(userId string, tokenType string) (string, error) {
+func CreateUserToken(userId string, tokenType string) (string, string, error) {
 	token, expiresAt := generateEmailConfirmToken()
 
 	const query = `
@@ -16,7 +16,7 @@ func CreateUserToken(userId string, tokenType string) (string, error) {
 	`
 	var userTokenId string
 	err := DBConn.QueryRow(query, userId, token, tokenType, expiresAt).Scan(&userTokenId)
-	return userTokenId, err
+	return userTokenId, token, err
 }
 
 func GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time, error) {

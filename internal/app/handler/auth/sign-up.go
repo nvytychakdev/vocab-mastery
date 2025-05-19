@@ -67,5 +67,5 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendEmailConfirmation(w, r, userId)
+	sendEmailConfirm(w, r, userId, data.Email)
 }

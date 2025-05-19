@@ -23,6 +23,7 @@ FROM alpine:latest
 
 WORKDIR /app
 
+COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/vocab-mastery .
 
 # Expose port (optional, match your app's port)

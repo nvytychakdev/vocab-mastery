@@ -33,5 +33,5 @@ func resendEmailConfirm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendEmailConfirmation(w, r, user.ID)
+	sendEmailConfirm(w, r, user.ID, user.Email)
 }

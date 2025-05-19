@@ -1,4 +1,4 @@
-import type { HttpInterceptorFn } from '@angular/common/http';
+import type { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { AuthTokensService } from '../auth-tokens.service';
@@ -19,8 +19,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (refreshToken.isExpired()) throw new Error('Refresh token expired');
 
   if (accessToken.isExpired()) {
-    return auth.refreshToken(refreshToken.jwtToken).pipe(switchMap(() => next(req)));
+    return auth.refreshToken(refreshToken.jwtToken).pipe(
+      switchMap(res => {
+        return next(authReq(req, res.accessToken));
+      })
+    );
   }
 
-  return next(req);
+  return next(authReq(req, accessToken.jwtToken));
+};
+
+const authReq = (req: HttpRequest<unknown>, token: string) => {
+  return req.clone({
+    headers: req.headers.append('Authorization', `Bearer ${token}`),
+  });
 };

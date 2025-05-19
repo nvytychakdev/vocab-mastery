@@ -62,7 +62,7 @@ func signIn(w http.ResponseWriter, r *http.Request) {
 	user, data := verifyUser(w, r)
 
 	if !user.IsEmailConfirmed {
-		sendEmailConfirmation(w, r, user.ID)
+		sendEmailConfirm(w, r, user.ID, user.Email)
 		return
 	}
 
@@ -136,20 +136,6 @@ func signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
 			ID:    user.ID,
 			Email: user.Email,
 		},
-	}
-
-	render.Render(w, r, response)
-}
-
-func sendEmailConfirmation(w http.ResponseWriter, r *http.Request, userId string) {
-	_, err := db.CreateUserToken(userId, model.EMAIL_CONFIRM_TOKEN)
-	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
-		return
-	}
-
-	response := &EmailConfirmResponse{
-		Sent: true,
 	}
 
 	render.Render(w, r, response)

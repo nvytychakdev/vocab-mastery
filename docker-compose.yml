@@ -54,6 +54,9 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=vocab_mastery
+      - MAILTRAP_USER=${MAILTRAP_USER}
+      - MAILTRAP_PASSWORD=${MAILTRAP_PASSWORD}
+      - MAILTRAP_API=${MAILTRAP_API}
     restart: unless-stopped
 
 

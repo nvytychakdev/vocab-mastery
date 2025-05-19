@@ -21,7 +21,6 @@ func StartServer() {
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           300,
-		Debug:            true,
 	}))
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
