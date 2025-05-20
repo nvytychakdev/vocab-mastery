@@ -34,7 +34,7 @@ func SessionExists(id string) (bool, error) {
 func UpdateSessionJti(id string, jti string) error {
 	const query = `
 		UPDATE sessions 
-		SET jti = $2
+		SET jti = $2, refreshed_at = now()
 		WHERE id = $1;
 	`
 

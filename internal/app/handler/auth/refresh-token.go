@@ -60,7 +60,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, accessTokenExpiresIn, err := auth.CreateAccessToken(claims.UserId)
+	accessToken, accessTokenExpiresIn, err := auth.CreateAccessToken(s.UserID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
