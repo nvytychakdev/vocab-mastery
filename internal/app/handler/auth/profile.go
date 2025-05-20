@@ -29,7 +29,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := db.GetUserByID(userId)
+	user, err := db.Instance.GetUserByID(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInternalServer, err))
 		return

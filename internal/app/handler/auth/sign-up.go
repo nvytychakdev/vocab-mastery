@@ -50,7 +50,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingUser, err := db.UserExists(data.Email)
+	existingUser, err := db.Instance.UserExists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -61,7 +61,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := db.CreateUser(data.Email, data.Password, data.Name)
+	userId, err := db.Instance.CreateUser(data.Email, data.Password, data.Name)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

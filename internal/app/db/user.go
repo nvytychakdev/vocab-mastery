@@ -5,7 +5,16 @@ import (
 	"github.com/nvytychakdev/vocab-mastery/internal/app/utils"
 )
 
-func CreateUser(email string, password string, name string) (string, error) {
+type UserRepository interface {
+	CreateUser(email string, password string, name string) (string, error)
+	UserExists(email string) (bool, error)
+	GetUserByID(id string) (*model.User, error)
+	GetUserByEmail(email string) (*model.User, error)
+	GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error)
+	SetUserEmailConfirmed(id string) error
+}
+
+func (p *PostgresDB) CreateUser(email string, password string, name string) (string, error) {
 	passwordHash, err := utils.HashPassword(password)
 	if err != nil {
 		return "", err
@@ -17,11 +26,11 @@ func CreateUser(email string, password string, name string) (string, error) {
 		RETURNING id;
 	`
 	var userId string
-	err = DBConn.QueryRow(query, email, passwordHash, name).Scan(&userId)
+	err = p.conn.QueryRow(query, email, passwordHash, name).Scan(&userId)
 	return userId, err
 }
 
-func UserExists(email string) (bool, error) {
+func (p *PostgresDB) UserExists(email string) (bool, error) {
 	const query = `
 		SELECT EXISTS (
 			SELECT 1 FROM users WHERE email = $1
@@ -29,11 +38,11 @@ func UserExists(email string) (bool, error) {
 	`
 
 	var exists bool
-	err := DBConn.QueryRow(query, email).Scan(&exists)
+	err := p.conn.QueryRow(query, email).Scan(&exists)
 	return exists, err
 }
 
-func GetUserByID(id string) (*model.User, error) {
+func (p *PostgresDB) GetUserByID(id string) (*model.User, error) {
 	const query = `
 		SELECT id, email, name, created_at
 		FROM users
@@ -41,11 +50,11 @@ func GetUserByID(id string) (*model.User, error) {
 	`
 
 	var user model.User
-	err := DBConn.QueryRow(query, id).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
+	err := p.conn.QueryRow(query, id).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
 	return &user, err
 }
 
-func GetUserByEmail(email string) (*model.User, error) {
+func (p *PostgresDB) GetUserByEmail(email string) (*model.User, error) {
 	const query = `
 		SELECT id, email, name, created_at
 		FROM users
@@ -53,11 +62,11 @@ func GetUserByEmail(email string) (*model.User, error) {
 	`
 
 	var user model.User
-	err := DBConn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
+	err := p.conn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
 	return &user, err
 }
 
-func GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error) {
+func (p *PostgresDB) GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error) {
 	const query = `
 		SELECT id, email, password_hash, is_email_confirmed, created_at
 		FROM users
@@ -65,17 +74,17 @@ func GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error) {
 	`
 
 	var user model.UserWithPwd
-	err := DBConn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
+	err := p.conn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
 	return &user, err
 }
 
-func SetUserEmailConfirmed(id string) error {
+func (p *PostgresDB) SetUserEmailConfirmed(id string) error {
 	const query = `
 		UPDATE users 
 		SET is_email_confirmed = TRUE 
 		WHERE id = $1;
 	`
 
-	_, err := DBConn.Exec(query, id)
+	_, err := p.conn.Exec(query, id)
 	return err
 }

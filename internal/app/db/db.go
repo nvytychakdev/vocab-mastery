@@ -8,8 +8,18 @@ import (
 	"github.com/jackc/pgx"
 )
 
+type DB interface {
+	SessionRepository
+	UserRepository
+	UserTokenRepository
+}
+
+type PostgresDB struct {
+	conn *pgx.Conn
+}
+
 var (
-	DBConn *pgx.Conn
+	Instance DB
 )
 
 func Connect() {
@@ -29,6 +39,5 @@ func Connect() {
 		slog.Error("Not able to connect to the database", "Error", err)
 		return
 	}
-
-	DBConn = conn
+	Instance = &PostgresDB{conn}
 }

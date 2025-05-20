@@ -46,7 +46,7 @@ func SignOut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.DeleteSessionByID(claims.SessionId)
+	err = db.Instance.DeleteSessionByID(claims.SessionId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

@@ -49,7 +49,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s, err := db.GetSessionByID(claims.SessionId)
+	s, err := db.Instance.GetSessionByID(claims.SessionId)
 	if err != nil || time.Now().Unix() > s.ExpiresAt.Unix() {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrSessionExpired, err))
 		return
@@ -73,7 +73,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.UpdateSessionJti(claims.SessionId, refreshTokenId)
+	err = db.Instance.UpdateSessionJti(claims.SessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

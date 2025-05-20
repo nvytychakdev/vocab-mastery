@@ -77,7 +77,7 @@ func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *Si
 		return nil, nil
 	}
 
-	userExists, err := db.UserExists(data.Email)
+	userExists, err := db.Instance.UserExists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
@@ -88,7 +88,7 @@ func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *Si
 		return nil, nil
 	}
 
-	user, err := db.GetUserWithPawdByEmail(data.Email)
+	user, err := db.Instance.GetUserWithPawdByEmail(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
@@ -115,7 +115,7 @@ func signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
 	}
 
 	refreshTokenId := uuid.NewString()
-	sessionId, err := db.CraeteSession(user.ID, refreshTokenId)
+	sessionId, err := db.Instance.CreateSession(user.ID, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

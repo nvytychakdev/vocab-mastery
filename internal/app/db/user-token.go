@@ -6,7 +6,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateUserToken(userId string, tokenType string) (string, string, error) {
+type UserTokenRepository interface {
+	CreateUserToken(userId string, tokenType string) (string, string, error)
+	GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time, error)
+	SetUserTokenUsed(token string) error
+}
+
+func (p *PostgresDB) CreateUserToken(userId string, tokenType string) (string, string, error) {
 	token, expiresAt := generateEmailConfirmToken()
 
 	const query = `
@@ -15,11 +21,11 @@ func CreateUserToken(userId string, tokenType string) (string, string, error) {
 		RETURNING id;
 	`
 	var userTokenId string
-	err := DBConn.QueryRow(query, userId, token, tokenType, expiresAt).Scan(&userTokenId)
+	err := p.conn.QueryRow(query, userId, token, tokenType, expiresAt).Scan(&userTokenId)
 	return userTokenId, token, err
 }
 
-func GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time, error) {
+func (p *PostgresDB) GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time, error) {
 	var userId string
 	var usedAt *time.Time
 
@@ -29,18 +35,18 @@ func GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time,
 		WHERE token = $1 AND type = $2 and expires_at > now()
 	`
 
-	err := DBConn.QueryRow(query, token, tokenType).Scan(&userId, &usedAt)
+	err := p.conn.QueryRow(query, token, tokenType).Scan(&userId, &usedAt)
 	return userId, usedAt, err
 }
 
-func SetUserTokenUsed(token string) error {
+func (p *PostgresDB) SetUserTokenUsed(token string) error {
 	const query = `
 		UPDATE user_tokens 
 		SET used_at = $2
 		WHERE token = $1;
 	`
 
-	_, err := DBConn.Exec(query, token, time.Now())
+	_, err := p.conn.Exec(query, token, time.Now())
 	return err
 }
 
