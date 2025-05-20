@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
+import { AuthTokensService } from '../auth-tokens.service';
 import { AuthService } from '../auth.service';
 
 export const authGuard: CanActivateFn = () => {
@@ -12,14 +13,23 @@ export const authRedirectGuards = (options?: { redirectAuth: string; redirectUna
     const router = inject(Router);
     const auth = inject(AuthService);
     if (!options?.redirectAuth) return true;
-    return auth.isAuthenticated() ? router.createUrlTree([options.redirectAuth]) : true;
+    return auth.isAuthorized() ? router.createUrlTree([options.redirectAuth]) : true;
   };
 
   const redirectIfUnauthenticated = () => {
     const router = inject(Router);
     const auth = inject(AuthService);
+    const tokens = inject(AuthTokensService);
     if (!options?.redirectUnauth) return true;
-    return auth.isAuthenticated() ? true : router.createUrlTree([options.redirectUnauth]);
+    if (!auth.isAuthorized()) {
+      const { refreshToken } = tokens.getTokens();
+      if (!refreshToken || !auth.isAuthenticated()) {
+        return router.createUrlTree([options.redirectUnauth]);
+      }
+      return auth.refreshToken(refreshToken.jwtToken);
+    }
+
+    return true;
   };
 
   return {

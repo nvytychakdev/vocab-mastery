@@ -46,12 +46,20 @@ export class AuthService {
     return this.api.getAuthProfile();
   }
 
-  isAuthenticated(): boolean {
+  isAuthorized(): boolean {
     const accessToken = this.storage.getAccessToken();
+
+    if (!accessToken) return false;
+    if (accessToken.isExpired()) return false;
+
+    return true;
+  }
+
+  isAuthenticated() {
     const refreshToken = this.storage.getRefreshToken();
 
-    if (!accessToken || !refreshToken) return false;
-    if (accessToken.isExpired() || refreshToken.isExpired()) return false;
+    if (!refreshToken) return false;
+    if (refreshToken.isExpired()) return false;
 
     return true;
   }
