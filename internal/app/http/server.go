@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/routes"
 )
 
 func StartServer() {
@@ -28,7 +28,7 @@ func StartServer() {
 	router.Use(middleware.URLFormat)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 
-	router.Mount("/api/v1/auth", auth.AuthRouter())
+	router.Mount("/api/v1/auth", routes.AuthRouter())
 	http.ListenAndServe(":8080", router)
 	slog.Info("Started server...")
 }

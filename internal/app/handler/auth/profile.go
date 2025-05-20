@@ -21,7 +21,7 @@ func (u *ProfileResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func profile(w http.ResponseWriter, r *http.Request) {
+func Profile(w http.ResponseWriter, r *http.Request) {
 	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(string)
 
 	if !ok {

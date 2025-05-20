@@ -20,7 +20,7 @@ func (rt *ResendTokenConfirm) Bind(r *http.Request) error {
 	return nil
 }
 
-func resendEmailConfirm(w http.ResponseWriter, r *http.Request) {
+func ResendEmailConfirm(w http.ResponseWriter, r *http.Request) {
 	data := &ResendTokenConfirm{}
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusBadRequest, httpError.ErrInvalidPayload, err))

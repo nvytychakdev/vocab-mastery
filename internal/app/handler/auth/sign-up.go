@@ -42,7 +42,7 @@ func (s *SignUpResponse) Render(w http.ResponseWriter, r *http.Request) error {
 }
 
 // Handler
-func signUp(w http.ResponseWriter, r *http.Request) {
+func SignUp(w http.ResponseWriter, r *http.Request) {
 	var data = &SignUpRequest{}
 
 	if err := render.Bind(r, data); err != nil {

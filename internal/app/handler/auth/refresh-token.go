@@ -35,7 +35,7 @@ func (s *RefreshTokenResponse) Render(w http.ResponseWriter, r *http.Request) er
 	return nil
 }
 
-func refreshToken(w http.ResponseWriter, r *http.Request) {
+func RefreshToken(w http.ResponseWriter, r *http.Request) {
 	data := &RefreshTokenRequest{}
 
 	if err := render.Bind(r, data); err != nil {

@@ -39,7 +39,7 @@ func (s *ConfirmEmailResponse) Render(w http.ResponseWriter, r *http.Request) er
 	return nil
 }
 
-func confirmEmail(w http.ResponseWriter, r *http.Request) {
+func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	data := &ConfirmEmailRequest{}
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInvalidPayload, nil))

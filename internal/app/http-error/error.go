@@ -3,6 +3,8 @@ package httpError
 import (
 	"log/slog"
 	"net/http"
+
+	"github.com/go-chi/render"
 )
 
 const (
@@ -37,8 +39,8 @@ var ErrorCodeMessages = map[int16]string{
 }
 
 type ErrorResponse struct {
-	Error error `json:"-"`
-	Code  int   `json:"-"`
+	Error  error `json:"-"`
+	Status int   `json:"-"`
 
 	StatusText string `json:"status"`
 	StatusCode int16  `json:"code,omitempty"`
@@ -46,6 +48,7 @@ type ErrorResponse struct {
 }
 
 func (e *ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	render.Status(r, e.Status)
 	return nil
 }
 
@@ -54,7 +57,7 @@ func NewErrorResponse(code int, statusCode int16, err error) *ErrorResponse {
 
 	return &ErrorResponse{
 		Error:      err,
-		Code:       code,
+		Status:     code,
 		StatusText: http.StatusText(code),
 		StatusCode: statusCode,
 		ErrorText:  errorCodeMessage(statusCode),

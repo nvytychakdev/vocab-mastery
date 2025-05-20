@@ -32,7 +32,7 @@ func (s *SignOutResponse) Render(w http.ResponseWriter, r *http.Request) error {
 }
 
 // Handler
-func signOut(w http.ResponseWriter, r *http.Request) {
+func SignOut(w http.ResponseWriter, r *http.Request) {
 	var data = &SignOutRequest{}
 
 	if err := render.Bind(r, data); err != nil {

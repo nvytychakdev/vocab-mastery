@@ -58,7 +58,7 @@ func (e *EmailConfirmResponse) Render(w http.ResponseWriter, r *http.Request) er
 }
 
 // Handler
-func signIn(w http.ResponseWriter, r *http.Request) {
+func SignIn(w http.ResponseWriter, r *http.Request) {
 	user, data := verifyUser(w, r)
 
 	if !user.IsEmailConfirmed {
