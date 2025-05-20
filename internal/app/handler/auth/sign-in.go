@@ -108,7 +108,7 @@ func signInAuthorize(w http.ResponseWriter, r *http.Request, user *model.UserWit
 }
 
 func signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
-	accessToken, accessTokenExpiresIn, err := auth.CreateAccessToken(user.ID)
+	accessToken, accessTokenExpiresIn, err := auth.TokenService.CreateAccessToken(user.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -121,7 +121,7 @@ func signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
 		return
 	}
 
-	refreshToken, refreshTokenExpiresIn, err := auth.CreateRefreshToken(sessionId, refreshTokenId)
+	refreshToken, refreshTokenExpiresIn, err := auth.TokenService.CreateRefreshToken(sessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

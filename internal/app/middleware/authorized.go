@@ -26,7 +26,7 @@ func Authorized(next http.Handler) http.Handler {
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		token, claims, err := auth.ParseToken(tokenString)
+		token, claims, err := auth.TokenService.ParseToken(tokenString)
 		if err != nil || !token.Valid {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, nil))
 			return

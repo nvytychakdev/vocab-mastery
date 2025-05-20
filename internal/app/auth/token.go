@@ -8,9 +8,25 @@ import (
 )
 
 const (
-	TOKEN_TYPE_ACCESS  = "access"
-	TOKEN_TYPE_REFRESH = "refresh"
+	TokenTypeAccess  = "access"
+	TokenTypeRefresh = "refresh"
 )
+
+type AuthService interface {
+	ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error)
+	CreateAccessToken(userId string) (string, int64, error)
+	CreateRefreshToken(sessionId string, jti string) (string, int64, error)
+}
+
+type JWTAuthService struct {
+	TokenSecret string
+}
+
+func NewTokenService() *JWTAuthService {
+	return &JWTAuthService{TokenSecret: "Secret Phrase"}
+}
+
+var TokenService = NewTokenService()
 
 type TokenClaims struct {
 	Type      string `json:"type"`
@@ -19,23 +35,21 @@ type TokenClaims struct {
 	jwt.RegisteredClaims
 }
 
-const tokenSecret = "secret-phrase"
-
-func ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
+func (as *JWTAuthService) ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
 	claims := &TokenClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(tokenSecret), nil
+		return []byte(as.TokenSecret), nil
 	})
 
 	return token, claims, err
 }
 
-func CreateAccessToken(userId string) (string, int64, error) {
+func (as *JWTAuthService) CreateAccessToken(userId string) (string, int64, error) {
 	claims := &TokenClaims{
-		Type:   TOKEN_TYPE_ACCESS,
+		Type:   TokenTypeAccess,
 		UserId: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "vocab-mastery",
@@ -45,12 +59,12 @@ func CreateAccessToken(userId string) (string, int64, error) {
 		},
 	}
 
-	return createToken(claims)
+	return createToken(as.TokenSecret, claims)
 }
 
-func CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
+func (as *JWTAuthService) CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
 	claims := &TokenClaims{
-		Type:      TOKEN_TYPE_REFRESH,
+		Type:      TokenTypeRefresh,
 		SessionId: sessionId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "vocab-mastery",
@@ -61,12 +75,12 @@ func CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
 		},
 	}
 
-	return createToken(claims)
+	return createToken(as.TokenSecret, claims)
 }
 
-func createToken(claims *TokenClaims) (string, int64, error) {
+func createToken(secret string, claims *TokenClaims) (string, int64, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(tokenSecret))
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", 0, err
 	}

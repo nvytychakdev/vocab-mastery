@@ -43,8 +43,8 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, claims, err := auth.ParseToken(data.RefreshToken)
-	if err != nil || !token.Valid || claims.Type != auth.TOKEN_TYPE_REFRESH {
+	token, claims, err := auth.TokenService.ParseToken(data.RefreshToken)
+	if err != nil || !token.Valid || claims.Type != auth.TokenTypeRefresh {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, err))
 		return
 	}
@@ -60,14 +60,14 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, accessTokenExpiresIn, err := auth.CreateAccessToken(s.UserID)
+	accessToken, accessTokenExpiresIn, err := auth.TokenService.CreateAccessToken(s.UserID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	refreshTokenId := uuid.NewString()
-	refreshToken, refreshTokenExpiresIn, err := auth.CreateRefreshToken(claims.SessionId, refreshTokenId)
+	refreshToken, refreshTokenExpiresIn, err := auth.TokenService.CreateRefreshToken(claims.SessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
