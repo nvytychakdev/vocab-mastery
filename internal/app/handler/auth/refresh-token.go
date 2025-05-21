@@ -42,7 +42,7 @@ func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, claims, err := auth.Deps.TokenService.ParseToken(data.RefreshToken)
+	token, claims, err := auth.Deps.AuthService.ParseToken(data.RefreshToken)
 	if err != nil || !token.Valid || claims.Type != services.TokenTypeRefresh {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, err))
 		return
@@ -59,14 +59,14 @@ func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, accessTokenExpiresIn, err := auth.Deps.TokenService.CreateAccessToken(s.UserID)
+	accessToken, accessTokenExpiresIn, err := auth.Deps.AuthService.CreateAccessToken(s.UserID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	refreshTokenId := uuid.NewString()
-	refreshToken, refreshTokenExpiresIn, err := auth.Deps.TokenService.CreateRefreshToken(claims.SessionId, refreshTokenId)
+	refreshToken, refreshTokenExpiresIn, err := auth.Deps.AuthService.CreateRefreshToken(claims.SessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

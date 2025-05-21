@@ -60,7 +60,13 @@ func (auth *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := auth.Deps.DB.CreateUser(data.Email, data.Password, data.Name)
+	passwordHash, err := auth.Deps.PasswordService.HashPassword(data.Password)
+	if err != nil {
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
+		return
+	}
+
+	userId, err := auth.Deps.DB.CreateUser(data.Email, passwordHash, data.Name)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

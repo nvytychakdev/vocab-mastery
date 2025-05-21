@@ -25,15 +25,15 @@ type AuthService interface {
 	CreateRefreshToken(sessionId string, jti string) (string, int64, error)
 }
 
-type JWTAuthService struct {
+type authService struct {
 	TokenSecret string
 }
 
-func NewTokenService() *JWTAuthService {
-	return &JWTAuthService{TokenSecret: "Secret Phrase"}
+func NewAuthService() *authService {
+	return &authService{TokenSecret: "Secret Phrase"}
 }
 
-func (as *JWTAuthService) ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
+func (as *authService) ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
 	claims := &TokenClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -45,7 +45,7 @@ func (as *JWTAuthService) ParseToken(tokenString string) (*jwt.Token, *TokenClai
 	return token, claims, err
 }
 
-func (as *JWTAuthService) CreateAccessToken(userId string) (string, int64, error) {
+func (as *authService) CreateAccessToken(userId string) (string, int64, error) {
 	claims := &TokenClaims{
 		Type:   TokenTypeAccess,
 		UserId: userId,
@@ -60,7 +60,7 @@ func (as *JWTAuthService) CreateAccessToken(userId string) (string, int64, error
 	return createToken(as.TokenSecret, claims)
 }
 
-func (as *JWTAuthService) CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
+func (as *authService) CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
 	claims := &TokenClaims{
 		Type:      TokenTypeRefresh,
 		SessionId: sessionId,

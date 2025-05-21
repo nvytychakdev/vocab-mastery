@@ -2,7 +2,6 @@ package db
 
 import (
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/utils"
 )
 
 type UserRepository interface {
@@ -14,19 +13,14 @@ type UserRepository interface {
 	SetUserEmailConfirmed(id string) error
 }
 
-func (p *PostgresDB) CreateUser(email string, password string, name string) (string, error) {
-	passwordHash, err := utils.HashPassword(password)
-	if err != nil {
-		return "", err
-	}
-
+func (p *PostgresDB) CreateUser(email string, passwordHash string, name string) (string, error) {
 	const query = `
 		INSERT INTO users (email, password_hash, name) 
 		VALUES ($1, $2, $3) 
 		RETURNING id;
 	`
 	var userId string
-	err = p.conn.QueryRow(query, email, passwordHash, name).Scan(&userId)
+	err := p.conn.QueryRow(query, email, passwordHash, name).Scan(&userId)
 	return userId, err
 }
 

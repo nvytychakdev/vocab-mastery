@@ -5,6 +5,7 @@ import (
 )
 
 type Deps struct {
-	DB           db.DB
-	TokenService *JWTAuthService
+	DB              db.DB
+	AuthService     AuthService
+	PasswordService PasswordService
 }

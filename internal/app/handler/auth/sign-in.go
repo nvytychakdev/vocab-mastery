@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/utils"
 )
 
 // Request
@@ -96,7 +95,7 @@ func (auth *AuthHandler) verifyUser(w http.ResponseWriter, r *http.Request) (*mo
 }
 
 func (auth *AuthHandler) signInAuthorize(w http.ResponseWriter, r *http.Request, user *model.UserWithPwd, data *SignInRequest) {
-	passwordMatch := utils.ComparePassword(user.Password, data.Password)
+	passwordMatch := auth.Deps.PasswordService.ComparePassword(user.Password, data.Password)
 	if !passwordMatch {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrPasswordMismatch, nil))
 		return
@@ -106,7 +105,7 @@ func (auth *AuthHandler) signInAuthorize(w http.ResponseWriter, r *http.Request,
 }
 
 func (auth *AuthHandler) signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
-	accessToken, accessTokenExpiresIn, err := auth.Deps.TokenService.CreateAccessToken(user.ID)
+	accessToken, accessTokenExpiresIn, err := auth.Deps.AuthService.CreateAccessToken(user.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -119,7 +118,7 @@ func (auth *AuthHandler) signInComplete(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	refreshToken, refreshTokenExpiresIn, err := auth.Deps.TokenService.CreateRefreshToken(sessionId, refreshTokenId)
+	refreshToken, refreshTokenExpiresIn, err := auth.Deps.AuthService.CreateRefreshToken(sessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

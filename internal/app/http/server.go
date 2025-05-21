@@ -17,8 +17,9 @@ import (
 
 func StartServer() {
 	deps := &services.Deps{
-		DB:           db.Connect(),
-		TokenService: services.NewTokenService(),
+		DB:              db.Connect(),
+		AuthService:     services.NewAuthService(),
+		PasswordService: services.NewPasswordService(),
 	}
 
 	router := chi.NewRouter()
