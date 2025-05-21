@@ -40,7 +40,7 @@ func (auth *AuthHandler) SignOut(w http.ResponseWriter, r *http.Request) {
 
 	token, claims, err := auth.Deps.AuthService.ParseToken(data.RefreshToken)
 	if err != nil || !token.Valid {
-		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidPayload, err))
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrUnauthorized, err))
 		return
 	}
 
