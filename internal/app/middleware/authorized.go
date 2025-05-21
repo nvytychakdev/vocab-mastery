@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/auth"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/services"
 )
 
 type contextKey string
@@ -15,7 +15,15 @@ type contextKey string
 const USER_ID_KEY contextKey = "userId"
 const SESSION_ID_KEY contextKey = "userId"
 
-func Authorized(next http.Handler) http.Handler {
+type Middleware struct {
+	Deps *services.Deps
+}
+
+func NewMiddleware(deps *services.Deps) *Middleware {
+	return &Middleware{Deps: deps}
+}
+
+func (m *Middleware) Authorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 
@@ -26,7 +34,7 @@ func Authorized(next http.Handler) http.Handler {
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		token, claims, err := auth.TokenService.ParseToken(tokenString)
+		token, claims, err := m.Deps.TokenService.ParseToken(tokenString)
 		if err != nil || !token.Valid {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, nil))
 			return

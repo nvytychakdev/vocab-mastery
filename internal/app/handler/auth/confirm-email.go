@@ -10,7 +10,6 @@ import (
 	"text/template"
 
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 	"gopkg.in/mail.v2"
@@ -39,14 +38,14 @@ func (s *ConfirmEmailResponse) Render(w http.ResponseWriter, r *http.Request) er
 	return nil
 }
 
-func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
+func (auth *AuthHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	data := &ConfirmEmailRequest{}
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInvalidPayload, nil))
 		return
 	}
 
-	userId, usedAt, err := db.Instance.GetNonExpiredUserToken(data.Token, model.EMAIL_CONFIRM_TOKEN)
+	userId, usedAt, err := auth.Deps.DB.GetNonExpiredUserToken(data.Token, model.EMAIL_CONFIRM_TOKEN)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrConfirmTokenExpired, err))
 		return
@@ -57,35 +56,35 @@ func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.Instance.SetUserTokenUsed(data.Token)
+	err = auth.Deps.DB.SetUserTokenUsed(data.Token)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	err = db.Instance.SetUserEmailConfirmed(userId)
+	err = auth.Deps.DB.SetUserEmailConfirmed(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	user, err := db.Instance.GetUserByID(userId)
+	user, err := auth.Deps.DB.GetUserByID(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	signInComplete(w, r, user)
+	auth.signInComplete(w, r, user)
 }
 
-func sendEmailConfirm(w http.ResponseWriter, r *http.Request, userId string, email string) {
-	_, token, err := db.Instance.CreateUserToken(userId, model.EMAIL_CONFIRM_TOKEN)
+func (auth *AuthHandler) sendEmailConfirm(w http.ResponseWriter, r *http.Request, userId string, email string) {
+	_, token, err := auth.Deps.DB.CreateUserToken(userId, model.EMAIL_CONFIRM_TOKEN)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	err = sendEmailConfirmMessage(email, token)
+	err = auth.sendEmailConfirmMessage(email, token)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -102,7 +101,7 @@ type EmailTemplateData struct {
 	Link     string
 }
 
-func sendEmailConfirmMessage(email string, token string) error {
+func (auth *AuthHandler) sendEmailConfirmMessage(email string, token string) error {
 	tmpl, err := template.ParseFiles("templates/email-confirm-tpl.html")
 	if err != nil {
 		slog.Error("Erorr", "err", err)

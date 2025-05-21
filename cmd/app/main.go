@@ -4,7 +4,6 @@ import (
 	"log/slog"
 
 	"github.com/joho/godotenv"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/http"
 )
 
@@ -15,6 +14,5 @@ func main() {
 		slog.Debug("Failed to load environment file, looking for global env...")
 	}
 
-	db.Connect()
 	http.StartServer()
 }

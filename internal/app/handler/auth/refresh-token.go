@@ -7,9 +7,8 @@ import (
 
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/auth"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/services"
 )
 
 type RefreshTokenRequest struct {
@@ -35,7 +34,7 @@ func (s *RefreshTokenResponse) Render(w http.ResponseWriter, r *http.Request) er
 	return nil
 }
 
-func RefreshToken(w http.ResponseWriter, r *http.Request) {
+func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	data := &RefreshTokenRequest{}
 
 	if err := render.Bind(r, data); err != nil {
@@ -43,13 +42,13 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, claims, err := auth.TokenService.ParseToken(data.RefreshToken)
-	if err != nil || !token.Valid || claims.Type != auth.TokenTypeRefresh {
+	token, claims, err := auth.Deps.TokenService.ParseToken(data.RefreshToken)
+	if err != nil || !token.Valid || claims.Type != services.TokenTypeRefresh {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, err))
 		return
 	}
 
-	s, err := db.Instance.GetSessionByID(claims.SessionId)
+	s, err := auth.Deps.DB.GetSessionByID(claims.SessionId)
 	if err != nil || time.Now().Unix() > s.ExpiresAt.Unix() {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrSessionExpired, err))
 		return
@@ -60,20 +59,20 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, accessTokenExpiresIn, err := auth.TokenService.CreateAccessToken(s.UserID)
+	accessToken, accessTokenExpiresIn, err := auth.Deps.TokenService.CreateAccessToken(s.UserID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	refreshTokenId := uuid.NewString()
-	refreshToken, refreshTokenExpiresIn, err := auth.TokenService.CreateRefreshToken(claims.SessionId, refreshTokenId)
+	refreshToken, refreshTokenExpiresIn, err := auth.Deps.TokenService.CreateRefreshToken(claims.SessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	err = db.Instance.UpdateSessionJti(claims.SessionId, refreshTokenId)
+	err = auth.Deps.DB.UpdateSessionJti(claims.SessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

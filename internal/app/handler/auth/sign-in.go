@@ -6,8 +6,6 @@ import (
 
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/auth"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/utils"
@@ -58,18 +56,18 @@ func (e *EmailConfirmResponse) Render(w http.ResponseWriter, r *http.Request) er
 }
 
 // Handler
-func SignIn(w http.ResponseWriter, r *http.Request) {
-	user, data := verifyUser(w, r)
+func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
+	user, data := auth.verifyUser(w, r)
 
 	if !user.IsEmailConfirmed {
-		sendEmailConfirm(w, r, user.ID, user.Email)
+		auth.sendEmailConfirm(w, r, user.ID, user.Email)
 		return
 	}
 
-	signInAuthorize(w, r, user, data)
+	auth.signInAuthorize(w, r, user, data)
 }
 
-func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *SignInRequest) {
+func (auth *AuthHandler) verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *SignInRequest) {
 	data := &SignInRequest{}
 
 	if err := render.Bind(r, data); err != nil {
@@ -77,7 +75,7 @@ func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *Si
 		return nil, nil
 	}
 
-	userExists, err := db.Instance.UserExists(data.Email)
+	userExists, err := auth.Deps.DB.UserExists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
@@ -88,7 +86,7 @@ func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *Si
 		return nil, nil
 	}
 
-	user, err := db.Instance.GetUserWithPawdByEmail(data.Email)
+	user, err := auth.Deps.DB.GetUserWithPawdByEmail(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
@@ -97,31 +95,31 @@ func verifyUser(w http.ResponseWriter, r *http.Request) (*model.UserWithPwd, *Si
 	return user, data
 }
 
-func signInAuthorize(w http.ResponseWriter, r *http.Request, user *model.UserWithPwd, data *SignInRequest) {
+func (auth *AuthHandler) signInAuthorize(w http.ResponseWriter, r *http.Request, user *model.UserWithPwd, data *SignInRequest) {
 	passwordMatch := utils.ComparePassword(user.Password, data.Password)
 	if !passwordMatch {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrPasswordMismatch, nil))
 		return
 	}
 
-	signInComplete(w, r, &user.User)
+	auth.signInComplete(w, r, &user.User)
 }
 
-func signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
-	accessToken, accessTokenExpiresIn, err := auth.TokenService.CreateAccessToken(user.ID)
+func (auth *AuthHandler) signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
+	accessToken, accessTokenExpiresIn, err := auth.Deps.TokenService.CreateAccessToken(user.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	refreshTokenId := uuid.NewString()
-	sessionId, err := db.Instance.CreateSession(user.ID, refreshTokenId)
+	sessionId, err := auth.Deps.DB.CreateSession(user.ID, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	refreshToken, refreshTokenExpiresIn, err := auth.TokenService.CreateRefreshToken(sessionId, refreshTokenId)
+	refreshToken, refreshTokenExpiresIn, err := auth.Deps.TokenService.CreateRefreshToken(sessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

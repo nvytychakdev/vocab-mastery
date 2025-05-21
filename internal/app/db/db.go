@@ -18,11 +18,7 @@ type PostgresDB struct {
 	conn *pgx.Conn
 }
 
-var (
-	Instance DB
-)
-
-func Connect() {
+func Connect() DB {
 	port, err := strconv.ParseUint(os.Getenv("POSTGRES_PORT"), 10, 16)
 	if err != nil {
 		slog.Debug("Failed to retrieve postgres port")
@@ -37,7 +33,7 @@ func Connect() {
 	})
 	if err != nil {
 		slog.Error("Not able to connect to the database", "Error", err)
-		return
+		return nil
 	}
-	Instance = &PostgresDB{conn}
+	return &PostgresDB{conn}
 }

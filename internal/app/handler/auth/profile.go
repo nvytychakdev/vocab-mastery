@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 )
@@ -21,7 +20,7 @@ func (u *ProfileResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func Profile(w http.ResponseWriter, r *http.Request) {
+func (auth *AuthHandler) Profile(w http.ResponseWriter, r *http.Request) {
 	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(string)
 
 	if !ok {
@@ -29,7 +28,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := db.Instance.GetUserByID(userId)
+	user, err := auth.Deps.DB.GetUserByID(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInternalServer, err))
 		return

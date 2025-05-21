@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 )
 
@@ -20,18 +19,18 @@ func (rt *ResendTokenConfirm) Bind(r *http.Request) error {
 	return nil
 }
 
-func ResendEmailConfirm(w http.ResponseWriter, r *http.Request) {
+func (auth *AuthHandler) ResendEmailConfirm(w http.ResponseWriter, r *http.Request) {
 	data := &ResendTokenConfirm{}
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusBadRequest, httpError.ErrInvalidPayload, err))
 		return
 	}
 
-	user, err := db.Instance.GetUserByEmail(data.Email)
+	user, err := auth.Deps.DB.GetUserByEmail(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	sendEmailConfirm(w, r, user.ID, user.Email)
+	auth.sendEmailConfirm(w, r, user.ID, user.Email)
 }

@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 )
 
@@ -42,7 +41,7 @@ func (s *SignUpResponse) Render(w http.ResponseWriter, r *http.Request) error {
 }
 
 // Handler
-func SignUp(w http.ResponseWriter, r *http.Request) {
+func (auth *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	var data = &SignUpRequest{}
 
 	if err := render.Bind(r, data); err != nil {
@@ -50,7 +49,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingUser, err := db.Instance.UserExists(data.Email)
+	existingUser, err := auth.Deps.DB.UserExists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -61,11 +60,11 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := db.Instance.CreateUser(data.Email, data.Password, data.Name)
+	userId, err := auth.Deps.DB.CreateUser(data.Email, data.Password, data.Name)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	sendEmailConfirm(w, r, userId, data.Email)
+	auth.sendEmailConfirm(w, r, userId, data.Email)
 }

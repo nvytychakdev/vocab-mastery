@@ -6,7 +6,7 @@ import (
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 )
 
-func AuthRouter() *chi.Mux {
+func AuthRouter(auth *auth.AuthHandler, mw *middleware.Middleware) *chi.Mux {
 	router := chi.NewRouter()
 	router.Post("/sign-in", auth.SignIn)
 	router.Post("/sign-up", auth.SignUp)
@@ -15,7 +15,7 @@ func AuthRouter() *chi.Mux {
 	router.Post("/resend-confirm-email", auth.ResendEmailConfirm)
 
 	authorizedRouter := chi.NewRouter()
-	authorizedRouter.Use(middleware.Authorized)
+	authorizedRouter.Use(mw.Authorized)
 	authorizedRouter.Get("/profile", auth.Profile)
 	authorizedRouter.Post("/sign-out", auth.SignOut)
 

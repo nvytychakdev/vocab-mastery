@@ -1,4 +1,4 @@
-package auth
+package services
 
 import (
 	"fmt"
@@ -12,6 +12,13 @@ const (
 	TokenTypeRefresh = "refresh"
 )
 
+type TokenClaims struct {
+	Type      string `json:"type"`
+	SessionId string `json:"sessionId,omitempty"`
+	UserId    string `json:"userId,omitempty"`
+	jwt.RegisteredClaims
+}
+
 type AuthService interface {
 	ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error)
 	CreateAccessToken(userId string) (string, int64, error)
@@ -24,15 +31,6 @@ type JWTAuthService struct {
 
 func NewTokenService() *JWTAuthService {
 	return &JWTAuthService{TokenSecret: "Secret Phrase"}
-}
-
-var TokenService = NewTokenService()
-
-type TokenClaims struct {
-	Type      string `json:"type"`
-	SessionId string `json:"sessionId,omitempty"`
-	UserId    string `json:"userId,omitempty"`
-	jwt.RegisteredClaims
 }
 
 func (as *JWTAuthService) ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
