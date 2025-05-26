@@ -56,8 +56,16 @@ services:
       - POSTGRES_DB=vocab_mastery
       - MAILTRAP_USER=${MAILTRAP_USER}
       - MAILTRAP_PASSWORD=${MAILTRAP_PASSWORD}
-      - MAILTRAP_API=${MAILTRAP_API}
     restart: unless-stopped
 
+  client:
+    image: node:23-alpine
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports: 
+      - 4200:4200
+    working_dir: /app
+    command: npm run start -- --host 0.0.0.0 --poll=1000
 
 

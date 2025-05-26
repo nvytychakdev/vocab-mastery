@@ -1,0 +1,37 @@
+.vm-toast {
+  display: grid;
+  grid-template-rows: 1fr;
+  @apply shrink-0 overflow-hidden rounded-lg border border-gray-700 bg-gray-950 text-gray-50;
+}
+
+.vm-toast-content {
+  @apply relative inline-flex min-w-64 items-center gap-2 p-2;
+}
+
+.vm-toast-content-bar {
+  @apply h-full w-1 rounded-full;
+}
+
+.vm-toast-content-data {
+  @apply flex flex-col gap-1 p-2;
+}
+
+.vm-toast-content-close {
+  @apply absolute top-1 right-1 cursor-pointer p-2;
+}
+
+.vm-toast-enter {
+  @apply animate-enter;
+}
+
+.vm-toast-leave {
+  @apply animate-leave;
+}
+
+.vm-toast-hidden {
+  @apply opacity-0;
+}
+
+.vm-toast-container {
+  @apply inline-flex max-h-full flex-col justify-end gap-4 overflow-hidden p-4;
+}
