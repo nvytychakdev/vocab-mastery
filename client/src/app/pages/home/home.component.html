@@ -1,9 +1,40 @@
-<div class="flex gap-2 p-4">
-  <button vmButton (click)="openDefault()">Open Default</button>
-  <button vmButton (click)="openShort()">Open Short</button>
-  <button vmButton (click)="openError()">Open Error</button>
-  <button vmButton (click)="openSuccess()">Open Success</button>
-  <button vmButton (click)="openWarn()">Open Warn</button>
+<div class="flex items-start gap-2 p-4">
+  <button vmButton variant="primary" (click)="openDefault()">Open Default</button>
+  <button vmButton variant="secondary" (click)="openShort()">Open Short</button>
+  <button vmButton variant="warn" (click)="openError()">Open Error</button>
+  <button vmButton variant="danger" (click)="openSuccess()">Open Success</button>
+  <button vmButton variant="ghost" (click)="openWarn()">Open Warn</button>
 </div>
 
-<div class="m-2 p-2">Data</div>
+<div class="flex items-start gap-2 p-4">
+  <button vmButton variant="primary" disabled (click)="openDefault()">Open Default</button>
+  <button vmButton variant="secondary" disabled (click)="openShort()">Open Short</button>
+  <button vmButton variant="warn" disabled (click)="openError()">Open Error</button>
+  <button vmButton variant="danger" disabled (click)="openSuccess()">Open Success</button>
+  <button vmButton variant="ghost" disabled (click)="openWarn()">Open Warn</button>
+</div>
+
+<div class="flex items-start gap-2 p-4">
+  <button vmButton type="icon" variant="primary" (click)="openDefault()">
+    <ng-icon size="24" name="lucidePlus" />
+  </button>
+  <button vmButton type="icon" variant="secondary" (click)="openShort()">
+    <ng-icon size="24" name="lucidePlus" />
+  </button>
+  <button vmButton type="icon" variant="warn" (click)="openError()"><ng-icon name="lucidePlus" /></button>
+  <button vmButton type="icon" variant="danger" (click)="openSuccess()"><ng-icon name="lucidePlus" /></button>
+  <button vmButton type="icon" variant="ghost" (click)="openWarn()"><ng-icon name="lucidePlus" /></button>
+</div>
+
+<div class="flex gap-2">
+  <div class="flex flex-col items-start gap-2 p-4">
+    <button vmButton size="small" (click)="openDefault()">Small</button>
+    <button vmButton size="medium" (click)="openShort()">Medium</button>
+    <button vmButton size="large" (click)="openShort()">Large</button>
+  </div>
+  <div class="flex flex-col items-start gap-2 p-4">
+    <button vmButton size="small" type="link" (click)="openDefault()">Open</button>
+    <button vmButton size="medium" type="link" (click)="openDefault()">Open</button>
+    <button vmButton size="large" type="link" (click)="openDefault()">Open</button>
+  </div>
+</div>

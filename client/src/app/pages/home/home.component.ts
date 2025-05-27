@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucidePlus } from '@ng-icons/lucide';
 import { ButtonDirective, ToastService } from '@vm/ui';
 
 @Component({
   selector: 'app-home',
-  imports: [ButtonDirective],
+  imports: [ButtonDirective, NgIcon],
+  providers: [provideIcons({ lucidePlus })],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +15,7 @@ export class HomeComponent {
   private readonly toast = inject(ToastService);
 
   openDefault() {
-    this.toast.info('Title', 'Test description', 50000);
+    this.toast.info('Title', 'Test description');
   }
 
   openShort() {

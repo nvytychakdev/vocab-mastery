@@ -1,11 +1,35 @@
 .vm-button {
-  @apply cursor-pointer rounded-md bg-sky-600 p-2 outline-offset-2 outline-sky-500 transition-colors focus-within:outline-2 hover:bg-sky-500 disabled:bg-gray-600;
+  @apply cursor-pointer rounded-md outline-offset-2 outline-sky-500 transition-colors focus-within:outline-2;
 }
-
 .vm-button-link {
-  @apply p-2 text-sky-600 hover:text-sky-500 hover:underline;
+  @apply cursor-pointer p-2 text-sky-600 hover:text-sky-500 hover:underline;
+}
+.vm-button-icon {
+  @apply h-10 w-10 rounded-full text-2xl;
 }
 
-.vm-button-icon {
-  @apply h-10 w-10 rounded-full;
+.vm-button-sm {
+  @apply p-2 text-xs/2;
+}
+.vm-button-md {
+  @apply p-2 text-sm/4;
+}
+.vm-button-lg {
+  @apply p-2;
+}
+
+.vm-button-primary {
+  @apply bg-sky-600 text-gray-50 hover:bg-sky-500 disabled:cursor-default disabled:bg-gray-800/30 disabled:text-gray-500;
+}
+.vm-button-secondary {
+  @apply bg-gray-800 text-gray-50 hover:bg-gray-700 disabled:cursor-default disabled:bg-gray-800/30 disabled:text-gray-500;
+}
+.vm-button-warn {
+  @apply bg-yellow-700 text-gray-50 hover:bg-yellow-600 disabled:cursor-default disabled:bg-gray-800/30 disabled:text-gray-500;
+}
+.vm-button-danger {
+  @apply bg-rose-800 text-gray-50 hover:bg-rose-700 disabled:cursor-default disabled:bg-gray-800/30 disabled:text-gray-500;
+}
+.vm-button-ghost {
+  @apply text-gray-50 hover:bg-gray-50/10 disabled:bg-transparent disabled:text-gray-500;
 }
