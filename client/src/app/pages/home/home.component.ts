@@ -12,7 +12,7 @@ export class HomeComponent {
   private readonly toast = inject(ToastService);
 
   openDefault() {
-    this.toast.info('Title', 'Test description');
+    this.toast.info('Title', 'Test description', 50000);
   }
 
   openShort() {

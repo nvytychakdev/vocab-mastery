@@ -2,40 +2,6 @@
 
 @theme {
   --default-font-family: 'Inter', 'sans-serif';
-
-  --animate-enter: enter 500ms ease-in-out;
-  --animate-leave: leave 500ms ease-in-out;
-
-  @keyframes enter {
-    0% {
-      opacity: 0;
-      grid-template-rows: 0fr;
-      translate: 0 100%;
-    }
-    50% {
-      grid-template-rows: 1fr;
-    }
-    75% {
-      translate: 0 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @keyframes leave {
-    0% {
-      opacity: 1;
-      grid-template-rows: 1fr;
-    }
-    50% {
-      opacity: 0;
-      grid-template-rows: 1fr;
-    }
-    100% {
-      opacity: 0;
-      grid-template-rows: 0fr;
-    }
-  }
 }
 
 @utility bg-gradient-primary {

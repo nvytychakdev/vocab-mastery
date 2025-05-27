@@ -1,7 +1,11 @@
+.vm-toast-container {
+  @apply inline-flex max-h-full flex-col justify-end overflow-hidden p-2;
+}
+
 .vm-toast {
   display: grid;
   grid-template-rows: 1fr;
-  @apply shrink-0 overflow-hidden rounded-lg border border-gray-700 bg-gray-950 text-gray-50;
+  @apply m-2 shrink-0 overflow-hidden rounded-lg border border-gray-700 bg-gray-950 text-gray-50;
 }
 
 .vm-toast-content {
@@ -21,17 +25,49 @@
 }
 
 .vm-toast-enter {
-  @apply animate-enter;
+  animation: enter 500ms ease-in-out;
 }
 
 .vm-toast-leave {
-  @apply animate-leave;
+  animation: leave 500ms ease-in-out;
 }
 
 .vm-toast-hidden {
   @apply opacity-0;
 }
 
-.vm-toast-container {
-  @apply inline-flex max-h-full flex-col justify-end gap-4 overflow-hidden p-4;
+@keyframes enter {
+  0% {
+    opacity: 0;
+    grid-template-rows: 0fr;
+    translate: 0 100%;
+    margin-block: 0;
+  }
+  50% {
+    grid-template-rows: 1fr;
+    margin-block: var(--spacing) * 2;
+  }
+  75% {
+    translate: 0 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes leave {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    grid-template-rows: 1fr;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    grid-template-rows: 0fr;
+    margin-block: 0;
+  }
 }
