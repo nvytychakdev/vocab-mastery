@@ -3,7 +3,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import { Observable, Subject } from 'rxjs';
 
-export interface Toast {
+export interface BaseToast {
   onRemove$: Observable<void>;
   onClose$: Observable<void>;
   isRemoving: boolean;
@@ -14,14 +14,31 @@ export interface Toast {
 export type ToastType = 'error' | 'success' | 'warn' | 'default';
 
 @Component({
-  selector: 'vm-toast',
+  selector: 'vm-toast-card',
   imports: [NgIcon],
   providers: [provideIcons({ lucideX })],
-  templateUrl: './toast.component.html',
-  styleUrl: './toast.component.css',
+  template: `
+    <div class="flex gap-2 overflow-hidden">
+      <div class="vm-toast-content">
+        <div class="vm-toast-content-bar" [class]="barClass()"></div>
+
+        <div class="vm-toast-content-data">
+          <div class="text-sm font-semibold">{{ title() }}</div>
+          @if (description(); as description) {
+            <div class="text-xs text-gray-400">{{ description }}</div>
+          }
+        </div>
+
+        <div class="vm-toast-content-close" (click)="close()">
+          <ng-icon name="lucideX" />
+        </div>
+      </div>
+    </div>
+  `,
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToastComponent implements Toast {
+export class ToastCard implements BaseToast {
   readonly title = input.required<string>();
   readonly description = input<string>();
   readonly type = input<ToastType>('default');

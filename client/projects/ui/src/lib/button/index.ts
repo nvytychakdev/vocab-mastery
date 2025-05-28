@@ -1,1 +1,1 @@
-export { ButtonDirective } from './button.directive';
+export { Button as ButtonDirective } from './button';

@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { race, timer } from 'rxjs';
-import { Toast, ToastType } from '../toast.component';
+import { BaseToast, ToastType } from './toast-card';
 
 export type ToastData = {
   title: string;
@@ -23,15 +23,18 @@ const ToastMaxCount = 5;
 @Component({
   selector: 'vm-toast-container',
   imports: [],
-  templateUrl: './toast-container.component.html',
-  styleUrl: './toast-container.component.css',
+  template: `
+    <div class="vm-toast-container">
+      <ng-container #container />
+    </div>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToastContainerComponent {
+export class ToastContainer {
   readonly containerRef = viewChild('container', { read: ViewContainerRef });
-  readonly instances = signal<ComponentRef<Toast>[]>([]);
+  readonly instances = signal<ComponentRef<BaseToast>[]>([]);
 
-  addToast(component: Type<Toast>, data: ToastData) {
+  addToast(component: Type<BaseToast>, data: ToastData) {
     const componentRef = this.containerRef()?.createComponent(component);
     if (!componentRef) throw new Error('Not able to create toast component');
     this.instances.update(i => [...i, componentRef]);
@@ -58,7 +61,7 @@ export class ToastContainerComponent {
     });
   }
 
-  removeToast(componentRef: ComponentRef<Toast>) {
+  removeToast(componentRef: ComponentRef<BaseToast>) {
     componentRef.instance.hide();
     componentRef.instance.onRemove$.subscribe(() => {
       if (!this.containerRef()?.length) throw new Error('Container does not have any elements');

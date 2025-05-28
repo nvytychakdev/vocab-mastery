@@ -27,7 +27,7 @@ const ButtonTypes: Record<ButtonType, string> = {
 @Directive({
   selector: '[vmButton]',
 })
-export class ButtonDirective {
+export class Button {
   readonly size = input<ButtonSize>('large');
   readonly type = input<ButtonType>('button');
   readonly variant = input<ButtonVariant>('secondary');

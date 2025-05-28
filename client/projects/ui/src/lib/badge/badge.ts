@@ -8,7 +8,7 @@ type BadgeColor = 'gray' | 'green' | 'blue' | 'yellow' | 'purple';
   template: '<ng-content />',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BadgeComponent {
+export class Badge {
   readonly color = input<BadgeColor>('gray');
 
   @HostBinding('class') get className() {

@@ -1,8 +1,8 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ComponentRef, inject, Injectable, Injector } from '@angular/core';
-import { ToastContainerComponent, ToastData } from './toast-container/toast-container.component';
-import { ToastComponent } from './toast.component';
+import { ToastCard } from './toast-card';
+import { ToastContainer, ToastData } from './toast-container';
 
 const TOAST_OFFSET_PX = '0px';
 
@@ -14,7 +14,7 @@ export class ToastService {
   private readonly overlay = inject(Overlay);
 
   private overlayRef?: OverlayRef;
-  private containerRef?: ComponentRef<ToastContainerComponent>;
+  private containerRef?: ComponentRef<ToastContainer>;
 
   info(title: string, description?: string, duration?: number) {
     this.show({ title, description, duration });
@@ -38,7 +38,7 @@ export class ToastService {
       this.attachContainer();
     }
 
-    this.containerRef?.instance.addToast(ToastComponent, data);
+    this.containerRef?.instance.addToast(ToastCard, data);
   }
 
   private createOverlay() {
@@ -52,7 +52,7 @@ export class ToastService {
 
   private attachContainer() {
     if (!this.overlayRef) return;
-    const portal = new ComponentPortal(ToastContainerComponent, null, this.injector);
+    const portal = new ComponentPortal(ToastContainer, null, this.injector);
     this.containerRef = this.overlayRef.attach(portal);
   }
 }
