@@ -60,6 +60,10 @@ services:
 
   client:
     image: node:23-alpine
+    container_name: vocab_mastery_client
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile
     volumes:
       - ./client:/app
       - /app/node_modules
