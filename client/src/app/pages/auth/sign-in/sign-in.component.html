@@ -10,12 +10,12 @@
     <form [formGroup]="form" (submit)="submit()" class="flex min-w-80 flex-col gap-4">
       <input vmInput formControlName="email" placeholder="E-mail" type="email" />
       <input vmInput formControlName="password" placeholder="Password" type="password" />
-      <button vmButton [disabled]="form.invalid">Sign in</button>
+      <button vmButton variant="primary" [disabled]="form.invalid">Sign in</button>
     </form>
 
     <section class="flex items-center text-sm text-gray-500">
       <span>Don't have an account?</span>
-      <a vmButton appearance="link" routerLink="/auth/sign-up">Create</a>
+      <a vmButton type="link" routerLink="/auth/sign-up">Create</a>
     </section>
   </div>
 </app-fullscreen-layout>
