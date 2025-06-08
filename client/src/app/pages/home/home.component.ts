@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePlus } from '@ng-icons/lucide';
-import { Button, ToastService } from '@vm/ui';
-import { Menu, MenuItem, MenuTrigger } from '../../../../projects/ui/src/lib/menu';
+import { Button, Card, Menu, MenuItem, MenuTrigger, ToastService } from '@vm/ui';
 
 @Component({
   selector: 'app-home',
-  imports: [Button, NgIcon, MenuTrigger, Menu, MenuItem],
+  imports: [Button, NgIcon, MenuTrigger, Menu, MenuItem, Card],
   providers: [provideIcons({ lucidePlus })],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',

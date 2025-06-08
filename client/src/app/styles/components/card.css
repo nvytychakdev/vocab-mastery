@@ -1,0 +1,14 @@
+.vm-card {
+  @apply inline-flex min-h-24 min-w-60 flex-col gap-2 rounded-lg border border-gray-800 bg-gradient-to-b from-gray-800/20 to-gray-950/20 p-4 text-gray-50;
+}
+
+.vm-card .vm-card-title {
+  @apply text-xs text-gray-400;
+}
+
+.vm-card .vm-card-value {
+  @apply text-xl font-semibold;
+}
+
+.vm-card .vm-card-action {
+}
