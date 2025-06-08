@@ -38,3 +38,13 @@
     <button vmButton size="large" type="link" (click)="openDefault()">Open</button>
   </div>
 </div>
+
+<div class="flex gap-2 p-4">
+  <button vmButton [vmMenuTrigger]="menu" size="large">Menu</button>
+  <vm-menu #menu="vmMenu">
+    <div vmMenuItem>Item 1</div>
+    <div vmMenuItem>Item 2</div>
+    <div vmMenuItem>Item 3</div>
+    <div vmMenuItem>Item 4</div>
+  </vm-menu>
+</div>

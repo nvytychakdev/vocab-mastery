@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonDirective, InputDirective } from '@vm/ui';
+import { Button, InputDirective } from '@vm/ui';
 import { AuthService, isConfirmResponse } from '../../../core/auth/auth.service';
 import { FullscreenLayoutComponent } from '../../../layouts/fullscreen-layout/fullscreen-layout.component';
 
@@ -22,7 +22,7 @@ const passwordsMatch = (group: AbstractControl): ValidationErrors | null => {
 
 @Component({
   selector: 'app-sign-up',
-  imports: [ButtonDirective, InputDirective, RouterLink, FullscreenLayoutComponent, ReactiveFormsModule],
+  imports: [Button, InputDirective, RouterLink, FullscreenLayoutComponent, ReactiveFormsModule],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -66,6 +66,7 @@ export class ToastContainer {
     componentRef.instance.onRemove$.subscribe(() => {
       if (!this.containerRef()?.length) throw new Error('Container does not have any elements');
       const position = this.containerRef()?.indexOf(componentRef.hostView);
+      if (position === -1) return;
       this.containerRef()?.detach(position)?.destroy();
       this.instances.update(i => i.filter(ref => ref !== componentRef));
     });

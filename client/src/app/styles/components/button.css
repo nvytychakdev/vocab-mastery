@@ -1,8 +1,8 @@
 .vm-button {
-  @apply cursor-pointer rounded-md outline-offset-2 outline-sky-500 transition-colors focus-within:outline-2;
+  @apply cursor-pointer rounded-md outline-offset-2 outline-sky-500 transition-colors focus-visible:outline-2;
 }
 .vm-button-link {
-  @apply cursor-pointer p-2 text-sky-600 hover:text-sky-500 hover:underline;
+  @apply cursor-pointer rounded-md p-2 text-sky-600 outline-offset-2 outline-sky-500 hover:text-sky-500 hover:underline focus-visible:outline-2;
 }
 .vm-button-icon {
   @apply h-10 w-10 rounded-full text-2xl;
@@ -34,6 +34,11 @@
   @apply text-gray-50 hover:bg-gray-50/10 disabled:bg-transparent disabled:text-gray-500;
 }
 
+/* 
+  due to border inside of a button
+  we should shift the icon by a border size 
+  back into center position
+*/
 .vm-button-primary > ng-icon,
 .vm-button-secondary > ng-icon,
 .vm-button-warn > ng-icon,

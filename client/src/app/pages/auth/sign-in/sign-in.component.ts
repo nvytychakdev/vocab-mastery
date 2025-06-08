@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonDirective, InputDirective } from '@vm/ui';
+import { Button, InputDirective } from '@vm/ui';
 import { AuthService, isConfirmResponse } from '../../../core/auth/auth.service';
 import { FullscreenLayoutComponent } from '../../../layouts/fullscreen-layout/fullscreen-layout.component';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [InputDirective, ButtonDirective, RouterLink, FullscreenLayoutComponent, ReactiveFormsModule],
+  imports: [InputDirective, Button, RouterLink, FullscreenLayoutComponent, ReactiveFormsModule],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

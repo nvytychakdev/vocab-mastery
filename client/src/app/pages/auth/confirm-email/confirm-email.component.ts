@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { ButtonDirective } from '@vm/ui';
+import { Button } from '@vm/ui';
 import { AuthService } from '../../../core/auth/auth.service';
 import { FullscreenLayoutComponent } from '../../../layouts/fullscreen-layout/fullscreen-layout.component';
 
 @Component({
   selector: 'app-confirm-email',
-  imports: [FullscreenLayoutComponent, ButtonDirective],
+  imports: [FullscreenLayoutComponent, Button],
   templateUrl: './confirm-email.component.html',
   styleUrl: './confirm-email.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
