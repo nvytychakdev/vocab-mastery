@@ -1,7 +1,7 @@
 .vm-menu {
-  @apply max-h-96 min-w-42 overflow-y-auto rounded-md border border-zinc-700 bg-gray-950 p-2 text-gray-50;
+  @apply max-h-96 min-w-42 overflow-y-auto rounded-md border border-gray-700/50 bg-gray-950 p-2 text-gray-50;
 }
 
 .vm-menu-item {
-  @apply cursor-pointer rounded p-2 transition-colors hover:bg-sky-600;
+  @apply cursor-pointer rounded px-4 py-2 transition-colors hover:bg-sky-600;
 }

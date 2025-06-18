@@ -1,0 +1,15 @@
+<div
+  [vmMenuTrigger]="menu"
+  class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-800 bg-gray-800/20 p-2 transition-colors hover:border-gray-700/50 hover:bg-gray-700/20">
+  <div
+    class="size-10 shrink-0 grow-0 rounded-lg border border-purple-500 bg-gradient-to-br from-purple-600 to-purple-900"></div>
+  <div class="flex flex-grow flex-col overflow-hidden">
+    <p class="overflow-hidden text-ellipsis whitespace-nowrap text-gray-50">{{ profileName() }}</p>
+    <span class="overflow-hidden text-xs text-ellipsis whitespace-nowrap text-gray-500">{{ profileEmail() }}</span>
+  </div>
+  <ng-icon class="shrink-0 grow-0 text-gray-500" name="lucideChevronsUpDown" size="14" />
+</div>
+
+<vm-menu #menu>
+  <div class="min-w-48" vmMenuItem (click)="signOut()">Sign out</div>
+</vm-menu>

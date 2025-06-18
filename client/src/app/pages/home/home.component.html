@@ -49,10 +49,18 @@
   </vm-menu>
 </div>
 
-<div class="flex gap-2 p-4">
+<div class="flex items-start gap-2 p-4">
   <vm-card>
     <div title>Title</div>
     <div value>Value</div>
+    <div action>
+      <button vmButton size="small" type="link" (click)="openDefault()">Open</button>
+    </div>
+  </vm-card>
+
+  <vm-card type="info">
+    <div title>Continue where you’ve left off</div>
+    <div value>Previous session still has 40 words to go. Would you like to continue?</div>
     <div action>
       <button vmButton size="small" type="link" (click)="openDefault()">Open</button>
     </div>
