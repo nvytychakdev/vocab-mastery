@@ -13,6 +13,16 @@
       <button vmButton variant="primary" [disabled]="form.invalid">Sign in</button>
     </form>
 
+    <section class="my-4 flex w-full items-center gap-2">
+      <div class="h-[1px] shrink grow bg-gray-700"></div>
+      <span class="text-sm text-gray-700">or</span>
+      <div class="h-[1px] shrink grow bg-gray-700"></div>
+    </section>
+
+    <section class="flex w-full flex-col">
+      <button vmButton (click)="signInWithGoogle()">Sign in with Google</button>
+    </section>
+
     <section class="flex items-center text-sm text-gray-500">
       <span>Don't have an account?</span>
       <a vmButton type="link" routerLink="/auth/sign-up">Create</a>

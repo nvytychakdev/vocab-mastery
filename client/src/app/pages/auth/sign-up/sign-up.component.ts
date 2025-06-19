@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormControl,
@@ -30,6 +31,7 @@ const passwordsMatch = (group: AbstractControl): ValidationErrors | null => {
 export class SignUpComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly form = new FormGroup(
     {
@@ -60,5 +62,14 @@ export class SignUpComponent {
 
       void this.router.navigate(['/auth/sign-in']);
     });
+  }
+
+  signUpWithGoogle() {
+    this.auth
+      .signInWithGoogle()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        void this.router.navigate(['/main']);
+      });
   }
 }

@@ -33,6 +33,13 @@ type SignInUser struct {
 	Email string `json:"email"`
 }
 
+type SignInTokens struct {
+	AccessToken           string `json:"accessToken"`
+	AccessTokenExpiresIn  int64  `json:"accessTokenExpiresIn"`
+	RefreshToken          string `json:"refreshToken"`
+	RefreshTokenExpiresIn int64  `json:"refreshTokenExpiresIn"`
+}
+
 // Response
 type SignInResponse struct {
 	AccessToken           string     `json:"accessToken"`
@@ -105,30 +112,17 @@ func (auth *AuthHandler) signInAuthorize(w http.ResponseWriter, r *http.Request,
 }
 
 func (auth *AuthHandler) signInComplete(w http.ResponseWriter, r *http.Request, user *model.User) {
-	accessToken, accessTokenExpiresIn, err := auth.Deps.AuthService.CreateAccessToken(user.ID)
-	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
-		return
-	}
-
-	refreshTokenId := uuid.NewString()
-	sessionId, err := auth.Deps.DB.CreateSession(user.ID, refreshTokenId)
-	if err != nil {
-		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
-		return
-	}
-
-	refreshToken, refreshTokenExpiresIn, err := auth.Deps.AuthService.CreateRefreshToken(sessionId, refreshTokenId)
+	tokens, err := auth.signInGenerateTokens(user)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
 	response := &SignInResponse{
-		AccessToken:           accessToken,
-		AccessTokenExpiresIn:  accessTokenExpiresIn,
-		RefreshToken:          refreshToken,
-		RefreshTokenExpiresIn: refreshTokenExpiresIn,
+		AccessToken:           tokens.AccessToken,
+		AccessTokenExpiresIn:  tokens.AccessTokenExpiresIn,
+		RefreshToken:          tokens.RefreshToken,
+		RefreshTokenExpiresIn: tokens.RefreshTokenExpiresIn,
 		User: SignInUser{
 			ID:    user.ID,
 			Email: user.Email,
@@ -136,4 +130,28 @@ func (auth *AuthHandler) signInComplete(w http.ResponseWriter, r *http.Request, 
 	}
 
 	render.Render(w, r, response)
+}
+
+func (auth *AuthHandler) signInGenerateTokens(user *model.User) (*SignInTokens, error) {
+	accessToken, accessTokenExpiresIn, err := auth.Deps.AuthService.CreateAccessToken(user.ID)
+	if err != nil {
+		return nil, err
+	}
+	refreshTokenId := uuid.NewString()
+	sessionId, err := auth.Deps.DB.CreateSession(user.ID, refreshTokenId)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, refreshTokenExpiresIn, err := auth.Deps.AuthService.CreateRefreshToken(sessionId, refreshTokenId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &SignInTokens{
+		AccessToken:           accessToken,
+		AccessTokenExpiresIn:  accessTokenExpiresIn,
+		RefreshToken:          refreshToken,
+		RefreshTokenExpiresIn: refreshTokenExpiresIn,
+	}, nil
 }

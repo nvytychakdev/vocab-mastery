@@ -13,6 +13,8 @@ func AuthRouter(auth *auth.AuthHandler, mw *middleware.Middleware) *chi.Mux {
 	router.Post("/refresh-token", auth.RefreshToken)
 	router.Post("/confirm-email", auth.ConfirmEmail)
 	router.Post("/resend-confirm-email", auth.ResendEmailConfirm)
+	router.HandleFunc("/oauth/google", auth.HandleGooglePopup)
+	router.HandleFunc("/oauth/google/callback", auth.HandleGoogleCallback)
 
 	authorizedRouter := chi.NewRouter()
 	authorizedRouter.Use(mw.Authorized)

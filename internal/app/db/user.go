@@ -6,6 +6,7 @@ import (
 
 type UserRepository interface {
 	CreateUser(email string, password string, name string) (string, error)
+	CreateUserOAuth(email string, name string) (string, error)
 	UserExists(email string) (bool, error)
 	GetUserByID(id string) (*model.User, error)
 	GetUserByEmail(email string) (*model.User, error)
@@ -21,6 +22,17 @@ func (p *PostgresDB) CreateUser(email string, passwordHash string, name string) 
 	`
 	var userId string
 	err := p.conn.QueryRow(query, email, passwordHash, name).Scan(&userId)
+	return userId, err
+}
+
+func (p *PostgresDB) CreateUserOAuth(email string, name string) (string, error) {
+	const query = `
+		INSERT INTO users (email, name) 
+		VALUES ($1, $2) 
+		RETURNING id;
+	`
+	var userId string
+	err := p.conn.QueryRow(query, email, name).Scan(&userId)
 	return userId, err
 }
 

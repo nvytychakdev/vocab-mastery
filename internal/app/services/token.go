@@ -1,10 +1,15 @@
 package services
 
 import (
+	"context"
 	"fmt"
+	"log/slog"
+	"os"
 	"time"
 
+	"github.com/coreos/go-oidc"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -23,14 +28,32 @@ type AuthService interface {
 	ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error)
 	CreateAccessToken(userId string) (string, int64, error)
 	CreateRefreshToken(sessionId string, jti string) (string, int64, error)
+	HandleGoogleOAuth(config *oauth2.Config, code string, claims interface{}) error
 }
 
 type authService struct {
 	TokenSecret string
+	GoogleOAuth struct {
+		Provider *oidc.Provider
+		Verifier *oidc.IDTokenVerifier
+	}
 }
 
 func NewAuthService() *authService {
-	return &authService{TokenSecret: "Secret Phrase"}
+	ctx := context.Background()
+	provider, err := oidc.NewProvider(ctx, "https://accounts.google.com")
+	if err != nil {
+		slog.Error("Google provider can not be created", "err", err)
+	}
+
+	verifier := provider.Verifier(&oidc.Config{ClientID: os.Getenv("GOOGLE_CLIENT_ID")})
+	return &authService{TokenSecret: "Secret Phrase", GoogleOAuth: struct {
+		Provider *oidc.Provider
+		Verifier *oidc.IDTokenVerifier
+	}{
+		Provider: provider,
+		Verifier: verifier,
+	}}
 }
 
 func (as *authService) ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error) {
@@ -85,4 +108,28 @@ func createToken(secret string, claims *TokenClaims) (string, int64, error) {
 
 	expiresIn := claims.ExpiresAt.Unix() - time.Now().Unix()
 	return tokenString, expiresIn, nil
+}
+
+func (as *authService) HandleGoogleOAuth(config *oauth2.Config, code string, claims interface{}) error {
+	ctx := context.Background()
+	token, err := config.Exchange(ctx, code)
+	if err != nil {
+		return err
+	}
+
+	rawIDToken, ok := token.Extra("id_token").(string)
+	if !ok {
+		return err
+	}
+
+	idToken, err := as.GoogleOAuth.Verifier.Verify(ctx, rawIDToken)
+	if err != nil {
+		return err
+	}
+
+	if err := idToken.Claims(&claims); err != nil {
+		return err
+	}
+
+	return nil
 }

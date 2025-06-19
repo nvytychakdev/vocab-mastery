@@ -27,6 +27,7 @@ enum ApiEndpoint {
   RefreshToken = 'api/v1/auth/refresh-token',
   ConfirmEmail = 'api/v1/auth/confirm-email',
   ResendConfirmEmail = 'api/v1/auth/resend-confirm-email',
+  OAuthGoogle = 'api/v1/auth/oauth/google',
 }
 
 const IsAuthorizedContext = new HttpContext().set(IS_AUTHORIZED_REQUEST, true);
@@ -39,6 +40,10 @@ export class ApiService {
 
   private getApiUrl(endpoint: ApiEndpoint, params?: Record<string, string>) {
     return `${environment.hostUrl}/${endpoint}`.trim();
+  }
+
+  getGooglePopupUrl() {
+    return this.getApiUrl(ApiEndpoint.OAuthGoogle);
   }
 
   getAuthProfile() {

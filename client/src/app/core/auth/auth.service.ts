@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, tap } from 'rxjs';
+import { filter, fromEvent, Observable, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { SignInConfirmResponse, SignOutResponse, SignUpRequest } from '../api/api.interfaces';
 import { ApiService } from '../api/api.service';
 import { AuthStorageService } from './auth-storage.service';
@@ -24,6 +25,22 @@ export class AuthService {
       tap(res => {
         if (isConfirmResponse(res)) return;
         this.tokens.setTokens(res);
+      })
+    );
+  }
+
+  signInWithGoogle() {
+    window.open(this.api.getGooglePopupUrl(), '_blank', 'width=500,height=600');
+
+    return fromEvent(window, 'message').pipe(
+      filter(event => {
+        if (!(event instanceof MessageEvent)) return false;
+        return event.origin === environment.hostUrl;
+      }),
+      tap(event => {
+        if (!(event instanceof MessageEvent)) return;
+        if (isConfirmResponse(event.data)) return;
+        this.tokens.setTokens(event.data);
       })
     );
   }
