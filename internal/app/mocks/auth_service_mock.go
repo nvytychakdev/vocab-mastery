@@ -3,6 +3,7 @@ package mocks
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/services"
+	"golang.org/x/oauth2"
 )
 
 type MockAuthService struct {
@@ -17,4 +18,8 @@ func (m *MockAuthService) CreateAccessToken(userId string) (string, int64, error
 
 func (m *MockAuthService) CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
 	return "", 0, nil
+}
+
+func (as *MockAuthService) HandleGoogleOAuth(config *oauth2.Config, code string, claims interface{}) error {
+	return nil
 }

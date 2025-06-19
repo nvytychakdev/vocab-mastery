@@ -30,6 +30,10 @@ func (m *MockDB) CreateUser(email string, password string, name string) (string,
 	return "", nil
 }
 
+func (p *MockDB) CreateUserOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error) {
+	return "", nil
+}
+
 func (m *MockDB) UserExists(email string) (bool, error) { return false, nil }
 
 func (m *MockDB) GetUserByID(id string) (*model.User, error) { return nil, nil }
