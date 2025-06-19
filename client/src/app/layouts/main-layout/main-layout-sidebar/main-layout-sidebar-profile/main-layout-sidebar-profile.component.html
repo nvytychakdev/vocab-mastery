@@ -10,6 +10,9 @@
   <ng-icon class="shrink-0 grow-0 text-gray-500" name="lucideChevronsUpDown" size="14" />
 </div>
 
-<vm-menu #menu>
-  <div class="min-w-48" vmMenuItem (click)="signOut()">Sign out</div>
+<vm-menu className="!min-w-52" #menu>
+  <div vmMenuItem (click)="signOut()">
+    <ng-icon name="lucideLogOut" size="16" />
+    Sign out
+  </div>
 </vm-menu>

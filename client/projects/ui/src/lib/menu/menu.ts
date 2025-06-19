@@ -1,4 +1,4 @@
-import { Component, InjectionToken, signal, TemplateRef, viewChild } from '@angular/core';
+import { Component, InjectionToken, input, signal, TemplateRef, viewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export const MENU = new InjectionToken<Menu>('VM_MENU');
@@ -7,7 +7,7 @@ export const MENU = new InjectionToken<Menu>('VM_MENU');
   selector: 'vm-menu',
   template: `
     <ng-template>
-      <div class="vm-menu">
+      <div class="vm-menu" [class]="className()">
         <ng-content></ng-content>
       </div>
     </ng-template>
@@ -20,6 +20,8 @@ export const MENU = new InjectionToken<Menu>('VM_MENU');
 })
 export class Menu {
   readonly templateRef = viewChild.required(TemplateRef);
+
+  readonly className = input<string>();
 
   private readonly _close = new Subject<void>();
   readonly close = this._close.asObservable();
