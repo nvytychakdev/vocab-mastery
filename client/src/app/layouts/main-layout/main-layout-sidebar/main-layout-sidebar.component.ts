@@ -8,6 +8,7 @@ import {
   lucideListPlus,
   lucideLogOut,
   lucidePanelLeft,
+  lucideUser,
 } from '@ng-icons/lucide';
 import { MainLayoutSidebarProfileComponent } from './main-layout-sidebar-profile/main-layout-sidebar-profile.component';
 
@@ -15,7 +16,15 @@ import { MainLayoutSidebarProfileComponent } from './main-layout-sidebar-profile
   selector: 'app-main-layout-sidebar',
   imports: [NgIcon, RouterLink, RouterLinkActive, MainLayoutSidebarProfileComponent],
   providers: [
-    provideIcons({ lucideHouse, lucidePanelLeft, lucideGamepad, lucideListPlus, lucideChevronsUpDown, lucideLogOut }),
+    provideIcons({
+      lucideHouse,
+      lucideUser,
+      lucidePanelLeft,
+      lucideGamepad,
+      lucideListPlus,
+      lucideChevronsUpDown,
+      lucideLogOut,
+    }),
   ],
   templateUrl: './main-layout-sidebar.component.html',
   styleUrl: './main-layout-sidebar.component.css',

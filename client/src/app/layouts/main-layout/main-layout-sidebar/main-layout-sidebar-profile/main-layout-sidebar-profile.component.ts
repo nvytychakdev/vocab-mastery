@@ -19,6 +19,7 @@ export class MainLayoutSidebarProfileComponent {
 
   readonly profileName = computed(() => this.authProfile.profile()?.name);
   readonly profileEmail = computed(() => this.authProfile.profile()?.email);
+  readonly profilePictureUrl = computed(() => this.authProfile.profile()?.pictureUrl);
 
   signOut() {
     this.auth.signOut().subscribe(() => this.router.navigate(['/']));

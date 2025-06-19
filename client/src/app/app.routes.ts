@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
-import { map } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { authProfileResolve } from './core/auth/auth-profile.resolver';
 import { AuthService } from './core/auth/auth.service';
 import { authRedirectGuards } from './core/auth/guards/auth.guard';
@@ -24,7 +24,12 @@ const confirmEmailRedirect = (route: ActivatedRouteSnapshot) => {
 
   const token = route.queryParamMap.get('token');
   if (token) {
-    return auth.confirmEmail(token).pipe(map(() => router.createUrlTree(['/main'])));
+    return auth.confirmEmail(token).pipe(
+      map(() => router.createUrlTree(['/main'])),
+      catchError(() => {
+        return of(router.createUrlTree(['/']));
+      })
+    );
   }
 
   return true;

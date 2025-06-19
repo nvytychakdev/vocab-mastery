@@ -41,6 +41,7 @@ func (s *ConfirmEmailResponse) Render(w http.ResponseWriter, r *http.Request) er
 func (auth *AuthHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	data := &ConfirmEmailRequest{}
 	if err := render.Bind(r, data); err != nil {
+		slog.Error("Failed binding confir request")
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInvalidPayload, nil))
 		return
 	}

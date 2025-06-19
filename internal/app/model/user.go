@@ -5,8 +5,9 @@ import (
 )
 
 type UserData struct {
-	Email string `json:"email"`
-	Name  string `json:"name"`
+	Email      string  `json:"email"`
+	Name       string  `json:"name"`
+	PictureUrl *string `json:"pictureUrl"`
 }
 
 type User struct {

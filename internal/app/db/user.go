@@ -6,7 +6,7 @@ import (
 
 type UserRepository interface {
 	CreateUser(email string, password string, name string) (string, error)
-	CreateUserOAuth(email string, name string) (string, error)
+	CreateUserOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error)
 	UserExists(email string) (bool, error)
 	GetUserByID(id string) (*model.User, error)
 	GetUserByEmail(email string) (*model.User, error)
@@ -16,23 +16,23 @@ type UserRepository interface {
 
 func (p *PostgresDB) CreateUser(email string, passwordHash string, name string) (string, error) {
 	const query = `
-		INSERT INTO users (email, password_hash, name) 
-		VALUES ($1, $2, $3) 
+		INSERT INTO users (email, password_hash, name, auth_provider) 
+		VALUES ($1, $2, $3, $4) 
 		RETURNING id;
 	`
 	var userId string
-	err := p.conn.QueryRow(query, email, passwordHash, name).Scan(&userId)
+	err := p.conn.QueryRow(query, email, passwordHash, name, "local").Scan(&userId)
 	return userId, err
 }
 
-func (p *PostgresDB) CreateUserOAuth(email string, name string) (string, error) {
+func (p *PostgresDB) CreateUserOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error) {
 	const query = `
-		INSERT INTO users (email, name) 
-		VALUES ($1, $2) 
+		INSERT INTO users (email, name, auth_provider, auth_provider_user_id, picture_url, is_email_confirmed) 
+		VALUES ($1, $2, $3, $4, $5, $6) 
 		RETURNING id;
 	`
 	var userId string
-	err := p.conn.QueryRow(query, email, name).Scan(&userId)
+	err := p.conn.QueryRow(query, email, name, provider, providerId, pictureUrl, emailVerified).Scan(&userId)
 	return userId, err
 }
 
@@ -50,25 +50,25 @@ func (p *PostgresDB) UserExists(email string) (bool, error) {
 
 func (p *PostgresDB) GetUserByID(id string) (*model.User, error) {
 	const query = `
-		SELECT id, email, name, created_at
+		SELECT id, email, name, created_at, picture_url
 		FROM users
 		WHERE id = $1;
 	`
 
 	var user model.User
-	err := p.conn.QueryRow(query, id).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
+	err := p.conn.QueryRow(query, id).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
 }
 
 func (p *PostgresDB) GetUserByEmail(email string) (*model.User, error) {
 	const query = `
-		SELECT id, email, name, created_at
+		SELECT id, email, name, created_at, picture_url
 		FROM users
 		WHERE email = $1;
 	`
 
 	var user model.User
-	err := p.conn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt)
+	err := p.conn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
 }
 

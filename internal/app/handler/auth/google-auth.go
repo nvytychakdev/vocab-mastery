@@ -13,6 +13,14 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+type GoogleOAuthClaims struct {
+	Sub           string `json:"sub"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	Name          string `json:"name"`
+	Picture       string `json:"picture"`
+}
+
 var clientID = os.Getenv("GOOGLE_CLIENT_ID")
 var config = &oauth2.Config{
 	ClientID:     clientID,
@@ -34,18 +42,15 @@ func (auth *AuthHandler) HandleGoogleCallback(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	var claims struct {
-		Email string `json:"email"`
-		Name  string `json:"name"`
-	}
+	var claims = &GoogleOAuthClaims{}
 
-	err := auth.Deps.AuthService.HandleGoogleOAuth(config, code, &claims)
+	err := auth.Deps.AuthService.HandleGoogleOAuth(config, code, claims)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	user, err := auth.getOrCreateUserWithOAuth(claims.Email, claims.Name)
+	user, err := auth.getOrCreateUserWithOAuth(claims)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -79,14 +84,14 @@ func (auth *AuthHandler) HandleGoogleCallback(w http.ResponseWriter, r *http.Req
 	tmpl.Execute(w, tokens)
 }
 
-func (auth *AuthHandler) getOrCreateUserWithOAuth(email string, name string) (*model.User, error) {
-	userExists, err := auth.Deps.DB.UserExists(email)
+func (auth *AuthHandler) getOrCreateUserWithOAuth(claims *GoogleOAuthClaims) (*model.User, error) {
+	userExists, err := auth.Deps.DB.UserExists(claims.Email)
 	if err != nil {
 		return nil, err
 	}
 
 	if !userExists {
-		userId, err := auth.Deps.DB.CreateUserOAuth(email, name)
+		userId, err := auth.Deps.DB.CreateUserOAuth(claims.Email, claims.Name, "google", claims.Sub, claims.Picture, claims.EmailVerified)
 		if err != nil {
 			return nil, err
 		}
@@ -95,7 +100,7 @@ func (auth *AuthHandler) getOrCreateUserWithOAuth(email string, name string) (*m
 		return user, err
 	}
 
-	user, err := auth.Deps.DB.GetUserByEmail(email)
+	user, err := auth.Deps.DB.GetUserByEmail(claims.Email)
 	if err != nil {
 		return nil, err
 	}
