@@ -14,9 +14,15 @@
 * [x] Server: Basic configuration (API keys, connections, etc.)
 * [x] Server: Setup Postgres docker container and connect to the server
 * [x] Server: Setup `User` table schema in DB 
-* [ ] Server: Setup `Dictionaries` table schema in DB 
+* [x] Server: Setup `Dictionaries` table schema in DB 
+* [ ] Server: Add pagination support for all GET/POST requests
+* [ ] Server: Add sort support for all GET/POST requests
+* [ ] Server: Add filters support for all GET/POST requests
 * [ ] Server: Setup `Words` table schema in DB 
 * [x] API: Basic auth rotues `/sign-in`, `/sign-out`, `/register`, `/refresh`
 * [x] API: Advanced OAuth (google sign in support)
-* [ ] API: CRUD for Dictionaries 
+* [x] API: CRUD for Dictionaries 
 * [ ] API: Games API (quiz, etc.)
+* [ ] API: CRUD for Words and Translations
+* [ ] Server: Add coverage for Auth tests on server
+* [ ] Server: Add coverage for Dictionaries tests on server
