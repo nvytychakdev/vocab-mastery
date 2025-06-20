@@ -20,6 +20,7 @@ const (
 	ErrConfirmTokenNotFound    = 1009
 	ErrConfirmTokenExpired     = 1010
 	ErrConfirmTokenAlreadyUsed = 1011
+	ErrNotFound                = 1012
 
 	// Internal
 	ErrInternalServer = 2001
@@ -34,6 +35,7 @@ var ErrorCodeMessages = map[int16]string{
 	ErrUnauthorized:      "You are not authorized to perform this action.",
 	ErrInvalidPayload:    "Invalid request payload",
 	ErrUserAlreadyExists: "User already exists with this email",
+	ErrNotFound:          "The item you're looking for doesn’t exist or may have been removed.",
 
 	ErrInternalServer: "Internal server error. Please try again later.",
 }

@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx"
 )
 
@@ -12,10 +13,12 @@ type DB interface {
 	SessionRepository
 	UserRepository
 	UserTokenRepository
+	DictionaryRepository
 }
 
 type PostgresDB struct {
 	conn *pgx.Conn
+	psql squirrel.StatementBuilderType
 }
 
 func Connect() DB {
@@ -24,6 +27,7 @@ func Connect() DB {
 		slog.Debug("Failed to retrieve postgres port")
 	}
 
+	psql := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 	conn, err := pgx.Connect(pgx.ConnConfig{
 		Host:     os.Getenv("POSTGRES_HOST"),
 		Port:     uint16(port),
@@ -35,5 +39,6 @@ func Connect() DB {
 		slog.Error("Not able to connect to the database", "Error", err)
 		return nil
 	}
-	return &PostgresDB{conn}
+
+	return &PostgresDB{conn, psql}
 }

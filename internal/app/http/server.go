@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/dictionary"
 	vmMiddleware "github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/routes"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/services"
@@ -38,9 +39,11 @@ func StartServer() {
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 
 	authHandler := &auth.AuthHandler{Deps: deps}
+	dictionaryHandler := &dictionary.DictionaryHandler{Deps: deps}
 	mw := vmMiddleware.NewMiddleware(deps)
 
 	router.Mount("/api/v1/auth", routes.AuthRouter(authHandler, mw))
+	router.Mount("/api/v1/dictionaries", routes.DictionaryRouter(dictionaryHandler, mw))
 	http.ListenAndServe(":8080", router)
 	slog.Info("Started server...")
 }

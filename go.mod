@@ -6,6 +6,7 @@ require github.com/go-chi/chi/v5 v5.2.1 // direct
 
 require (
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
+	github.com/Masterminds/squirrel v1.5.4 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/coreos/go-oidc v2.3.0+incompatible // indirect
 	github.com/go-chi/cors v1.2.1 // indirect
@@ -14,6 +15,8 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
+	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
