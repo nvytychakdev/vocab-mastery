@@ -18,7 +18,7 @@ func (u *TranslationGetListResponse) Render(w http.ResponseWriter, r *http.Reque
 }
 
 func (th *TranslationHandler) TranslationGetList(w http.ResponseWriter, r *http.Request) {
-	pagination := middleware.PaginationFromRequest(r)
+	pagination := middleware.GetPaginationContext(r)
 	word := middleware.GetWordContext(r)
 
 	translations, total, err := th.Deps.DB.GetAllTranslationsByWordID(word.ID, pagination)

@@ -27,7 +27,7 @@ func (mw *Middleware) PaginationContext(next http.Handler) http.Handler {
 	})
 }
 
-func PaginationFromRequest(r *http.Request) *model.Pagination {
+func GetPaginationContext(r *http.Request) *model.Pagination {
 	pagination, ok := r.Context().Value(PAGINATION_KEY).(*model.Pagination)
 	if !ok {
 		return &model.Pagination{Offset: 0, Limit: 20}

@@ -18,7 +18,7 @@ func (u *DictionaryGetListResponse) Render(w http.ResponseWriter, r *http.Reques
 }
 
 func (auth *DictionaryHandler) DictionaryGetList(w http.ResponseWriter, r *http.Request) {
-	pagination := middleware.PaginationFromRequest(r)
+	pagination := middleware.GetPaginationContext(r)
 	userId := middleware.GetAuthorizedUserId(r)
 
 	dictionaries, total, err := auth.Deps.DB.GetAllDictionariesByUsedID(userId, pagination)

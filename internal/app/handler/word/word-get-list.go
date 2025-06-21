@@ -19,7 +19,7 @@ func (u *WordGetListResponse) Render(w http.ResponseWriter, r *http.Request) err
 }
 
 func (wh *WordHandler) WordGetList(w http.ResponseWriter, r *http.Request) {
-	pagination := middleware.PaginationFromRequest(r)
+	pagination := middleware.GetPaginationContext(r)
 	dictionary := middleware.GetDictionaryContext(r)
 
 	words, totalWords, err := wh.Deps.DB.GetAllWordsByDictionaryID(dictionary.ID, pagination)
