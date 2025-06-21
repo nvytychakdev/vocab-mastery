@@ -22,7 +22,8 @@
 * [x] API: Basic auth rotues `/sign-in`, `/sign-out`, `/register`, `/refresh`
 * [x] API: Advanced OAuth (google sign in support)
 * [x] API: CRUD for Dictionaries 
-* [ ] API: Games API (quiz, etc.)
 * [ ] API: CRUD for Words and Translations
+* [ ] API: Games API (quiz, etc.)
 * [ ] Server: Add coverage for Auth tests on server
 * [ ] Server: Add coverage for Dictionaries tests on server
+* [ ] Server: Refactor Auth to rely on Squirrel

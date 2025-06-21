@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -10,17 +9,16 @@ import (
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 )
 
-func (mw *Middleware) DictionaryContext(next http.Handler) http.Handler {
+func (mw *Middleware) WordContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		dictionaryId := chi.URLParam(r, "dictionaryId")
-		dictionary, err := mw.Deps.DB.GetDictionaryByID(dictionaryId)
+		wordId := chi.URLParam(r, "wordId")
+		word, err := mw.Deps.DB.GetWordByID(wordId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), DICTIONARY_KEY, dictionary)
-		slog.Info("set dictionary key data", "key", dictionary)
+		ctx := context.WithValue(r.Context(), WORD_KEY, word)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -1,0 +1,96 @@
+package db
+
+import (
+	sq "github.com/Masterminds/squirrel"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
+)
+
+type WordRepository interface {
+	CreateWord(dictionaryId string, word string, language string) (string, error)
+	RemoveWordByID(wordId string) error
+	GetWordByID(wordId string) (*model.Word, error)
+	GetAllWordsByDictionaryID(dictionaryId string) ([]*model.Word, error)
+}
+
+func (db *PostgresDB) CreateWord(dictionaryId string, word string, language string) (string, error) {
+	query, args, err := db.psql.
+		Insert("words").
+		Columns("dictionary_id", "word", "language").
+		Values(dictionaryId, word, language).
+		Suffix("RETURNING \"id\"").ToSql()
+
+	if err != nil {
+		return "", err
+	}
+
+	var wordId string
+	err = db.conn.QueryRow(query, args...).Scan(&wordId)
+	return wordId, err
+}
+
+func (db *PostgresDB) RemoveWordByID(wordId string) error {
+	query, args, err := db.psql.Delete("words").Where(sq.Eq{"id": wordId}).ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	_, err = db.conn.Exec(query, args...)
+	return err
+}
+
+func (db *PostgresDB) GetWordByID(wordId string) (*model.Word, error) {
+	query, args, err := db.psql.
+		Select("id", "dictionary_id", "word", "language", "created_at").
+		From("words").Where(sq.Eq{"id": wordId}).ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var word model.Word
+	err = db.conn.QueryRow(query, args...).Scan(
+		&word.ID,
+		&word.DictionaryId,
+		&word.Word,
+		&word.Language,
+		&word.CreatedAt,
+	)
+	return &word, err
+}
+
+func (db *PostgresDB) GetAllWordsByDictionaryID(dictionaryId string) ([]*model.Word, error) {
+	query, args, err := db.psql.
+		Select("id", "dictionary_id", "word", "language", "created_at").
+		From("words").Where(sq.Eq{"dictionary_id": dictionaryId}).ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := db.conn.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var words = []*model.Word{}
+	for rows.Next() {
+		var dictionary model.Word
+		err := rows.Scan(
+			&dictionary.ID,
+			&dictionary.DictionaryId,
+			&dictionary.Word,
+			&dictionary.Language,
+			&dictionary.CreatedAt,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+		words = append(words, &dictionary)
+	}
+
+	return words, rows.Err()
+}

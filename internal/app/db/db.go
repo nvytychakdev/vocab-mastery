@@ -14,6 +14,8 @@ type DB interface {
 	UserRepository
 	UserTokenRepository
 	DictionaryRepository
+	WordRepository
+	TranslationRepository
 }
 
 type PostgresDB struct {
