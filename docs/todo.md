@@ -15,7 +15,8 @@
 * [x] Server: Setup Postgres docker container and connect to the server
 * [x] Server: Setup `User` table schema in DB 
 * [x] Server: Setup `Dictionaries` table schema in DB 
-* [ ] Server: Add pagination support for all GET/POST requests
+* [x] Server: Add pagination support for all GET/POST requests
+* [x] Server: Add `include` fields functionality to GEt requests
 * [ ] Server: Add sort support for all GET/POST requests
 * [ ] Server: Add filters support for all GET/POST requests
 * [x] Server: Setup `Words` table schema in DB 
