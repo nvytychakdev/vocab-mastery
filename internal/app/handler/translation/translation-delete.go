@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/render"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type TranslationDeleteResponse struct {
@@ -18,7 +17,7 @@ func (d TranslationDeleteResponse) Render(w http.ResponseWriter, r *http.Request
 }
 
 func (th *TranslationHandler) TranslationDeleteByID(w http.ResponseWriter, r *http.Request) {
-	translation := r.Context().Value(middleware.TRANSLATION_KEY).(*model.Translation)
+	translation := middleware.GetTranslationContext(r)
 
 	err := th.Deps.DB.RemoveTranslationByID(translation.ID)
 	if err != nil {

@@ -10,7 +10,7 @@ import (
 
 type TranslationGetListResponse struct {
 	Items []*model.Translation `json:"items"`
-	Total int                  `json:"total"`
+	*model.PaginationResponse
 }
 
 func (u *TranslationGetListResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -18,19 +18,21 @@ func (u *TranslationGetListResponse) Render(w http.ResponseWriter, r *http.Reque
 }
 
 func (th *TranslationHandler) TranslationGetList(w http.ResponseWriter, r *http.Request) {
-	word, ok := r.Context().Value(middleware.WORD_KEY).(*model.Word)
-	if !ok {
-		return
-	}
+	pagination := middleware.PaginationFromRequest(r)
+	word := middleware.GetWordContext(r)
 
-	translations, err := th.Deps.DB.GetAllTranslationsByWordID(word.ID)
+	translations, total, err := th.Deps.DB.GetAllTranslationsByWordID(word.ID, pagination)
 	if err != nil {
 		return
 	}
 
 	response := &TranslationGetListResponse{
 		Items: translations,
-		Total: len(translations),
+		PaginationResponse: &model.PaginationResponse{
+			Total:  total,
+			Offset: pagination.Offset,
+			Limit:  pagination.Limit,
+		},
 	}
 
 	render.Render(w, r, response)

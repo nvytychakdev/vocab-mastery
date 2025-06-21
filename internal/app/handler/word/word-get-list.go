@@ -11,7 +11,7 @@ import (
 
 type WordGetListResponse struct {
 	Items []*model.Word `json:"items"`
-	Total int           `json:"total"`
+	*model.PaginationResponse
 }
 
 func (u *WordGetListResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -19,13 +19,10 @@ func (u *WordGetListResponse) Render(w http.ResponseWriter, r *http.Request) err
 }
 
 func (wh *WordHandler) WordGetList(w http.ResponseWriter, r *http.Request) {
-	dictionary, ok := r.Context().Value(middleware.DICTIONARY_KEY).(*model.Dictionary)
-	if !ok {
-		slog.Error("Not ableto parse dictionary by id")
-		return
-	}
+	pagination := middleware.PaginationFromRequest(r)
+	dictionary := middleware.GetDictionaryContext(r)
 
-	words, err := wh.Deps.DB.GetAllWordsByDictionaryID(dictionary.ID)
+	words, totalWords, err := wh.Deps.DB.GetAllWordsByDictionaryID(dictionary.ID, pagination)
 	if err != nil {
 		slog.Error("Not able to get words by dictionary id", "error", err)
 		return
@@ -33,7 +30,11 @@ func (wh *WordHandler) WordGetList(w http.ResponseWriter, r *http.Request) {
 
 	response := &WordGetListResponse{
 		Items: words,
-		Total: len(words),
+		PaginationResponse: &model.PaginationResponse{
+			Total:  totalWords,
+			Offset: pagination.Offset,
+			Limit:  pagination.Limit,
+		},
 	}
 
 	render.Render(w, r, response)

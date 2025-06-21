@@ -10,10 +10,10 @@ import (
 func WordRouter(r chi.Router, wh *word.WordHandler, mw *middleware.Middleware) {
 	r.Route("/words", func(r chi.Router) {
 		r.Post("/", wh.WordCreate)
-		r.Get("/", wh.WordGetList)
+		r.With(mw.IncludeContext).With(mw.PaginationContext).Get("/", wh.WordGetList)
 		r.Route("/{wordId}", func(r chi.Router) {
 			r.Use(mw.WordContext)
-			r.Get("/", wh.WordGetByID)
+			r.With(mw.IncludeContext).Get("/", wh.WordGetByID)
 			r.Delete("/", wh.WordDeleteByID)
 
 			th := &translation.TranslationHandler{Deps: wh.Deps}

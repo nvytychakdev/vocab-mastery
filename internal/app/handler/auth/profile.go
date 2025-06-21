@@ -22,12 +22,7 @@ func (u *ProfileResponse) Render(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (auth *AuthHandler) Profile(w http.ResponseWriter, r *http.Request) {
-	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(string)
-
-	if !ok {
-		render.Render(w, r, httpError.NewErrorResponse(http.StatusForbidden, httpError.ErrUnauthorized, nil))
-		return
-	}
+	userId := middleware.GetAuthorizedUserId(r)
 
 	user, err := auth.Deps.DB.GetUserByID(userId)
 	if err != nil {

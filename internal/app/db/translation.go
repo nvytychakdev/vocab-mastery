@@ -9,7 +9,7 @@ type TranslationRepository interface {
 	CreateTranslation(wordId string, word string, language string) (string, error)
 	RemoveTranslationByID(translationId string) error
 	GetTranslationByID(translationId string) (*model.Translation, error)
-	GetAllTranslationsByWordID(wordId string) ([]*model.Translation, error)
+	GetAllTranslationsByWordID(wordId string, pagination *model.Pagination) ([]*model.Translation, int, error)
 }
 
 func (db *PostgresDB) CreateTranslation(wordId string, word string, language string) (string, error) {
@@ -59,18 +59,24 @@ func (db *PostgresDB) GetTranslationByID(translationId string) (*model.Translati
 	return &translation, err
 }
 
-func (db *PostgresDB) GetAllTranslationsByWordID(wordId string) ([]*model.Translation, error) {
-	query, args, err := db.psql.
+func (db *PostgresDB) GetAllTranslationsByWordID(wordId string, pagination *model.Pagination) ([]*model.Translation, int, error) {
+	queryBuilder := db.psql.
 		Select("id", "word_id", "word", "language", "created_at").
-		From("translations").Where(sq.Eq{"word_id": wordId}).ToSql()
+		From("translations").Where(sq.Eq{"word_id": wordId})
+
+	if pagination != nil {
+		queryBuilder = queryBuilder.Offset(uint64(pagination.Offset)).Limit(uint64(pagination.Limit))
+	}
+
+	query, args, err := queryBuilder.ToSql()
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	rows, err := db.conn.Query(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	defer rows.Close()
@@ -87,10 +93,24 @@ func (db *PostgresDB) GetAllTranslationsByWordID(wordId string) ([]*model.Transl
 		)
 
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		words = append(words, &dictionary)
 	}
 
-	return words, rows.Err()
+	totalQuery, totalArgs, err := db.psql.
+		Select("COUNT(*)").From("translations").
+		Where(sq.Eq{"word_id": wordId}).ToSql()
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var total int
+	err = db.conn.QueryRow(totalQuery, totalArgs...).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return words, total, rows.Err()
 }

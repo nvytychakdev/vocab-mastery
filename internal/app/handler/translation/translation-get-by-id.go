@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/render"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type TranslationGetByIdResponse struct {
@@ -21,7 +20,7 @@ func (u *TranslationGetByIdResponse) Render(w http.ResponseWriter, r *http.Reque
 }
 
 func (th *TranslationHandler) TranslationGetByID(w http.ResponseWriter, r *http.Request) {
-	translation := r.Context().Value(middleware.TRANSLATION_KEY).(*model.Translation)
+	translation := middleware.GetTranslationContext(r)
 
 	response := &TranslationGetByIdResponse{
 		ID:        translation.ID,

@@ -10,10 +10,11 @@ import (
 )
 
 type WordGetByIdResponse struct {
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"craetedAt"`
-	Word      string    `json:"name"`
-	Language  string    `json:"description"`
+	ID           string               `json:"id"`
+	CreatedAt    time.Time            `json:"craetedAt"`
+	Word         string               `json:"name"`
+	Language     string               `json:"description"`
+	Translations []*model.Translation `json:"translations,omitempty"`
 }
 
 func (u *WordGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -21,7 +22,8 @@ func (u *WordGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) err
 }
 
 func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
-	word := r.Context().Value(middleware.WORD_KEY).(*model.Word)
+	word := middleware.GetWordContext(r)
+	include := middleware.GetIncludeContext(r)
 
 	response := &WordGetByIdResponse{
 		ID:        word.ID,
@@ -29,5 +31,13 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 		Word:      word.Word,
 		Language:  word.Language,
 	}
+
+	if include != nil && include["translations"] {
+		translations, _, err := wh.Deps.DB.GetAllTranslationsByWordID(word.ID, nil)
+		if err == nil {
+			response.Translations = translations
+		}
+	}
+
 	render.Render(w, r, response)
 }

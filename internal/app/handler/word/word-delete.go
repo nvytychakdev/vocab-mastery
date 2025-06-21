@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/render"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type WordDeleteResponse struct {
@@ -18,7 +17,7 @@ func (d WordDeleteResponse) Render(w http.ResponseWriter, r *http.Request) error
 }
 
 func (wh *WordHandler) WordDeleteByID(w http.ResponseWriter, r *http.Request) {
-	word := r.Context().Value(middleware.WORD_KEY).(*model.Word)
+	word := middleware.GetWordContext(r)
 
 	err := wh.Deps.DB.RemoveWordByID(word.ID)
 	if err != nil {

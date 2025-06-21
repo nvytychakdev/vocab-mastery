@@ -10,7 +10,7 @@ import (
 
 type DictionaryGetListResponse struct {
 	Items []*model.Dictionary `json:"items"`
-	Total int                 `json:"total"`
+	*model.PaginationResponse
 }
 
 func (u *DictionaryGetListResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -18,19 +18,21 @@ func (u *DictionaryGetListResponse) Render(w http.ResponseWriter, r *http.Reques
 }
 
 func (auth *DictionaryHandler) DictionaryGetList(w http.ResponseWriter, r *http.Request) {
-	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(string)
-	if !ok {
-		return
-	}
+	pagination := middleware.PaginationFromRequest(r)
+	userId := middleware.GetAuthorizedUserId(r)
 
-	dictionaries, err := auth.Deps.DB.GetAllDictionariesByUsedID(userId)
+	dictionaries, total, err := auth.Deps.DB.GetAllDictionariesByUsedID(userId, pagination)
 	if err != nil {
 		return
 	}
 
 	response := &DictionaryGetListResponse{
 		Items: dictionaries,
-		Total: len(dictionaries),
+		PaginationResponse: &model.PaginationResponse{
+			Total:  total,
+			Offset: pagination.Offset,
+			Limit:  pagination.Limit,
+		},
 	}
 
 	render.Render(w, r, response)

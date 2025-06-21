@@ -7,23 +7,19 @@ import (
 
 	"github.com/go-chi/render"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/services"
 )
-
-func NewMiddleware(deps *services.Deps) *Middleware {
-	return &Middleware{Deps: deps}
-}
 
 func (m *Middleware) Authorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 
-		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+		tokenPrefix := "Bearer "
+		if authHeader == "" || !strings.HasPrefix(authHeader, tokenPrefix) {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInvalidToken, nil))
 			return
 		}
 
-		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		tokenString := strings.TrimPrefix(authHeader, tokenPrefix)
 
 		token, claims, err := m.Deps.AuthService.ParseToken(tokenString)
 		if err != nil || !token.Valid {
@@ -34,4 +30,8 @@ func (m *Middleware) Authorized(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), USER_ID_KEY, claims.UserId)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func GetAuthorizedUserId(r *http.Request) string {
+	return r.Context().Value(USER_ID_KEY).(string)
 }

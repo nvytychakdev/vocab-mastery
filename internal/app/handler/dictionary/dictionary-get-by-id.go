@@ -10,18 +10,20 @@ import (
 )
 
 type DictionaryGetByIdResponse struct {
-	ID          string    `json:"id"`
-	CreatedAt   time.Time `json:"craetedAt"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
+	ID          string        `json:"id"`
+	CreatedAt   time.Time     `json:"craetedAt"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Words       []*model.Word `json:"words,omitempty"`
 }
 
 func (u *DictionaryGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (auth *DictionaryHandler) DictionaryGetByID(w http.ResponseWriter, r *http.Request) {
-	dictionary := r.Context().Value(middleware.DICTIONARY_KEY).(*model.Dictionary)
+func (dh *DictionaryHandler) DictionaryGetByID(w http.ResponseWriter, r *http.Request) {
+	dictionary := middleware.GetDictionaryContext(r)
+	include := middleware.GetIncludeContext(r)
 
 	response := &DictionaryGetByIdResponse{
 		ID:          dictionary.ID,
@@ -29,5 +31,13 @@ func (auth *DictionaryHandler) DictionaryGetByID(w http.ResponseWriter, r *http.
 		Name:        dictionary.Name,
 		Description: dictionary.Description,
 	}
+
+	if include != nil && include["words"] {
+		words, _, err := dh.Deps.DB.GetAllWordsByDictionaryID(dictionary.ID, nil)
+		if err == nil {
+			response.Words = words
+		}
+	}
+
 	render.Render(w, r, response)
 }

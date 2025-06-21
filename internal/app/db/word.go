@@ -9,7 +9,7 @@ type WordRepository interface {
 	CreateWord(dictionaryId string, word string, language string) (string, error)
 	RemoveWordByID(wordId string) error
 	GetWordByID(wordId string) (*model.Word, error)
-	GetAllWordsByDictionaryID(dictionaryId string) ([]*model.Word, error)
+	GetAllWordsByDictionaryID(dictionaryId string, pagination *model.Pagination) ([]*model.Word, int, error)
 }
 
 func (db *PostgresDB) CreateWord(dictionaryId string, word string, language string) (string, error) {
@@ -59,18 +59,24 @@ func (db *PostgresDB) GetWordByID(wordId string) (*model.Word, error) {
 	return &word, err
 }
 
-func (db *PostgresDB) GetAllWordsByDictionaryID(dictionaryId string) ([]*model.Word, error) {
-	query, args, err := db.psql.
+func (db *PostgresDB) GetAllWordsByDictionaryID(dictionaryId string, pagination *model.Pagination) ([]*model.Word, int, error) {
+	queryBuilder := db.psql.
 		Select("id", "dictionary_id", "word", "language", "created_at").
-		From("words").Where(sq.Eq{"dictionary_id": dictionaryId}).ToSql()
+		From("words").Where(sq.Eq{"dictionary_id": dictionaryId})
+
+	if pagination != nil {
+		queryBuilder = queryBuilder.Offset(uint64(pagination.Offset)).Limit(uint64(pagination.Limit))
+	}
+
+	query, args, err := queryBuilder.ToSql()
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	rows, err := db.conn.Query(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	defer rows.Close()
@@ -87,10 +93,24 @@ func (db *PostgresDB) GetAllWordsByDictionaryID(dictionaryId string) ([]*model.W
 		)
 
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		words = append(words, &dictionary)
 	}
 
-	return words, rows.Err()
+	totalQuery, totalArgs, err := db.psql.
+		Select("COUNT(*)").From("words").
+		Where(sq.Eq{"dictionary_id": dictionaryId}).ToSql()
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var total int
+	err = db.conn.QueryRow(totalQuery, totalArgs...).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return words, total, rows.Err()
 }

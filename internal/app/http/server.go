@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/go-chi/docgen"
 	"github.com/go-chi/render"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
@@ -44,6 +45,9 @@ func StartServer() {
 
 	router.Mount("/api/v1/auth", routes.AuthRouter(authHandler, mw))
 	router.Mount("/api/v1/dictionaries", routes.DictionaryRouter(dictionaryHandler, mw))
+
+	docgen.PrintRoutes(router)
+
 	http.ListenAndServe(":8080", router)
 	slog.Info("Started server...")
 }

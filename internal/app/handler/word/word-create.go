@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/render"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
-	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type WordCreateRequest struct {
@@ -35,11 +34,7 @@ func (*WordCreateResponse) Render(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (wh *WordHandler) WordCreate(w http.ResponseWriter, r *http.Request) {
-	dictionary, ok := r.Context().Value(middleware.DICTIONARY_KEY).(*model.Dictionary)
-	if !ok {
-		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, nil))
-		return
-	}
+	dictionary := middleware.GetDictionaryContext(r)
 
 	var data = &WordCreateRequest{}
 
