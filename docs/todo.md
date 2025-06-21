@@ -16,7 +16,8 @@
 * [x] Server: Setup `User` table schema in DB 
 * [x] Server: Setup `Dictionaries` table schema in DB 
 * [x] Server: Add pagination support for all GET/POST requests
-* [x] Server: Add `include` fields functionality to GEt requests
+* [x] Server: Add `include` fields functionality to GET requests
+* [x] Server: Add `include` fields functionality to GET lists requests
 * [ ] Server: Add sort support for all GET/POST requests
 * [ ] Server: Add filters support for all GET/POST requests
 * [x] Server: Setup `Words` table schema in DB 
