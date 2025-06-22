@@ -43,7 +43,7 @@ func (wh *TranslationHandler) TranslationCreate(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	translationId, err := wh.Deps.DB.CreateTranslation(word.ID, data.Word, data.Language)
+	translationId, err := wh.Deps.DB.Translation().Create(word.ID, data.Word, data.Language)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

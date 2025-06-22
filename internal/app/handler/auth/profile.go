@@ -24,7 +24,7 @@ func (u *ProfileResponse) Render(w http.ResponseWriter, r *http.Request) error {
 func (auth *AuthHandler) Profile(w http.ResponseWriter, r *http.Request) {
 	userId := middleware.GetAuthorizedUserId(r)
 
-	user, err := auth.Deps.DB.GetUserByID(userId)
+	user, err := auth.Deps.DB.User().GetByID(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrInternalServer, err))
 		return

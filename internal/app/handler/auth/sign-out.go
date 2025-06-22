@@ -44,7 +44,7 @@ func (auth *AuthHandler) SignOut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = auth.Deps.DB.DeleteSessionByID(claims.SessionId)
+	err = auth.Deps.DB.Session().DeleteByID(claims.SessionId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

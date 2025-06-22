@@ -81,7 +81,7 @@ func (auth *AuthHandler) verifyUser(w http.ResponseWriter, r *http.Request) (*mo
 		return nil, nil
 	}
 
-	userExists, err := auth.Deps.DB.UserExists(data.Email)
+	userExists, err := auth.Deps.DB.User().Exists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
@@ -92,7 +92,7 @@ func (auth *AuthHandler) verifyUser(w http.ResponseWriter, r *http.Request) (*mo
 		return nil, nil
 	}
 
-	user, err := auth.Deps.DB.GetUserWithPawdByEmail(data.Email)
+	user, err := auth.Deps.DB.User().GetByEmailWithPwd(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
@@ -138,7 +138,7 @@ func (auth *AuthHandler) signInGenerateTokens(user *model.User) (*SignInTokens, 
 		return nil, err
 	}
 	refreshTokenId := uuid.NewString()
-	sessionId, err := auth.Deps.DB.CreateSession(user.ID, refreshTokenId)
+	sessionId, err := auth.Deps.DB.Session().Create(user.ID, refreshTokenId)
 	if err != nil {
 		return nil, err
 	}

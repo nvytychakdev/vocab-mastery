@@ -14,7 +14,7 @@ import (
 func (mw *Middleware) TranslationContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		translationId := chi.URLParam(r, "translationId")
-		translation, err := mw.Deps.DB.GetTranslationByID(translationId)
+		translation, err := mw.Deps.DB.Translation().GetByID(translationId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
 			return

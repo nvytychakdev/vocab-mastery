@@ -1,20 +1,31 @@
 package db
 
 import (
+	sq "github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
-type UserRepository interface {
-	CreateUser(email string, password string, name string) (string, error)
-	CreateUserOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error)
-	UserExists(email string) (bool, error)
-	GetUserByID(id string) (*model.User, error)
-	GetUserByEmail(email string) (*model.User, error)
-	GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error)
-	SetUserEmailConfirmed(id string) error
+type UserRepo interface {
+	Create(email string, password string, name string) (string, error)
+	CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error)
+	Exists(email string) (bool, error)
+	GetByID(id string) (*model.User, error)
+	GetByEmail(email string) (*model.User, error)
+	GetByEmailWithPwd(email string) (*model.UserWithPwd, error)
+	SetEmailConfirmed(id string) error
 }
 
-func (p *PostgresDB) CreateUser(email string, passwordHash string, name string) (string, error) {
+type userRepo struct {
+	conn *pgx.Conn
+	psql sq.StatementBuilderType
+}
+
+func (db *PostgresDB) User() UserRepo {
+	return &userRepo{conn: db.conn, psql: db.psql}
+}
+
+func (p *userRepo) Create(email string, passwordHash string, name string) (string, error) {
 	const query = `
 		INSERT INTO users (email, password_hash, name, auth_provider) 
 		VALUES ($1, $2, $3, $4) 
@@ -25,7 +36,7 @@ func (p *PostgresDB) CreateUser(email string, passwordHash string, name string) 
 	return userId, err
 }
 
-func (p *PostgresDB) CreateUserOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error) {
+func (p *userRepo) CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error) {
 	const query = `
 		INSERT INTO users (email, name, auth_provider, auth_provider_user_id, picture_url, is_email_confirmed) 
 		VALUES ($1, $2, $3, $4, $5, $6) 
@@ -36,7 +47,7 @@ func (p *PostgresDB) CreateUserOAuth(email string, name string, provider string,
 	return userId, err
 }
 
-func (p *PostgresDB) UserExists(email string) (bool, error) {
+func (p *userRepo) Exists(email string) (bool, error) {
 	const query = `
 		SELECT EXISTS (
 			SELECT 1 FROM users WHERE email = $1
@@ -48,7 +59,7 @@ func (p *PostgresDB) UserExists(email string) (bool, error) {
 	return exists, err
 }
 
-func (p *PostgresDB) GetUserByID(id string) (*model.User, error) {
+func (p *userRepo) GetByID(id string) (*model.User, error) {
 	const query = `
 		SELECT id, email, name, created_at, picture_url
 		FROM users
@@ -60,7 +71,7 @@ func (p *PostgresDB) GetUserByID(id string) (*model.User, error) {
 	return &user, err
 }
 
-func (p *PostgresDB) GetUserByEmail(email string) (*model.User, error) {
+func (p *userRepo) GetByEmail(email string) (*model.User, error) {
 	const query = `
 		SELECT id, email, name, created_at, picture_url
 		FROM users
@@ -72,7 +83,7 @@ func (p *PostgresDB) GetUserByEmail(email string) (*model.User, error) {
 	return &user, err
 }
 
-func (p *PostgresDB) GetUserWithPawdByEmail(email string) (*model.UserWithPwd, error) {
+func (p *userRepo) GetByEmailWithPwd(email string) (*model.UserWithPwd, error) {
 	const query = `
 		SELECT id, email, password_hash, is_email_confirmed, created_at
 		FROM users
@@ -84,7 +95,7 @@ func (p *PostgresDB) GetUserWithPawdByEmail(email string) (*model.UserWithPwd, e
 	return &user, err
 }
 
-func (p *PostgresDB) SetUserEmailConfirmed(id string) error {
+func (p *userRepo) SetEmailConfirmed(id string) error {
 	const query = `
 		UPDATE users 
 		SET is_email_confirmed = TRUE 

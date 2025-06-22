@@ -2,17 +2,27 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
-type DictionaryRepository interface {
-	CreateDictionary(userId string, name string, description string) (string, error)
-	RemoveDictionaryByID(dictionaryId string) error
-	GetDictionaryByID(dictionaryId string) (*model.Dictionary, error)
-	GetAllDictionariesByUsedID(userId string, pagination *model.Pagination) ([]*model.Dictionary, int, error)
+type DictionaryRepo interface {
+	Create(userId string, name string, description string) (string, error)
+	DeleteByID(id string) error
+	GetByID(id string) (*model.Dictionary, error)
+	ListByUserId(userID string, pg *model.Pagination) ([]*model.Dictionary, int, error)
 }
 
-func (db *PostgresDB) CreateDictionary(userId string, name string, description string) (string, error) {
+type dictionaryRepo struct {
+	conn *pgx.Conn
+	psql sq.StatementBuilderType
+}
+
+func (db *PostgresDB) Dictionary() DictionaryRepo {
+	return &dictionaryRepo{conn: db.conn, psql: db.psql}
+}
+
+func (db *dictionaryRepo) Create(userId string, name string, description string) (string, error) {
 	query, args, err := db.psql.
 		Insert("dictionaries").
 		Columns("user_id", "name", "description").
@@ -28,7 +38,7 @@ func (db *PostgresDB) CreateDictionary(userId string, name string, description s
 	return dictionaryId, err
 }
 
-func (db *PostgresDB) RemoveDictionaryByID(dictionaryId string) error {
+func (db *dictionaryRepo) DeleteByID(dictionaryId string) error {
 	query, args, err := db.psql.Delete("dictionaries").Where(sq.Eq{"id": dictionaryId}).ToSql()
 
 	if err != nil {
@@ -39,7 +49,7 @@ func (db *PostgresDB) RemoveDictionaryByID(dictionaryId string) error {
 	return err
 }
 
-func (db *PostgresDB) GetDictionaryByID(dictionaryId string) (*model.Dictionary, error) {
+func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error) {
 	query, args, err := db.psql.
 		Select("id", "user_id", "name", "description", "created_at").
 		From("dictionaries").Where(sq.Eq{"id": dictionaryId}).ToSql()
@@ -59,7 +69,7 @@ func (db *PostgresDB) GetDictionaryByID(dictionaryId string) (*model.Dictionary,
 	return &dictionary, err
 }
 
-func (db *PostgresDB) GetAllDictionariesByUsedID(userId string, pagination *model.Pagination) ([]*model.Dictionary, int, error) {
+func (db *dictionaryRepo) ListByUserId(userId string, pagination *model.Pagination) ([]*model.Dictionary, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "user_id", "name", "description", "created_at").
 		From("dictionaries").Where(sq.Eq{"user_id": userId})

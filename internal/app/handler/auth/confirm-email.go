@@ -46,7 +46,7 @@ func (auth *AuthHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, usedAt, err := auth.Deps.DB.GetNonExpiredUserToken(data.Token, model.EMAIL_CONFIRM_TOKEN)
+	userId, usedAt, err := auth.Deps.DB.UserToken().FindNonExpired(data.Token, model.EMAIL_CONFIRM_TOKEN)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrConfirmTokenExpired, err))
 		return
@@ -57,19 +57,19 @@ func (auth *AuthHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = auth.Deps.DB.SetUserTokenUsed(data.Token)
+	err = auth.Deps.DB.UserToken().SetUsed(data.Token)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	err = auth.Deps.DB.SetUserEmailConfirmed(userId)
+	err = auth.Deps.DB.User().SetEmailConfirmed(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 
-	user, err := auth.Deps.DB.GetUserByID(userId)
+	user, err := auth.Deps.DB.User().GetByID(userId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -79,7 +79,7 @@ func (auth *AuthHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func (auth *AuthHandler) sendEmailConfirm(w http.ResponseWriter, r *http.Request, userId string, email string) {
-	_, token, err := auth.Deps.DB.CreateUserToken(userId, model.EMAIL_CONFIRM_TOKEN)
+	_, token, err := auth.Deps.DB.UserToken().Create(userId, model.EMAIL_CONFIRM_TOKEN)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

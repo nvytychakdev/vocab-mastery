@@ -3,16 +3,27 @@ package db
 import (
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx"
 )
 
-type UserTokenRepository interface {
-	CreateUserToken(userId string, tokenType string) (string, string, error)
-	GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time, error)
-	SetUserTokenUsed(token string) error
+type UserTokenRepo interface {
+	Create(userId string, tokenType string) (string, string, error)
+	FindNonExpired(token string, tokenType string) (string, *time.Time, error)
+	SetUsed(token string) error
 }
 
-func (p *PostgresDB) CreateUserToken(userId string, tokenType string) (string, string, error) {
+type userTokenRepo struct {
+	conn *pgx.Conn
+	psql sq.StatementBuilderType
+}
+
+func (db *PostgresDB) UserToken() UserTokenRepo {
+	return &userTokenRepo{conn: db.conn, psql: db.psql}
+}
+
+func (p *userTokenRepo) Create(userId string, tokenType string) (string, string, error) {
 	token, expiresAt := generateEmailConfirmToken()
 
 	const query = `
@@ -25,7 +36,7 @@ func (p *PostgresDB) CreateUserToken(userId string, tokenType string) (string, s
 	return userTokenId, token, err
 }
 
-func (p *PostgresDB) GetNonExpiredUserToken(token string, tokenType string) (string, *time.Time, error) {
+func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (string, *time.Time, error) {
 	var userId string
 	var usedAt *time.Time
 
@@ -39,7 +50,7 @@ func (p *PostgresDB) GetNonExpiredUserToken(token string, tokenType string) (str
 	return userId, usedAt, err
 }
 
-func (p *PostgresDB) SetUserTokenUsed(token string) error {
+func (p *userTokenRepo) SetUsed(token string) error {
 	const query = `
 		UPDATE user_tokens 
 		SET used_at = $2

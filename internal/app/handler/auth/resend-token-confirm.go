@@ -26,7 +26,7 @@ func (auth *AuthHandler) ResendEmailConfirm(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	user, err := auth.Deps.DB.GetUserByEmail(data.Email)
+	user, err := auth.Deps.DB.User().GetByEmail(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

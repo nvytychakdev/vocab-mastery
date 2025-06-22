@@ -19,7 +19,7 @@ func (d WordDeleteResponse) Render(w http.ResponseWriter, r *http.Request) error
 func (wh *WordHandler) WordDeleteByID(w http.ResponseWriter, r *http.Request) {
 	word := middleware.GetWordContext(r)
 
-	err := wh.Deps.DB.RemoveWordByID(word.ID)
+	err := wh.Deps.DB.Word().DeleteByID(word.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

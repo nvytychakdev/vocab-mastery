@@ -3,18 +3,29 @@ package db
 import (
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
-type SessionRepository interface {
-	CreateSession(userId string, jti string) (string, error)
-	SessionExists(id string) (bool, error)
-	UpdateSessionJti(id string, jti string) error
-	GetSessionByID(id string) (*model.Session, error)
-	DeleteSessionByID(id string) error
+type SessionRepo interface {
+	Create(userID string, jti string) (string, error)
+	Exists(id string) (bool, error)
+	UpdateJti(id string, jti string) error
+	GetByID(id string) (*model.Session, error)
+	DeleteByID(id string) error
 }
 
-func (p *PostgresDB) CreateSession(userId string, jti string) (string, error) {
+type sessionRepo struct {
+	conn *pgx.Conn
+	psql sq.StatementBuilderType
+}
+
+func (db *PostgresDB) Session() SessionRepo {
+	return &sessionRepo{conn: db.conn, psql: db.psql}
+}
+
+func (p *sessionRepo) Create(userId string, jti string) (string, error) {
 	expiresAt := time.Now().Add(90 * 24 * time.Hour)
 	const query = `
 		INSERT INTO sessions (user_id, jti, expires_at) 
@@ -27,7 +38,7 @@ func (p *PostgresDB) CreateSession(userId string, jti string) (string, error) {
 	return sessionId, err
 }
 
-func (p *PostgresDB) SessionExists(id string) (bool, error) {
+func (p *sessionRepo) Exists(id string) (bool, error) {
 	const query = `
 		SELECT EXISTS (
 			SELECT 1 FROM sessions WHERE id = $1
@@ -39,7 +50,7 @@ func (p *PostgresDB) SessionExists(id string) (bool, error) {
 	return exists, err
 }
 
-func (p *PostgresDB) UpdateSessionJti(id string, jti string) error {
+func (p *sessionRepo) UpdateJti(id string, jti string) error {
 	const query = `
 		UPDATE sessions 
 		SET jti = $2, refreshed_at = now()
@@ -50,7 +61,7 @@ func (p *PostgresDB) UpdateSessionJti(id string, jti string) error {
 	return err
 }
 
-func (p *PostgresDB) GetSessionByID(id string) (*model.Session, error) {
+func (p *sessionRepo) GetByID(id string) (*model.Session, error) {
 	const query = `
 		SELECT id, jti, user_id, expires_at, created_at
 		FROM sessions 
@@ -62,7 +73,7 @@ func (p *PostgresDB) GetSessionByID(id string) (*model.Session, error) {
 	return &session, err
 }
 
-func (p *PostgresDB) DeleteSessionByID(id string) error {
+func (p *sessionRepo) DeleteByID(id string) error {
 	const query = `
 		DELETE FROM sessions
 		WHERE id = $1;

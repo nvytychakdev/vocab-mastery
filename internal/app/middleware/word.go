@@ -14,7 +14,7 @@ import (
 func (mw *Middleware) WordContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		wordId := chi.URLParam(r, "wordId")
-		word, err := mw.Deps.DB.GetWordByID(wordId)
+		word, err := mw.Deps.DB.Word().GetByID(wordId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
 			return

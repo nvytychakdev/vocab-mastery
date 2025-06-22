@@ -49,7 +49,7 @@ func (auth *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingUser, err := auth.Deps.DB.UserExists(data.Email)
+	existingUser, err := auth.Deps.DB.User().Exists(data.Email)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
@@ -66,7 +66,7 @@ func (auth *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := auth.Deps.DB.CreateUser(data.Email, passwordHash, data.Name)
+	userId, err := auth.Deps.DB.User().Create(data.Email, passwordHash, data.Name)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

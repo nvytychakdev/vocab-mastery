@@ -85,22 +85,22 @@ func (auth *AuthHandler) HandleGoogleCallback(w http.ResponseWriter, r *http.Req
 }
 
 func (auth *AuthHandler) getOrCreateUserWithOAuth(claims *GoogleOAuthClaims) (*model.User, error) {
-	userExists, err := auth.Deps.DB.UserExists(claims.Email)
+	userExists, err := auth.Deps.DB.User().Exists(claims.Email)
 	if err != nil {
 		return nil, err
 	}
 
 	if !userExists {
-		userId, err := auth.Deps.DB.CreateUserOAuth(claims.Email, claims.Name, "google", claims.Sub, claims.Picture, claims.EmailVerified)
+		userId, err := auth.Deps.DB.User().CreateOAuth(claims.Email, claims.Name, "google", claims.Sub, claims.Picture, claims.EmailVerified)
 		if err != nil {
 			return nil, err
 		}
 
-		user, err := auth.Deps.DB.GetUserByID(userId)
+		user, err := auth.Deps.DB.User().GetByID(userId)
 		return user, err
 	}
 
-	user, err := auth.Deps.DB.GetUserByEmail(claims.Email)
+	user, err := auth.Deps.DB.User().GetByEmail(claims.Email)
 	if err != nil {
 		return nil, err
 	}

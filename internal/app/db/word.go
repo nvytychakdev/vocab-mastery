@@ -2,17 +2,27 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
-type WordRepository interface {
-	CreateWord(dictionaryId string, word string, language string) (string, error)
-	RemoveWordByID(wordId string) error
-	GetWordByID(wordId string) (*model.Word, error)
-	GetAllWordsByDictionaryID(dictionaryId string, pagination *model.Pagination) ([]*model.Word, int, error)
+type WordRepo interface {
+	Create(dictionaryId string, word string, language string) (string, error)
+	DeleteByID(wordId string) error
+	GetByID(wordId string) (*model.Word, error)
+	GetByDictionaryID(dictionaryId string, pg *model.Pagination) ([]*model.Word, int, error)
 }
 
-func (db *PostgresDB) CreateWord(dictionaryId string, word string, language string) (string, error) {
+type wordRepo struct {
+	conn *pgx.Conn
+	psql sq.StatementBuilderType
+}
+
+func (db *PostgresDB) Word() WordRepo {
+	return &wordRepo{conn: db.conn, psql: db.psql}
+}
+
+func (db *wordRepo) Create(dictionaryId string, word string, language string) (string, error) {
 	query, args, err := db.psql.
 		Insert("words").
 		Columns("dictionary_id", "word", "language").
@@ -28,7 +38,7 @@ func (db *PostgresDB) CreateWord(dictionaryId string, word string, language stri
 	return wordId, err
 }
 
-func (db *PostgresDB) RemoveWordByID(wordId string) error {
+func (db *wordRepo) DeleteByID(wordId string) error {
 	query, args, err := db.psql.Delete("words").Where(sq.Eq{"id": wordId}).ToSql()
 
 	if err != nil {
@@ -39,7 +49,7 @@ func (db *PostgresDB) RemoveWordByID(wordId string) error {
 	return err
 }
 
-func (db *PostgresDB) GetWordByID(wordId string) (*model.Word, error) {
+func (db *wordRepo) GetByID(wordId string) (*model.Word, error) {
 	query, args, err := db.psql.
 		Select("id", "dictionary_id", "word", "language", "created_at").
 		From("words").Where(sq.Eq{"id": wordId}).ToSql()
@@ -59,7 +69,7 @@ func (db *PostgresDB) GetWordByID(wordId string) (*model.Word, error) {
 	return &word, err
 }
 
-func (db *PostgresDB) GetAllWordsByDictionaryID(dictionaryId string, pagination *model.Pagination) ([]*model.Word, int, error) {
+func (db *wordRepo) GetByDictionaryID(dictionaryId string, pagination *model.Pagination) ([]*model.Word, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "dictionary_id", "word", "language", "created_at").
 		From("words").Where(sq.Eq{"dictionary_id": dictionaryId})

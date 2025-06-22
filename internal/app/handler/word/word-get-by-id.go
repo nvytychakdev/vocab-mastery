@@ -33,7 +33,7 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if include != nil && include["translations"] {
-		translations, _, err := wh.Deps.DB.GetAllTranslationsByWordID(word.ID, nil)
+		translations, _, err := wh.Deps.DB.Translation().ListByWordID(word.ID, nil)
 		if err == nil {
 			response.Translations = translations
 		}

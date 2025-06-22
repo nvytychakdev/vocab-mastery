@@ -10,12 +10,12 @@ import (
 )
 
 type DB interface {
-	SessionRepository
-	UserRepository
-	UserTokenRepository
-	DictionaryRepository
-	WordRepository
-	TranslationRepository
+	Session() SessionRepo
+	User() UserRepo
+	UserToken() UserTokenRepo
+	Dictionary() DictionaryRepo
+	Word() WordRepo
+	Translation() TranslationRepo
 }
 
 type PostgresDB struct {

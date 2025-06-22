@@ -48,7 +48,7 @@ func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s, err := auth.Deps.DB.GetSessionByID(claims.SessionId)
+	s, err := auth.Deps.DB.Session().GetByID(claims.SessionId)
 	if err != nil || time.Now().Unix() > s.ExpiresAt.Unix() {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrSessionExpired, err))
 		return
@@ -72,7 +72,7 @@ func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = auth.Deps.DB.UpdateSessionJti(claims.SessionId, refreshTokenId)
+	err = auth.Deps.DB.Session().UpdateJti(claims.SessionId, refreshTokenId)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

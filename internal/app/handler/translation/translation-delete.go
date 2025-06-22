@@ -19,7 +19,7 @@ func (d TranslationDeleteResponse) Render(w http.ResponseWriter, r *http.Request
 func (th *TranslationHandler) TranslationDeleteByID(w http.ResponseWriter, r *http.Request) {
 	translation := middleware.GetTranslationContext(r)
 
-	err := th.Deps.DB.RemoveTranslationByID(translation.ID)
+	err := th.Deps.DB.Translation().DeleteByID(translation.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

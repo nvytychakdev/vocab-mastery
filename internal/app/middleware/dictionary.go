@@ -14,7 +14,7 @@ import (
 func (mw *Middleware) DictionaryContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		dictionaryId := chi.URLParam(r, "dictionaryId")
-		dictionary, err := mw.Deps.DB.GetDictionaryByID(dictionaryId)
+		dictionary, err := mw.Deps.DB.Dictionary().GetByID(dictionaryId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
 			return

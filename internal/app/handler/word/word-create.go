@@ -43,7 +43,7 @@ func (wh *WordHandler) WordCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	wordId, err := wh.Deps.DB.CreateWord(dictionary.ID, data.Word, data.Language)
+	wordId, err := wh.Deps.DB.Word().Create(dictionary.ID, data.Word, data.Language)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

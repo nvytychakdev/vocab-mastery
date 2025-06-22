@@ -47,7 +47,7 @@ func (dh *DictionaryHandler) DictionaryCreate(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	dictionaryId, err := dh.Deps.DB.CreateDictionary(userId, data.Name, data.Description)
+	dictionaryId, err := dh.Deps.DB.Dictionary().Create(userId, data.Name, data.Description)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
