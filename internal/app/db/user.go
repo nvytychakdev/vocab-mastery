@@ -10,6 +10,7 @@ type UserRepo interface {
 	Create(email string, password string, name string) (string, error)
 	CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error)
 	Exists(email string) (bool, error)
+	ExistsByProvider(email string, provider string) (bool, error)
 	GetByID(id string) (*model.User, error)
 	GetByEmail(email string) (*model.User, error)
 	GetByEmailWithPwd(email string) (*model.UserWithPwd, error)
@@ -56,6 +57,18 @@ func (p *userRepo) Exists(email string) (bool, error) {
 
 	var exists bool
 	err := p.conn.QueryRow(query, email).Scan(&exists)
+	return exists, err
+}
+
+func (p *userRepo) ExistsByProvider(email string, provider string) (bool, error) {
+	const query = `
+		SELECT EXISTS (
+			SELECT 1 FROM users WHERE email = $1 AND auth_provider = $2
+		)
+	`
+
+	var exists bool
+	err := p.conn.QueryRow(query, email, provider).Scan(&exists)
 	return exists, err
 }
 

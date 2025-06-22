@@ -65,6 +65,10 @@ func (e *EmailConfirmResponse) Render(w http.ResponseWriter, r *http.Request) er
 func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	user, data := auth.verifyUser(w, r)
 
+	if user == nil || data == nil {
+		return
+	}
+
 	if !user.IsEmailConfirmed {
 		auth.sendEmailConfirm(w, r, user.ID, user.Email)
 		return
@@ -81,7 +85,7 @@ func (auth *AuthHandler) verifyUser(w http.ResponseWriter, r *http.Request) (*mo
 		return nil, nil
 	}
 
-	userExists, err := auth.Deps.DB.User().Exists(data.Email)
+	userExists, err := auth.Deps.DB.User().ExistsByProvider(data.Email, "local")
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return nil, nil
