@@ -8,6 +8,7 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { ConfirmEmailComponent } from './pages/auth/confirm-email/confirm-email.component';
 import { SignInComponent } from './pages/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth/sign-up/sign-up.component';
+import { UsedEmailComponent } from './pages/auth/used-email/used-email.component';
 import { HomeComponent } from './pages/home/home.component';
 import { MyWordsDictionaryComponent } from './pages/my-words/my-words-dictionary/my-words-dictionary.component';
 import { MyWordsComponent } from './pages/my-words/my-words.component';
@@ -27,7 +28,7 @@ const confirmEmailRedirect = (route: ActivatedRouteSnapshot) => {
     return auth.confirmEmail(token).pipe(
       map(() => router.createUrlTree(['/main'])),
       catchError(() => {
-        return of(router.createUrlTree(['/']));
+        return of(router.createUrlTree(['/auth/used-email']));
       })
     );
   }
@@ -51,6 +52,10 @@ export const routes: Routes = [
         path: 'confirm-email',
         canActivate: [confirmEmailRedirect],
         component: ConfirmEmailComponent,
+      },
+      {
+        path: 'used-email',
+        component: UsedEmailComponent,
       },
       {
         path: '**',

@@ -9,7 +9,7 @@
 * [x] FE: Add toast UI service
 * [x] FE: Add "Email verification" flow to the auth 
 * [x] Server: Add "Email verification" flow to the auth
-* [ ] FE: Add "Email already verified" error handling page 
+* [x] FE: Add "Email already verified" error handling page 
 * [x] Server: Fix local sign-in attempt for OAuth only users 
 * [x] Server: Basic configuration (API keys, connections, etc.)
 * [x] Server: Setup Postgres docker container and connect to the server
