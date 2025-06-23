@@ -27,94 +27,170 @@ func (db *PostgresDB) User() UserRepo {
 }
 
 func (p *userRepo) Create(email string, passwordHash string, name string) (string, error) {
-	const query = `
-		INSERT INTO users (email, password_hash, name, auth_provider) 
-		VALUES ($1, $2, $3, $4) 
-		RETURNING id;
-	`
+	query, args, err := p.psql.Insert("users").
+		Columns("email", "oassword_hash", "name", "auth_provider").
+		Values(email, passwordHash, name, "local").
+		Suffix("RETURNING \"id\"").ToSql()
+
+	if err != nil {
+		return "", err
+	}
+	// const query = `
+	// 	INSERT INTO users (email, password_hash, name, auth_provider)
+	// 	VALUES ($1, $2, $3, $4)
+	// 	RETURNING id;
+	// `
+
 	var userId string
-	err := p.conn.QueryRow(query, email, passwordHash, name, "local").Scan(&userId)
+	err = p.conn.QueryRow(query, args...).Scan(&userId)
 	return userId, err
 }
 
 func (p *userRepo) CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error) {
-	const query = `
-		INSERT INTO users (email, name, auth_provider, auth_provider_user_id, picture_url, is_email_confirmed) 
-		VALUES ($1, $2, $3, $4, $5, $6) 
-		RETURNING id;
-	`
+	query, args, err := p.psql.Insert("users").
+		Columns("email", "name", "auth_provider", "auth_provider_user_id", "picture_url", "is_email_confirmed").
+		Values(email, name, provider, providerId, pictureUrl, emailVerified).
+		Suffix("RETURNING \"id\"").ToSql()
+
+	if err != nil {
+		return "", err
+	}
+
+	// const query = `
+	// 	INSERT INTO users (email, name, auth_provider, auth_provider_user_id, picture_url, is_email_confirmed)
+	// 	VALUES ($1, $2, $3, $4, $5, $6)
+	// 	RETURNING id;
+	// `
+
 	var userId string
-	err := p.conn.QueryRow(query, email, name, provider, providerId, pictureUrl, emailVerified).Scan(&userId)
+	err = p.conn.QueryRow(query, args...).Scan(&userId)
 	return userId, err
 }
 
 func (p *userRepo) Exists(email string) (bool, error) {
-	const query = `
-		SELECT EXISTS (
-			SELECT 1 FROM users WHERE email = $1
-		)
-	`
+	query, args, err := p.psql.Select("1").
+		Prefix("SELECT EXISTS (").
+		From("users").Where(sq.Eq{"email": email}).
+		Suffix(")").ToSql()
+
+	if err != nil {
+		return false, err
+	}
+
+	// const query = `
+	// 	SELECT EXISTS (
+	// 		SELECT 1 FROM users WHERE email = $1
+	// 	)
+	// `
 
 	var exists bool
-	err := p.conn.QueryRow(query, email).Scan(&exists)
+	err = p.conn.QueryRow(query, args...).Scan(&exists)
 	return exists, err
 }
 
 func (p *userRepo) ExistsByProvider(email string, provider string) (bool, error) {
-	const query = `
-		SELECT EXISTS (
-			SELECT 1 FROM users WHERE email = $1 AND auth_provider = $2
-		)
-	`
+	query, args, err := p.psql.Select("1").
+		Prefix("SELECT EXISTS (").
+		From("users").
+		Where(
+			sq.And{
+				sq.Eq{"email": email},
+				sq.Eq{"auth_provider": provider},
+			},
+		).
+		Suffix(")").ToSql()
+
+	if err != nil {
+		return false, err
+	}
+
+	// const query = `
+	// 	SELECT EXISTS (
+	// 		SELECT 1 FROM users WHERE email = $1 AND auth_provider = $2
+	// 	)
+	// `
 
 	var exists bool
-	err := p.conn.QueryRow(query, email, provider).Scan(&exists)
+	err = p.conn.QueryRow(query, args...).Scan(&exists)
 	return exists, err
 }
 
 func (p *userRepo) GetByID(id string) (*model.User, error) {
-	const query = `
-		SELECT id, email, name, created_at, picture_url
-		FROM users
-		WHERE id = $1;
-	`
+	query, args, err := p.psql.
+		Select("id", "email", "name", "created_at", "picture_url").
+		From("users").Where(sq.Eq{"id": id}).ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	// const query = `
+	// 	SELECT id, email, name, created_at, picture_url
+	// 	FROM users
+	// 	WHERE id = $1;
+	// `
 
 	var user model.User
-	err := p.conn.QueryRow(query, id).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
+	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
 }
 
 func (p *userRepo) GetByEmail(email string) (*model.User, error) {
-	const query = `
-		SELECT id, email, name, created_at, picture_url
-		FROM users
-		WHERE email = $1;
-	`
+	query, args, err := p.psql.
+		Select("id", "email", "name", "created_at", "picture_url").
+		From("users").Where(sq.Eq{"email": email}).ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	// const query = `
+	// 	SELECT id, email, name, created_at, picture_url
+	// 	FROM users
+	// 	WHERE email = $1;
+	// `
 
 	var user model.User
-	err := p.conn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
+	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
 }
 
 func (p *userRepo) GetByEmailWithPwd(email string) (*model.UserWithPwd, error) {
-	const query = `
-		SELECT id, email, password_hash, is_email_confirmed, created_at
-		FROM users
-		WHERE email = $1;
-	`
+	query, args, err := p.psql.
+		Select("id", "email", "password_hash", "is_email_confirmed", "created_at").
+		From("users").Where(sq.Eq{"email": email}).ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	// const query = `
+	// 	SELECT id, email, password_hash, is_email_confirmed, created_at
+	// 	FROM users
+	// 	WHERE email = $1;
+	// `
 
 	var user model.UserWithPwd
-	err := p.conn.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
+	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
 	return &user, err
 }
 
 func (p *userRepo) SetEmailConfirmed(id string) error {
-	const query = `
-		UPDATE users 
-		SET is_email_confirmed = TRUE 
-		WHERE id = $1;
-	`
+	query, args, err := p.psql.
+		Update("users").
+		Set("is_email_confirmed", "TRUE").
+		From("users").Where(sq.Eq{"id": id}).ToSql()
 
-	_, err := p.conn.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	// const query = `
+	// 	UPDATE users
+	// 	SET is_email_confirmed = TRUE
+	// 	WHERE id = $1;
+	// `
+
+	_, err = p.conn.Exec(query, args...)
 	return err
 }

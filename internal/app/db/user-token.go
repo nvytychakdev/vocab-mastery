@@ -26,13 +26,20 @@ func (db *PostgresDB) UserToken() UserTokenRepo {
 func (p *userTokenRepo) Create(userId string, tokenType string) (string, string, error) {
 	token, expiresAt := generateEmailConfirmToken()
 
-	const query = `
-		INSERT INTO user_tokens (user_id, token, type, expires_at) 
-		VALUES ($1, $2, $3, $4) 
-		RETURNING id;
-	`
+	query, args, err := p.psql.Insert("user_tokens").
+		Columns("user_id", "token", "type", "expires_at").
+		Values(userId, token, tokenType, expiresAt).Suffix("RETURNING \"id\"").ToSql()
+
+	if err != nil {
+		return "", "", nil
+	}
+	// const query = `
+	// 	INSERT INTO user_tokens (user_id, token, type, expires_at)
+	// 	VALUES ($1, $2, $3, $4)
+	// 	RETURNING id;
+	// `
 	var userTokenId string
-	err := p.conn.QueryRow(query, userId, token, tokenType, expiresAt).Scan(&userTokenId)
+	err = p.conn.QueryRow(query, args...).Scan(&userTokenId)
 	return userTokenId, token, err
 }
 
@@ -40,24 +47,45 @@ func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (string, 
 	var userId string
 	var usedAt *time.Time
 
-	query := `
-		SELECT user_id, used_at
-		FROM user_tokens
-		WHERE token = $1 AND type = $2 and expires_at > now()
-	`
+	query, args, err := p.psql.
+		Select("userId", "used_at").From("user_tokens").
+		Where(sq.And{
+			sq.Eq{"token": token},
+			sq.Eq{"type": tokenType},
+			sq.Eq{"expires_at": "now()"},
+		}).ToSql()
 
-	err := p.conn.QueryRow(query, token, tokenType).Scan(&userId, &usedAt)
+	if err != nil {
+		return "", nil, err
+	}
+
+	// query := `
+	// 	SELECT user_id, used_at
+	// 	FROM user_tokens
+	// 	WHERE token = $1 AND type = $2 and expires_at > now()
+	// `
+
+	err = p.conn.QueryRow(query, args...).Scan(&userId, &usedAt)
 	return userId, usedAt, err
 }
 
 func (p *userTokenRepo) SetUsed(token string) error {
-	const query = `
-		UPDATE user_tokens 
-		SET used_at = $2
-		WHERE token = $1;
-	`
 
-	_, err := p.conn.Exec(query, token, time.Now())
+	query, args, err := p.psql.
+		Update("user_tokens").Set("used_at", time.Now()).
+		Where(sq.Eq{"token": token}).ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	// const query = `
+	// 	UPDATE user_tokens
+	// 	SET used_at = $2
+	// 	WHERE token = $1;
+	// `
+
+	_, err = p.conn.Exec(query, args...)
 	return err
 }
 
