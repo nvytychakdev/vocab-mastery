@@ -20,6 +20,8 @@
 * [x] Server: Add `include` fields functionality to GET lists requests
 * [ ] Server: Add sort support for all GET/POST requests
 * [ ] Server: Add filters support for all GET/POST requests
+* [ ] Server: Refactor pagination to be reusable for all queries
+* [ ] Server: Refactor sort to be reusable for all queries
 * [x] Server: Setup `Words` table schema in DB 
 * [x] API: Basic auth rotues `/sign-in`, `/sign-out`, `/register`, `/refresh`
 * [x] API: Advanced OAuth (google sign in support)
