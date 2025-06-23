@@ -28,5 +28,5 @@
 * [ ] API: Games API (quiz, etc.)
 * [ ] Server: Add coverage for Auth tests on server
 * [ ] Server: Add coverage for Dictionaries tests on server
-* [ ] Server: Refactor Auth to rely on Squirrel
+* [x] Server: Refactor Auth to rely on Squirrel
 * [ ] Server: Add API docs

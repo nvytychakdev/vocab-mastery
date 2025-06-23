@@ -33,11 +33,7 @@ func (p *userTokenRepo) Create(userId string, tokenType string) (string, string,
 	if err != nil {
 		return "", "", nil
 	}
-	// const query = `
-	// 	INSERT INTO user_tokens (user_id, token, type, expires_at)
-	// 	VALUES ($1, $2, $3, $4)
-	// 	RETURNING id;
-	// `
+
 	var userTokenId string
 	err = p.conn.QueryRow(query, args...).Scan(&userTokenId)
 	return userTokenId, token, err
@@ -59,12 +55,6 @@ func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (string, 
 		return "", nil, err
 	}
 
-	// query := `
-	// 	SELECT user_id, used_at
-	// 	FROM user_tokens
-	// 	WHERE token = $1 AND type = $2 and expires_at > now()
-	// `
-
 	err = p.conn.QueryRow(query, args...).Scan(&userId, &usedAt)
 	return userId, usedAt, err
 }
@@ -78,12 +68,6 @@ func (p *userTokenRepo) SetUsed(token string) error {
 	if err != nil {
 		return err
 	}
-
-	// const query = `
-	// 	UPDATE user_tokens
-	// 	SET used_at = $2
-	// 	WHERE token = $1;
-	// `
 
 	_, err = p.conn.Exec(query, args...)
 	return err

@@ -56,12 +56,6 @@ func (p *sessionRepo) Exists(id string) (bool, error) {
 		return false, err
 	}
 
-	// const query = `
-	// 	SELECT EXISTS (
-	// 		SELECT 1 FROM sessions WHERE id = $1
-	// 	)
-	// `
-
 	var exists bool
 	err = p.conn.QueryRow(query, args...).Scan(&exists)
 	return exists, err
@@ -76,12 +70,6 @@ func (p *sessionRepo) UpdateJti(id string, jti string) error {
 		return err
 	}
 
-	// const query = `
-	// 	UPDATE sessions
-	// 	SET jti = $2, refreshed_at = now()
-	// 	WHERE id = $1;
-	// `
-
 	_, err = p.conn.Exec(query, args...)
 	return err
 }
@@ -94,12 +82,6 @@ func (p *sessionRepo) GetByID(id string) (*model.Session, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// const query = `
-	// 	SELECT id, jti, user_id, expires_at, created_at
-	// 	FROM sessions
-	// 	WHERE id = $1;
-	// `
 
 	var session model.Session
 	err = p.conn.QueryRow(query, args...).Scan(&session.ID, &session.RefreshTokenID, &session.UserID, &session.ExpiresAt, &session.CreatedAt)
@@ -115,11 +97,6 @@ func (p *sessionRepo) DeleteByID(id string) error {
 	if err != nil {
 		return err
 	}
-
-	// const query = `
-	// 	DELETE FROM sessions
-	// 	WHERE id = $1;
-	// `
 
 	_, err = p.conn.Exec(query, args...)
 	return err

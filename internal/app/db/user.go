@@ -35,11 +35,6 @@ func (p *userRepo) Create(email string, passwordHash string, name string) (strin
 	if err != nil {
 		return "", err
 	}
-	// const query = `
-	// 	INSERT INTO users (email, password_hash, name, auth_provider)
-	// 	VALUES ($1, $2, $3, $4)
-	// 	RETURNING id;
-	// `
 
 	var userId string
 	err = p.conn.QueryRow(query, args...).Scan(&userId)
@@ -56,12 +51,6 @@ func (p *userRepo) CreateOAuth(email string, name string, provider string, provi
 		return "", err
 	}
 
-	// const query = `
-	// 	INSERT INTO users (email, name, auth_provider, auth_provider_user_id, picture_url, is_email_confirmed)
-	// 	VALUES ($1, $2, $3, $4, $5, $6)
-	// 	RETURNING id;
-	// `
-
 	var userId string
 	err = p.conn.QueryRow(query, args...).Scan(&userId)
 	return userId, err
@@ -76,12 +65,6 @@ func (p *userRepo) Exists(email string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-
-	// const query = `
-	// 	SELECT EXISTS (
-	// 		SELECT 1 FROM users WHERE email = $1
-	// 	)
-	// `
 
 	var exists bool
 	err = p.conn.QueryRow(query, args...).Scan(&exists)
@@ -104,12 +87,6 @@ func (p *userRepo) ExistsByProvider(email string, provider string) (bool, error)
 		return false, err
 	}
 
-	// const query = `
-	// 	SELECT EXISTS (
-	// 		SELECT 1 FROM users WHERE email = $1 AND auth_provider = $2
-	// 	)
-	// `
-
 	var exists bool
 	err = p.conn.QueryRow(query, args...).Scan(&exists)
 	return exists, err
@@ -123,12 +100,6 @@ func (p *userRepo) GetByID(id string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// const query = `
-	// 	SELECT id, email, name, created_at, picture_url
-	// 	FROM users
-	// 	WHERE id = $1;
-	// `
 
 	var user model.User
 	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
@@ -144,12 +115,6 @@ func (p *userRepo) GetByEmail(email string) (*model.User, error) {
 		return nil, err
 	}
 
-	// const query = `
-	// 	SELECT id, email, name, created_at, picture_url
-	// 	FROM users
-	// 	WHERE email = $1;
-	// `
-
 	var user model.User
 	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
@@ -163,12 +128,6 @@ func (p *userRepo) GetByEmailWithPwd(email string) (*model.UserWithPwd, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// const query = `
-	// 	SELECT id, email, password_hash, is_email_confirmed, created_at
-	// 	FROM users
-	// 	WHERE email = $1;
-	// `
 
 	var user model.UserWithPwd
 	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
@@ -184,12 +143,6 @@ func (p *userRepo) SetEmailConfirmed(id string) error {
 	if err != nil {
 		return err
 	}
-
-	// const query = `
-	// 	UPDATE users
-	// 	SET is_email_confirmed = TRUE
-	// 	WHERE id = $1;
-	// `
 
 	_, err = p.conn.Exec(query, args...)
 	return err
