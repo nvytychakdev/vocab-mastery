@@ -10,7 +10,7 @@ type WordRepo interface {
 	Create(dictionaryId string, word string, language string) (string, error)
 	DeleteByID(wordId string) error
 	GetByID(wordId string) (*model.Word, error)
-	GetByDictionaryID(dictionaryId string, pg *model.Pagination) ([]*model.Word, int, error)
+	ListByDictionaryID(dictionaryId string, opts *model.QueryOptions) ([]*model.Word, int, error)
 }
 
 type wordRepo struct {
@@ -69,16 +69,12 @@ func (db *wordRepo) GetByID(wordId string) (*model.Word, error) {
 	return &word, err
 }
 
-func (db *wordRepo) GetByDictionaryID(dictionaryId string, pagination *model.Pagination) ([]*model.Word, int, error) {
+func (db *wordRepo) ListByDictionaryID(dictionaryId string, opts *model.QueryOptions) ([]*model.Word, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "dictionary_id", "word", "language", "created_at").
 		From("words").Where(sq.Eq{"dictionary_id": dictionaryId})
 
-	if pagination != nil {
-		queryBuilder = queryBuilder.Offset(uint64(pagination.Offset)).Limit(uint64(pagination.Limit))
-	}
-
-	query, args, err := queryBuilder.ToSql()
+	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
 	if err != nil {
 		return nil, 0, err

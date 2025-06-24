@@ -18,10 +18,10 @@ func (u *DictionaryGetListResponse) Render(w http.ResponseWriter, r *http.Reques
 }
 
 func (auth *DictionaryHandler) DictionaryGetList(w http.ResponseWriter, r *http.Request) {
-	pagination := middleware.GetPaginationContext(r)
+	opts := middleware.GetQueryOptionsContext(r)
 	userId := middleware.GetAuthorizedUserId(r)
 
-	dictionaries, total, err := auth.Deps.DB.Dictionary().ListByUserId(userId, pagination)
+	dictionaries, total, err := auth.Deps.DB.Dictionary().ListByUserId(userId, opts)
 	if err != nil {
 		return
 	}
@@ -30,8 +30,8 @@ func (auth *DictionaryHandler) DictionaryGetList(w http.ResponseWriter, r *http.
 		Items: dictionaries,
 		PaginationResponse: &model.PaginationResponse{
 			Total:  total,
-			Offset: pagination.Offset,
-			Limit:  pagination.Limit,
+			Offset: opts.Pagination.Offset,
+			Limit:  opts.Pagination.Limit,
 		},
 	}
 

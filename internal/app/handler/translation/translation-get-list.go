@@ -18,10 +18,10 @@ func (u *TranslationGetListResponse) Render(w http.ResponseWriter, r *http.Reque
 }
 
 func (th *TranslationHandler) TranslationGetList(w http.ResponseWriter, r *http.Request) {
-	pagination := middleware.GetPaginationContext(r)
+	opts := middleware.GetQueryOptionsContext(r)
 	word := middleware.GetWordContext(r)
 
-	translations, total, err := th.Deps.DB.Translation().ListByWordID(word.ID, pagination)
+	translations, total, err := th.Deps.DB.Translation().ListByWordID(word.ID, opts)
 	if err != nil {
 		return
 	}
@@ -30,8 +30,8 @@ func (th *TranslationHandler) TranslationGetList(w http.ResponseWriter, r *http.
 		Items: translations,
 		PaginationResponse: &model.PaginationResponse{
 			Total:  total,
-			Offset: pagination.Offset,
-			Limit:  pagination.Limit,
+			Offset: opts.Pagination.Offset,
+			Limit:  opts.Pagination.Limit,
 		},
 	}
 

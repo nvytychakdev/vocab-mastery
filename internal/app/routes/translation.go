@@ -9,7 +9,7 @@ import (
 func TranslationRouter(th *translation.TranslationHandler, mw *middleware.Middleware) func(r chi.Router) {
 	return func(router chi.Router) {
 		router.Post("/", th.TranslationCreate)
-		router.With(mw.IncludeContext).With(mw.PaginationContext).Get("/", th.TranslationGetList)
+		router.With(mw.IncludeContext).With(mw.QueryOptionsContext).Get("/", th.TranslationGetList)
 		router.Route("/{translationId}", func(r chi.Router) {
 			r.Use(mw.TranslationContext)
 			r.With(mw.IncludeContext).Get("/", th.TranslationGetByID)

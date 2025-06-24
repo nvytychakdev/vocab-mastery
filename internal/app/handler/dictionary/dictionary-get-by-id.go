@@ -33,7 +33,7 @@ func (dh *DictionaryHandler) DictionaryGetByID(w http.ResponseWriter, r *http.Re
 	}
 
 	if include != nil && include["words"] {
-		words, _, err := dh.Deps.DB.Word().GetByDictionaryID(dictionary.ID, nil)
+		words, _, err := dh.Deps.DB.Word().ListByDictionaryID(dictionary.ID, nil)
 		if err == nil {
 			response.Words = words
 		}

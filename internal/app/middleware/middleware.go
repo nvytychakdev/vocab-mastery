@@ -10,7 +10,7 @@ const SESSION_ID_KEY contextKey = "userId"
 const DICTIONARY_KEY contextKey = "dictionary"
 const TRANSLATION_KEY contextKey = "translation"
 const INCLUDE_KEY contextKey = "include"
-const PAGINATION_KEY contextKey = "pagination"
+const QUERY_OPTIONS_KEY contextKey = "query-options"
 
 type Middleware struct {
 	Deps *services.Deps

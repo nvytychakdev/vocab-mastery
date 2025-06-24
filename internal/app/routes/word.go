@@ -10,7 +10,7 @@ import (
 func WordRouter(r chi.Router, wh *word.WordHandler, mw *middleware.Middleware) {
 	r.Route("/words", func(r chi.Router) {
 		r.Post("/", wh.WordCreate)
-		r.With(mw.IncludeContext).With(mw.PaginationContext).Get("/", wh.WordGetList)
+		r.With(mw.IncludeContext).With(mw.QueryOptionsContext).Get("/", wh.WordGetList)
 		r.Route("/{wordId}", func(r chi.Router) {
 			r.Use(mw.WordContext)
 			r.With(mw.IncludeContext).Get("/", wh.WordGetByID)

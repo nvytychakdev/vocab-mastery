@@ -7,6 +7,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type DB interface {
@@ -43,4 +44,21 @@ func Connect() DB {
 	}
 
 	return &PostgresDB{conn, psql}
+}
+
+func ApplyQueryOptions(builder squirrel.SelectBuilder, opts *model.QueryOptions) squirrel.SelectBuilder {
+
+	if opts.Pagination != nil {
+		builder = builder.Offset(uint64(opts.Pagination.Offset)).Limit(uint64(opts.Pagination.Limit))
+	}
+
+	if opts.Sort != nil {
+		orderBy := opts.Sort.Field
+		if opts.Sort.Direction == "desc" {
+			orderBy += " DESC"
+		}
+		builder = builder.OrderBy(orderBy)
+	}
+
+	return builder
 }

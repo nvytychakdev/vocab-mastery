@@ -25,10 +25,10 @@ func (u *WordGetListResponse) Render(w http.ResponseWriter, r *http.Request) err
 
 func (wh *WordHandler) WordGetList(w http.ResponseWriter, r *http.Request) {
 	include := middleware.GetIncludeContext(r)
-	pagination := middleware.GetPaginationContext(r)
+	opts := middleware.GetQueryOptionsContext(r)
 	dictionary := middleware.GetDictionaryContext(r)
 
-	words, totalWords, err := wh.Deps.DB.Word().GetByDictionaryID(dictionary.ID, pagination)
+	words, totalWords, err := wh.Deps.DB.Word().ListByDictionaryID(dictionary.ID, opts)
 	if err != nil {
 		slog.Error("Not able to get words by dictionary id", "error", err)
 		return
@@ -65,8 +65,8 @@ func (wh *WordHandler) WordGetList(w http.ResponseWriter, r *http.Request) {
 		Items: wordsList,
 		PaginationResponse: &model.PaginationResponse{
 			Total:  totalWords,
-			Offset: pagination.Offset,
-			Limit:  pagination.Limit,
+			Offset: opts.Pagination.Offset,
+			Limit:  opts.Pagination.Limit,
 		},
 	}
 

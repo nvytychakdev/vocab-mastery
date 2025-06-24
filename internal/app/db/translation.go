@@ -10,7 +10,7 @@ type TranslationRepo interface {
 	Create(wordID string, word string, language string) (string, error)
 	DeleteByID(id string) error
 	GetByID(id string) (*model.Translation, error)
-	ListByWordID(wordId string, pg *model.Pagination) ([]*model.Translation, int, error)
+	ListByWordID(wordId string, opts *model.QueryOptions) ([]*model.Translation, int, error)
 	ListByWordIDs(wordIDs []string) ([]*model.Translation, error)
 }
 
@@ -70,16 +70,12 @@ func (db *translationRepo) GetByID(translationId string) (*model.Translation, er
 	return &translation, err
 }
 
-func (db *translationRepo) ListByWordID(wordId string, pagination *model.Pagination) ([]*model.Translation, int, error) {
+func (db *translationRepo) ListByWordID(wordId string, opts *model.QueryOptions) ([]*model.Translation, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "word_id", "word", "language", "created_at").
 		From("translations").Where(sq.Eq{"word_id": wordId})
 
-	if pagination != nil {
-		queryBuilder = queryBuilder.Offset(uint64(pagination.Offset)).Limit(uint64(pagination.Limit))
-	}
-
-	query, args, err := queryBuilder.ToSql()
+	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
 	if err != nil {
 		return nil, 0, err

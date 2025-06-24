@@ -10,7 +10,7 @@ type DictionaryRepo interface {
 	Create(userId string, name string, description string) (string, error)
 	DeleteByID(id string) error
 	GetByID(id string) (*model.Dictionary, error)
-	ListByUserId(userID string, pg *model.Pagination) ([]*model.Dictionary, int, error)
+	ListByUserId(userID string, opts *model.QueryOptions) ([]*model.Dictionary, int, error)
 }
 
 type dictionaryRepo struct {
@@ -69,16 +69,12 @@ func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error
 	return &dictionary, err
 }
 
-func (db *dictionaryRepo) ListByUserId(userId string, pagination *model.Pagination) ([]*model.Dictionary, int, error) {
+func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "user_id", "name", "description", "created_at").
 		From("dictionaries").Where(sq.Eq{"user_id": userId})
 
-	if pagination != nil {
-		queryBuilder = queryBuilder.Offset(uint64(pagination.Offset)).Limit(uint64(pagination.Limit))
-	}
-
-	query, args, err := queryBuilder.ToSql()
+	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
 	if err != nil {
 		return nil, 0, err

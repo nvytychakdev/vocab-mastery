@@ -11,7 +11,7 @@ func DictionaryRouter(dh *dictionary.DictionaryHandler, mw *middleware.Middlewar
 	router := chi.NewRouter()
 	router.Use(mw.Authorized)
 	router.Post("/", dh.DictionaryCreate)
-	router.With(mw.IncludeContext).With(mw.PaginationContext).Get("/", dh.DictionaryGetList)
+	router.With(mw.IncludeContext).With(mw.QueryOptionsContext).Get("/", dh.DictionaryGetList)
 	router.Route("/{dictionaryId}", func(r chi.Router) {
 		r.Use(mw.DictionaryContext)
 		r.With(mw.IncludeContext).Get("/", dh.DictionaryGetByID)
