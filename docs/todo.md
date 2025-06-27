@@ -32,3 +32,6 @@
 * [ ] Server: Add coverage for Dictionaries tests on server
 * [x] Server: Refactor Auth to rely on Squirrel
 * [ ] Server: Add API docs
+* [ ] FE: Implement Dictionaries API integration with UI
+* [ ] FE: Implement Words + Translations API integration with UI
+* [ ] Server: Translation autocomplete API with Google Translate and Dictonary integration
