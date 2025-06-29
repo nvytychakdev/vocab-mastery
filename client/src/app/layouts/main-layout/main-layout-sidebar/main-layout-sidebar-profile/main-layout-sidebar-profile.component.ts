@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthProfile } from '@domain/auth/auth-profile';
+import { AuthProfileState } from '@domain/auth/auth-profile-state';
 import { AuthService } from '@feature/auth/auth.service';
 import { NgIcon } from '@ng-icons/core';
 import { Menu, MenuItem, MenuTrigger } from '@vm/ui';
@@ -14,7 +14,7 @@ import { Menu, MenuItem, MenuTrigger } from '@vm/ui';
 })
 export class MainLayoutSidebarProfileComponent {
   private readonly auth = inject(AuthService);
-  private readonly authProfile = inject(AuthProfile);
+  private readonly authProfile = inject(AuthProfileState);
   private readonly router = inject(Router);
 
   readonly profileName = computed(() => this.authProfile.profile()?.name);

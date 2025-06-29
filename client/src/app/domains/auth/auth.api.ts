@@ -1,6 +1,7 @@
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Api } from '@core/api/api';
+import { IsAuthorizedContext } from '@core/models/authorized.model';
 import { Profile } from './auth-profile.interface';
 import {
   ConfirmEmailRequest,
@@ -17,7 +18,6 @@ import {
   SignUpRequest,
   SignUpResponse,
 } from './auth.interface';
-import { IS_AUTHORIZED_REQUEST } from './auth.model';
 
 enum AuthEndpoint {
   Profile = 'api/v1/auth/profile',
@@ -29,8 +29,6 @@ enum AuthEndpoint {
   ResendConfirmEmail = 'api/v1/auth/resend-confirm-email',
   OAuthGoogle = 'api/v1/auth/oauth/google',
 }
-
-const IsAuthorizedContext = new HttpContext().set(IS_AUTHORIZED_REQUEST, true);
 
 @Injectable({
   providedIn: 'root',

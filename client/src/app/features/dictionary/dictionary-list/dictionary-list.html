@@ -1,1 +1,8 @@
-<p>dictionary-list works!</p>
+<section class="flex flex-wrap gap-2">
+  @for (dictionary of dictionaries(); track dictionary.id) {
+    <vm-card class="cursor-pointer" (click)="dictionarySelect.emit(dictionary.id)">
+      <div title>{{ dictionary.name }}</div>
+      <div value>{{ dictionary.description }}</div>
+    </vm-card>
+  }
+</section>

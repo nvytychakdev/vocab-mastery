@@ -1,1 +1,9 @@
-<p>dictionary-form works!</p>
+<div class="flex max-w-96 flex-col gap-2">
+  <input vmInput [formControl]="form.controls.name" placeholder="Enter name" type="text" />
+  <textarea
+    vmInput
+    [formControl]="form.controls.description"
+    placeholder="Enter description for your dictionary"
+    type="text"></textarea>
+  <button vmButton (click)="submit()">Create</button>
+</div>

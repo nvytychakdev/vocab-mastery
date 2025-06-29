@@ -4,5 +4,5 @@
 </section>
 
 <section class="p-4">
-  <app-dictionary-list />
+  <app-dictionary-list [dictionaries]="facade.dictionaries()" (dictionarySelect)="onDictionarySelect($event)" />
 </section>

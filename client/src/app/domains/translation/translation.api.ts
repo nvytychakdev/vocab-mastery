@@ -5,7 +5,7 @@ import { ApiOptions, ApiUrlParams } from '@core/api/api.interface';
 import { Translation, TranslationListItem } from './translation.interface';
 
 enum TranslationEndpoint {
-  Translations = 'translations',
+  Translations = 'api/v1/dictionaries/:dictionaryId/words/:wordId/translations',
 }
 
 @Injectable({

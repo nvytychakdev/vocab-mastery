@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
 import { DictionaryDetails } from '@feature/dictionary/dictionary-details/dictionary-details';
 
 @Component({
@@ -7,4 +8,6 @@ import { DictionaryDetails } from '@feature/dictionary/dictionary-details/dictio
   templateUrl: './my-words-dictionary.html',
   styleUrl: './my-words-dictionary.css',
 })
-export class MyWordsDictionary {}
+export class MyWordsDictionary {
+  readonly facade = inject(DictionaryFacade);
+}

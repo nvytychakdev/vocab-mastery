@@ -1,1 +1,1 @@
-export { Input as InputDirective } from './input';
+export { Input } from './input';

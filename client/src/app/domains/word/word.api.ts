@@ -5,13 +5,13 @@ import { ApiListQueryParams, ApiOptions, ApiUrlParams } from '@core/api/api.inte
 import { WithTranslations, Word, WordListItem } from './word.interface';
 
 enum WordEndpoint {
-  Words = 'words',
+  Words = 'api/v1/dictionaries/:dictionaryId/words',
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class TranslationApi extends ApiEntity<Word, WordListItem> {
+export class WordApi extends ApiEntity<Word, WordListItem> {
   private readonly api = inject(Api);
 
   private getApiUrl(endpoint: WordEndpoint, options?: ApiOptions<ApiUrlParams>) {

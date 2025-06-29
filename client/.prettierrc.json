@@ -1,5 +1,13 @@
 {
   "plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-organize-imports"],
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ],
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": true,

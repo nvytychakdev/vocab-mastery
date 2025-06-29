@@ -4,7 +4,7 @@ import { Profile } from './auth-profile.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthProfile {
+export class AuthProfileState {
   private readonly _profile = signal<Profile | undefined>(undefined);
   public profile = this._profile.asReadonly();
 

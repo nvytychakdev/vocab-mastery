@@ -5,13 +5,13 @@ import { ApiOptions, ApiUrlParams } from '@core/api/api.interface';
 import { Dictionary, DictionaryListItem } from './dictionary.interface';
 
 export enum DictionaryEndpoint {
-  Dictionaries = 'dictionaries',
+  Dictionaries = 'api/v1/dictionaries',
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class DictionariesApi extends ApiEntity<Dictionary, DictionaryListItem> {
+export class DictionaryApi extends ApiEntity<Dictionary, DictionaryListItem> {
   private readonly api = inject(Api);
 
   private getApiUrl(endpoint: DictionaryEndpoint, options?: ApiOptions<ApiUrlParams>) {

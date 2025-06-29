@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { IsAuthorizedContext } from '@core/models/authorized.model';
 import { Observable } from 'rxjs';
 import {
   ApiListQueryParams,
@@ -30,7 +31,7 @@ export abstract class ApiEntity<
 
   create(body: Partial<Entity>, options?: ApiOptions<EntityParams>): Observable<ResponseCreate> {
     const url = this.getEntityUrl(options);
-    return this.http.post<ResponseCreate>(url, body);
+    return this.http.post<ResponseCreate>(url, body, { context: IsAuthorizedContext });
   }
 
   getAll<EL extends Record<string, unknown> = EntityListItem>(
@@ -38,17 +39,17 @@ export abstract class ApiEntity<
   ): Observable<ResponseList<EL>> {
     const url = this.getEntityUrl(options);
     const params = this.getEntityHttpParams(options);
-    return this.http.get<ResponseList<EL>>(url, { params });
+    return this.http.get<ResponseList<EL>>(url, { params, context: IsAuthorizedContext });
   }
 
   getById<E extends Record<string, unknown> = Entity>(id: string, options?: ApiOptions<EntityParams>): Observable<E> {
     const url = this.getEntityUrl(options);
     const params = this.getEntityHttpParams(options);
-    return this.http.get<E>(`${url}/${id}`, { params });
+    return this.http.get<E>(`${url}/${id}`, { params, context: IsAuthorizedContext });
   }
 
   deleteById(id: string, options?: ApiOptions<EntityParams>): Observable<ResponseDelete> {
     const url = this.getEntityUrl(options);
-    return this.http.delete<ResponseDelete>(`${url}/${id}`);
+    return this.http.delete<ResponseDelete>(`${url}/${id}`, { context: IsAuthorizedContext });
   }
 }
