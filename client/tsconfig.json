@@ -18,10 +18,10 @@
     "target": "ES2022",
     "module": "ES2022",
     "paths": {
-      "@vm/*": [
-        "./dist/*",
-        "./projects/*/src/index.ts"
-      ]
+      "@vm/*": ["./dist/*", "./projects/*/src/index.ts"],
+      "@core/*": ["./src/app/core/*"],
+      "@domain/*": ["./src/app/domains/*"],
+      "@feature/*": ["./src/app/features/*"]
     }
   },
   "angularCompilerOptions": {

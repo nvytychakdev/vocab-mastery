@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
+import { authInterceptor } from './features/auth/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -14,5 +14,14 @@
       "externalTemplate": true
     }
   },
-  "todo-tree.tree.showBadges": false
+  "todo-tree.tree.showBadges": false,
+
+  "angular.enable": true,
+  "angular.components.standalone": true,
+  "angular.components.style": "css",
+  "angular.fileGenerator.omitSuffix": true,
+  "angular.fileGenerator.typeSeparator": "-",
+  "angular.fileGenerator.skipFolderConfirmation": true,
+  "angular.files.showPath": false,
+  "angular.terminal.cwd": "C:/Users/assin/Documents/Projects/vocab-mastery/client"
 }

@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Button, InputDirective } from '@vm/ui';
-import { AuthService, isConfirmResponse } from '../../../core/auth/auth.service';
+import { AuthService, isConfirmResponse } from '../../../features/auth/auth.service';
 import { FullscreenLayoutComponent } from '../../../layouts/fullscreen-layout/fullscreen-layout.component';
 
 @Component({

@@ -1,17 +1,18 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
-import { authProfileResolve } from './core/auth/auth-profile.resolver';
-import { AuthService } from './core/auth/auth.service';
-import { authRedirectGuards } from './core/auth/guards/auth.guard';
+import { authProfileResolve } from './features/auth/auth-profile.resolver';
+import { AuthService } from './features/auth/auth.service';
+import { authRedirectGuards } from './features/auth/guards/auth.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { ConfirmEmailComponent } from './pages/auth/confirm-email/confirm-email.component';
 import { SignInComponent } from './pages/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth/sign-up/sign-up.component';
 import { UsedEmailComponent } from './pages/auth/used-email/used-email.component';
 import { HomeComponent } from './pages/home/home.component';
-import { MyWordsDictionaryComponent } from './pages/my-words/my-words-dictionary/my-words-dictionary.component';
-import { MyWordsComponent } from './pages/my-words/my-words.component';
+import { MyWords } from './pages/my-words/my-words';
+import { MyWordsDictionaryNew } from './pages/my-words/my-words-dictionary-new/my-words-dictionary-new';
+import { MyWordsDictionary } from './pages/my-words/my-words-dictionary/my-words-dictionary';
 import { PlayComponent } from './pages/play/play.component';
 
 const { redirectIfAuthenticated, redirectIfUnauthenticated } = authRedirectGuards({
@@ -78,11 +79,15 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            component: MyWordsComponent,
+            component: MyWords,
+          },
+          {
+            path: 'new',
+            component: MyWordsDictionaryNew,
           },
           {
             path: ':dictionaryId',
-            component: MyWordsDictionaryComponent,
+            component: MyWordsDictionary,
           },
         ],
       },
