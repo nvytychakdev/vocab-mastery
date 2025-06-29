@@ -1,7 +1,15 @@
-<div>
-  {{ dictionary().name }}
-</div>
+<section class="mb-4 flex flex-col">
+  <span class="text-2xl">
+    {{ dictionary().name }}
+  </span>
 
-<div>
-  {{ dictionary().description }}
-</div>
+  <span class="text-xs text-gray-400">
+    {{ dictionary().description }}
+  </span>
+</section>
+
+<section class="flex flex-col gap-4">
+  @for (word of words(); track word.id) {
+    <app-word-preview [word]="word" />
+  }
+</section>

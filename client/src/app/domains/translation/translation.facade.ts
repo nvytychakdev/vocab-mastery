@@ -11,22 +11,22 @@ export class WordFacade {
   private readonly state = inject(TranslationState);
   private readonly api = inject(TranslationApi);
 
-  readonly dictionaries = this.state.listItems;
-  readonly dictionariesChanges$ = this.state.listItemsChanges$;
-  readonly dictionariesLoading = this.state.listItemsLoading;
-  readonly dictionariesLoadingChanges$ = this.state.listItemsLoadingChanges$;
+  readonly translations = this.state.listItems;
+  readonly translationsChanges$ = this.state.listItemsChanges$;
+  readonly translationsLoading = this.state.listItemsLoading;
+  readonly translationsLoadingChanges$ = this.state.listItemsLoadingChanges$;
 
   create(dictionaryId: string, wordId: string, translation: TranslationBase) {
     this.state.setItemsLoading(true);
     return this.api.create(translation, { params: { dictionaryId, wordId } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(data => {
-        const newDictionary: Translation = {
+        const newTranslation: Translation = {
           ...translation,
           id: data.id,
           craetedAt: new Date().toISOString(),
         };
-        this.state.addItems([newDictionary]);
+        this.state.addItems([newTranslation]);
         this.state.setItemsLoading(false);
       })
     );

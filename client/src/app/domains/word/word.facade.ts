@@ -11,22 +11,22 @@ export class WordFacade {
   private readonly state = inject(WordState);
   private readonly api = inject(WordApi);
 
-  readonly dictionaries = this.state.listItems;
-  readonly dictionariesChanges$ = this.state.listItemsChanges$;
-  readonly dictionariesLoading = this.state.listItemsLoading;
-  readonly dictionariesLoadingChanges$ = this.state.listItemsLoadingChanges$;
+  readonly words = this.state.listItems;
+  readonly wordsChanges$ = this.state.listItemsChanges$;
+  readonly wordsLoading = this.state.listItemsLoading;
+  readonly wordsLoadingChanges$ = this.state.listItemsLoadingChanges$;
 
   create(dictionaryId: string, word: WordBase) {
     this.state.setItemsLoading(true);
     return this.api.create(word, { params: { dictionaryId } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(data => {
-        const newDictionary: Word = {
+        const newWord: Word = {
           ...word,
           id: data.id,
           craetedAt: new Date().toISOString(),
         };
-        this.state.addItems([newDictionary]);
+        this.state.addItems([newWord]);
         this.state.setItemsLoading(false);
       })
     );
@@ -34,7 +34,7 @@ export class WordFacade {
 
   loadAll(dictionaryId: string) {
     this.state.setItemsLoading(true);
-    return this.api.getAll({ params: { dictionaryId } }).pipe(
+    return this.api.getAllWithTranslations({ params: { dictionaryId } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.state.setItems(data.items);

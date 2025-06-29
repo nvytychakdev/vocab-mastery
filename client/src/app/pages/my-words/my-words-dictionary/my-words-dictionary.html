@@ -3,7 +3,11 @@
 </section>
 
 <section class="p-4">
-  @if (facade.activeDictionary(); as dictionary) {
-    <app-dictionary-details [dictionary]="dictionary" />
+  <app-word-form (createWord)="onCreateWord($event)" />
+</section>
+
+<section class="p-4">
+  @if (dictionaryFacade.activeDictionary(); as dictionary) {
+    <app-dictionary-details [dictionary]="dictionary" [words]="wordFacade.words()" />
   }
 </section>

@@ -1,0 +1,9 @@
+<div class="flex max-w-96 flex-col gap-2">
+  <input vmInput [formControl]="form.controls.word" placeholder="Enter word" type="text" />
+  <textarea
+    vmInput
+    [formControl]="form.controls.language"
+    placeholder="Language to translate into"
+    type="text"></textarea>
+  <button vmButton (click)="submit()">Create</button>
+</div>

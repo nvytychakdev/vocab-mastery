@@ -5,7 +5,7 @@ export type WordBase = { word: string; language: string };
 export type WithTranslations<T extends WordBase> = T & { translations: Translation[] };
 
 export type Word = Entity<WordBase>;
-export type WordWithTranslation = Entity<WordBase & { translation: Translation[] }>;
+export type WordWithTranslation = Entity<WordBase & { translations?: Translation[] }>;
 
 export type WordListItem = Entity<WordBase>;
-export type WordListItemWithTranslation = Entity<WordBase & { translation: Translation[] }>;
+export type WordListItemWithTranslation = Entity<WordBase & { translations?: Translation[] }>;
