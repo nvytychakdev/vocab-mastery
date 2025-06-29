@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { DictionaryList } from '@feature/dictionary/dictionary-list/dictionary-list';
 import { Button } from '@vm/ui';
-import { DictionaryList } from '../../features/dictionary/dictionary-list/dictionary-list';
 
 @Component({
   selector: 'app-my-words',

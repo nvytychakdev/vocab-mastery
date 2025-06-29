@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthProfile } from '@domain/auth/auth-profile';
+import { AuthService } from '@feature/auth/auth.service';
 import { NgIcon } from '@ng-icons/core';
 import { Menu, MenuItem, MenuTrigger } from '@vm/ui';
-import { AuthProfile } from '../../../../domains/auth/auth-profile';
-import { AuthService } from '../../../../features/auth/auth.service';
 
 @Component({
   selector: 'app-main-layout-sidebar-profile',

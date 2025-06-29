@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Api } from '../../core/api/api';
-import { ApiEntity } from '../../core/api/api-entity';
-import { ApiOptions, ApiUrlParams } from '../../core/api/api.interface';
+import { Api } from '@core/api/api';
+import { ApiEntity } from '@core/api/api-entity';
+import { ApiOptions, ApiUrlParams } from '@core/api/api.interface';
 import { Dictionary, DictionaryListItem } from './dictionary.interface';
 
 export enum DictionaryEndpoint {

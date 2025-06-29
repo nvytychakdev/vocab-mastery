@@ -1,8 +1,8 @@
 import type { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { AuthTokens } from '@domain/auth/auth-tokens';
+import { IS_AUTHORIZED_REQUEST } from '@domain/auth/auth.model';
 import { switchMap } from 'rxjs';
-import { AuthTokens } from '../../../domains/auth/auth-tokens';
-import { IS_AUTHORIZED_REQUEST } from '../../../domains/auth/auth.model';
 import { AuthService } from '../auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {

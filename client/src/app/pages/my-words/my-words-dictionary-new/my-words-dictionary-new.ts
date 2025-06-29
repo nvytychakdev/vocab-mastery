@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DictionaryForm } from '../../../features/dictionary/dictionary-form/dictionary-form';
+import { DictionaryForm } from '@feature/dictionary/dictionary-form/dictionary-form';
 
 @Component({
   selector: 'app-my-words-dictionary-new',

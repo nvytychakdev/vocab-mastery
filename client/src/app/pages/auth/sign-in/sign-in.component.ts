@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService, isConfirmResponse } from '@feature/auth/auth.service';
 import { Button, InputDirective } from '@vm/ui';
-import { AuthService, isConfirmResponse } from '../../../features/auth/auth.service';
 import { FullscreenLayoutComponent } from '../../../layouts/fullscreen-layout/fullscreen-layout.component';
 
 @Component({

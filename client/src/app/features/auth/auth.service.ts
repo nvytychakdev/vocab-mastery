@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
+import { AuthStorage } from '@core/storage/auth-storage.service';
+import { AuthTokens } from '@domain/auth/auth-tokens';
 import { AuthApi } from '@domain/auth/auth.api';
+import { SignInConfirmResponse, SignOutResponse, SignUpRequest } from '@domain/auth/auth.interface';
 import { filter, fromEvent, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthStorage } from '../../core/storage/auth-storage.service';
-import { AuthTokens } from '../../domains/auth/auth-tokens';
-import { SignInConfirmResponse, SignOutResponse, SignUpRequest } from '../../domains/auth/auth.interface';
 
 export const isConfirmResponse = <T extends object>(
   response: T | SignInConfirmResponse

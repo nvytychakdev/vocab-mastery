@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Token } from '../../core/models/token.model';
-import { AuthStorage } from '../../core/storage/auth-storage.service';
+import { Token } from '@core/models/token.model';
+import { AuthStorage } from '@core/storage/auth-storage.service';
 import { RefreshTokenResponse } from './auth.interface';
 
 @Injectable({

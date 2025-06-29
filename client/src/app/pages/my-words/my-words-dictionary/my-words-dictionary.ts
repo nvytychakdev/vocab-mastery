@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DictionaryDetails } from '../../../features/dictionary/dictionary-details/dictionary-details';
+import { DictionaryDetails } from '@feature/dictionary/dictionary-details/dictionary-details';
 
 @Component({
   selector: 'app-my-words-dictionary',

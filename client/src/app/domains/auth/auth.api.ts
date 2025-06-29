@@ -1,7 +1,7 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Api } from '../../core/api/api';
-import { User } from '../../features/user/user.interface';
+import { Api } from '@core/api/api';
+import { Profile } from './auth-profile.interface';
 import {
   ConfirmEmailRequest,
   ConfirmEmailResponse,
@@ -49,7 +49,7 @@ export class AuthApi {
 
   getAuthProfile() {
     const url = this.getApiUrl(AuthEndpoint.Profile);
-    return this.http.get<User>(url, { context: IsAuthorizedContext });
+    return this.http.get<Profile>(url, { context: IsAuthorizedContext });
   }
 
   signIn(request: SignInRequest) {

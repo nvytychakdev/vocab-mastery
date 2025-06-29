@@ -1,14 +1,14 @@
 import { Injectable, signal } from '@angular/core';
-import { User } from '../../features/user/user.interface';
+import { Profile } from './auth-profile.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthProfile {
-  private readonly _profile = signal<User | undefined>(undefined);
+  private readonly _profile = signal<Profile | undefined>(undefined);
   public profile = this._profile.asReadonly();
 
-  setProfile(profile: User) {
+  setProfile(profile: Profile) {
     this._profile.set(profile);
   }
 }

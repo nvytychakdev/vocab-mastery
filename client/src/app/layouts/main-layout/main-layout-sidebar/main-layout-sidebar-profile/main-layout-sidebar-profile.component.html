@@ -16,7 +16,7 @@
 </div>
 
 <vm-menu className="!min-w-52" #menu>
-  <div vmMenuItem (click)="signOut()">
+  <div vmMenuItem (click)="signOut()" (keydown)="signOut()" tabindex="0">
     <ng-icon name="lucideLogOut" size="16" />
     Sign out
   </div>

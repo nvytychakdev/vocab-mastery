@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Api } from '../../core/api/api';
-import { ApiEntity } from '../../core/api/api-entity';
-import { ApiListQueryParams, ApiOptions, ApiUrlParams } from '../../core/api/api.interface';
+import { Api } from '@core/api/api';
+import { ApiEntity } from '@core/api/api-entity';
+import { ApiListQueryParams, ApiOptions, ApiUrlParams } from '@core/api/api.interface';
 import { WithTranslations, Word, WordListItem } from './word.interface';
 
 enum WordEndpoint {
