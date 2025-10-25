@@ -12,6 +12,7 @@ import (
 	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/dictionary"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/language"
 	vmMiddleware "github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/routes"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/services"
@@ -41,10 +42,12 @@ func StartServer() {
 
 	authHandler := &auth.AuthHandler{Deps: deps}
 	dictionaryHandler := &dictionary.DictionaryHandler{Deps: deps}
+	langHandler := &language.LanguageHandler{Deps: deps}
 	mw := vmMiddleware.NewMiddleware(deps)
 
 	router.Mount("/api/v1/auth", routes.AuthRouter(authHandler, mw))
 	router.Mount("/api/v1/dictionaries", routes.DictionaryRouter(dictionaryHandler, mw))
+	router.Mount("/api/v1/language", routes.LanguageRoutes(langHandler, mw))
 
 	docgen.PrintRoutes(router)
 
