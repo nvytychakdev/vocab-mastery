@@ -1,13 +1,22 @@
 import { Overlay, OverlayRef, STANDARD_DROPDOWN_BELOW_POSITIONS } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DestroyRef, Directive, ElementRef, HostListener, inject, input, ViewContainerRef } from '@angular/core';
+import {
+  DestroyRef,
+  Directive,
+  ElementRef,
+  HostListener,
+  inject,
+  input,
+  OnInit,
+  ViewContainerRef,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Menu } from './menu';
 
 @Directive({
   selector: '[vmMenuTrigger]',
 })
-export class MenuTrigger {
+export class MenuTrigger implements OnInit {
   private readonly overlay = inject(Overlay);
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -23,7 +32,7 @@ export class MenuTrigger {
       .subscribe(() => this.open());
   }
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   onClick() {
     this.open();
   }

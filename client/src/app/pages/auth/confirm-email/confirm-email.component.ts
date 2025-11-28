@@ -17,7 +17,7 @@ export class ConfirmEmailComponent implements OnInit {
   readonly email = signal<string | undefined>(undefined);
 
   ngOnInit(): void {
-    const state = (this.router.getCurrentNavigation()?.extras?.state || window.history.state) as { email: string };
+    const state = (this.router.currentNavigation()?.extras?.state || window.history.state) as { email: string };
     if (state.email) this.email.set(state.email);
   }
 

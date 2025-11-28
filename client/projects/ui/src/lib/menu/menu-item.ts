@@ -10,7 +10,7 @@ import { MENU } from './menu';
 export class MenuItem {
   private readonly menu = inject(MENU);
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   onClick() {
     this.menu.closeMenu();
   }
