@@ -5,13 +5,13 @@
 }
 
 .nav-list {
-  @apply flex list-none flex-col gap-1 px-4 py-2 text-sm font-semibold text-gray-400;
+  @apply flex list-none flex-col gap-1 px-4 py-2 text-sm font-semibold text-zinc-400;
 }
 
 .nav-list-item {
-  @apply flex cursor-pointer items-center gap-4 rounded-lg px-4 py-3 text-sm hover:bg-gray-900/50 hover:text-gray-200;
+  @apply flex cursor-pointer items-center gap-4 rounded-lg px-4 py-3 text-sm hover:bg-zinc-900/50 hover:text-zinc-200;
 }
 
 .nav-list-item.active {
-  @apply bg-gray-900 text-gray-50;
+  @apply bg-zinc-900 text-zinc-50;
 }

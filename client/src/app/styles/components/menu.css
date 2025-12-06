@@ -1,5 +1,9 @@
 .vm-menu {
-  @apply my-1 max-h-96 min-w-42 overflow-y-auto rounded-md border border-gray-700/50 bg-gray-950 p-1 text-gray-50;
+  @apply relative my-1 max-h-96 min-w-42 rounded-md border border-zinc-700/50 bg-zinc-950 p-1 text-zinc-50;
+}
+
+.vm-menu-content {
+  @apply overflow-y-auto;
 }
 
 .vm-menu-item {

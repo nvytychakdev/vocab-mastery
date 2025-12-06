@@ -1,8 +1,23 @@
-<section class="flex justify-between p-4 align-middle">
-  <span class="text-2xl font-semibold">Dictionaries</span>
-  <button vmButton variant="primary" (click)="addDictionary()">Add dictionary</button>
+<section class="relative flex w-max max-w-1/2 grow flex-col items-center transition-all">
+  @for (dictionary of dictionaryFacade.dictionaries(); track dictionary.id) {
+  <div
+    class="group flex w-max cursor-pointer flex-col gap-2 border-r-2 border-transparent py-4 pr-4 transition-all"
+    [class.border-zinc-600]="selectedDictionary() == dictionary"
+    (click)="onDictionarySelection(dictionary)">
+    <h1
+      class="text-4xl font-extrabold text-zinc-200 transition-all ease-in-out group-hover:scale-125 group-hover:text-zinc-50"
+      [class.text-zinc-500]="selectedDictionary() !== dictionary">
+      {{ dictionary.name }}
+    </h1>
+    <p class="text-zinc-500 transition-all group-hover:text-zinc-500">{{ dictionary.description }}</p>
+  </div>
+  }
 </section>
 
-<section class="p-4">
-  <app-dictionary-list [dictionaries]="facade.dictionaries()" (dictionarySelect)="onDictionarySelect($event)" />
+@if (selectedDictionary()) {
+<section animate.enter="animate-slide-in" animate.leave="animate-slide-out" class="flex w-full">
+  <div class="flex flex-col gap-2 p-4">
+    <h1 class="text-2xl font-extrabold">Word</h1>
+  </div>
 </section>
+}

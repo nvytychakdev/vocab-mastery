@@ -7,8 +7,10 @@ export const MENU = new InjectionToken<Menu>('VM_MENU');
   selector: 'vm-menu',
   template: `
     <ng-template>
-      <div class="vm-menu" [class]="className()">
-        <ng-content></ng-content>
+      <div class="vm-menu vm-menu-left-top" [class]="className()">
+        <div class="vm-menu-content">
+          <ng-content></ng-content>
+        </div>
       </div>
     </ng-template>
   `,
@@ -24,8 +26,8 @@ export class Menu {
   readonly className = input<string>();
 
   private readonly _close = new Subject<void>();
-  readonly close = this._close.asObservable();
   private readonly _open = new Subject<void>();
+  readonly close = this._close.asObservable();
   readonly open = this._open.asObservable();
 
   readonly isOpen = signal(false);

@@ -1,11 +1,11 @@
 services:
   db:
     image: postgres:17.5-alpine
-    container_name: postgres 
+    container_name: postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER} 
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: vocab_mastery 
+      POSTGRES_DB: vocab_mastery
     ports:
       - "5432:5432"
     volumes:
@@ -15,6 +15,8 @@ services:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       retries: 5
+    profiles:
+      - backend
 
   migrate:
     image: migrate/migrate:latest
@@ -24,15 +26,20 @@ services:
         condition: service_healthy
     volumes:
       - ./migrations:/migrations
-    command: [
-      "-path", "/migrations",
-      "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/vocab_mastery?sslmode=disable",
-      "up"
-    ]
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/vocab_mastery?sslmode=disable",
+        "up",
+      ]
+    profiles:
+      - backend
 
   app:
     build:
-      context: . 
+      context: .
       dockerfile: Dockerfile
     develop:
       watch:
@@ -40,7 +47,7 @@ services:
           path: ./internal
         - action: rebuild
           path: ./cmd
-    container_name: vocab_mastery 
+    container_name: vocab_mastery_server
     ports:
       - "8080:8080"
     depends_on:
@@ -57,6 +64,8 @@ services:
       - MAILTRAP_USER=${MAILTRAP_USER}
       - MAILTRAP_PASSWORD=${MAILTRAP_PASSWORD}
     restart: unless-stopped
+    profiles:
+      - backend
 
   client:
     image: node:23-alpine
@@ -67,9 +76,9 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-    ports: 
+    ports:
       - 4200:4200
     working_dir: /app
     command: npm run start -- --host 0.0.0.0 --poll=1000
-
-
+    profiles:
+      - frontend

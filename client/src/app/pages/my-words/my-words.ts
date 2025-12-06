@@ -1,24 +1,22 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
 import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
-import { DictionaryList } from '@feature/dictionary/dictionary-list/dictionary-list';
-import { Button } from '@vm/ui';
+import { Dictionary } from '@domain/dictionary/dictionary.interface';
 
 @Component({
   selector: 'app-my-words',
-  imports: [DictionaryList, Button],
+  imports: [],
   templateUrl: './my-words.html',
   styleUrl: './my-words.css',
 })
 export class MyWords {
-  private readonly router = inject(Router);
-  readonly facade = inject(DictionaryFacade);
+  readonly dictionaryFacade = inject(DictionaryFacade);
+  readonly selectedDictionary = signal<Dictionary | null>(null);
 
-  addDictionary() {
-    void this.router.navigate(['/main/my-words/new']);
-  }
-
-  onDictionarySelect(id: string) {
-    void this.router.navigate(['/main/my-words', id]);
+  onDictionarySelection(dictionary: Dictionary) {
+    if (this.selectedDictionary()) {
+      this.selectedDictionary.set(null);
+    } else {
+      this.selectedDictionary.set(dictionary);
+    }
   }
 }

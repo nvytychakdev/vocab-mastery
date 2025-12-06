@@ -1,6 +1,6 @@
 <div
   [vmMenuTrigger]="menu"
-  class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-800 bg-gray-800/20 p-2 transition-colors hover:border-gray-700/50 hover:bg-gray-700/20">
+  class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-800/20 p-2 transition-colors hover:border-gray-700/50 hover:bg-gray-700/20">
   <div class="flex size-10 shrink-0 grow-0 items-center justify-center overflow-hidden rounded-lg">
     @if (profilePictureUrl(); as url) {
       <img class="h-full w-full object-cover" [src]="profilePictureUrl()" alt="" referrerpolicy="no-referrer" />
@@ -9,10 +9,10 @@
     }
   </div>
   <div class="flex flex-grow flex-col overflow-hidden">
-    <p class="overflow-hidden text-ellipsis whitespace-nowrap text-gray-50">{{ profileName() }}</p>
-    <span class="overflow-hidden text-xs text-ellipsis whitespace-nowrap text-gray-500">{{ profileEmail() }}</span>
+    <p class="overflow-hidden text-ellipsis whitespace-nowrap text-zinc-50">{{ profileName() }}</p>
+    <span class="overflow-hidden text-xs text-ellipsis whitespace-nowrap text-zinc-500">{{ profileEmail() }}</span>
   </div>
-  <ng-icon class="shrink-0 grow-0 text-gray-500" name="lucideChevronsUpDown" size="14" />
+  <ng-icon class="shrink-0 grow-0 text-zinc-500" name="lucideChevronsUpDown" size="14" />
 </div>
 
 <vm-menu className="!min-w-52" #menu>

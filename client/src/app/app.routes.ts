@@ -1,19 +1,17 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
-import { dictionariesResolver, dictionaryByIdResolver } from '@feature/dictionary/dictionary.resolver';
+import { dictionariesResolver } from '@feature/dictionary/dictionary.resolver';
 import { catchError, map, of } from 'rxjs';
 import { authProfileResolve } from './features/auth/auth-profile.resolver';
 import { AuthService } from './features/auth/auth.service';
 import { authRedirectGuards } from './features/auth/guards/auth.guard';
-import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { HorizontalLayout } from './layouts/horizontal-layout/horizontal-layout';
 import { ConfirmEmailComponent } from './pages/auth/confirm-email/confirm-email.component';
 import { SignInComponent } from './pages/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth/sign-up/sign-up.component';
 import { UsedEmailComponent } from './pages/auth/used-email/used-email.component';
 import { HomeComponent } from './pages/home/home.component';
 import { MyWords } from './pages/my-words/my-words';
-import { MyWordsDictionaryNew } from './pages/my-words/my-words-dictionary-new/my-words-dictionary-new';
-import { MyWordsDictionary } from './pages/my-words/my-words-dictionary/my-words-dictionary';
 import { PlayComponent } from './pages/play/play.component';
 
 const { redirectIfAuthenticated, redirectIfUnauthenticated } = authRedirectGuards({
@@ -37,6 +35,7 @@ const confirmEmailRedirect = (route: ActivatedRouteSnapshot) => {
 
   return true;
 };
+
 export const routes: Routes = [
   {
     path: 'auth',
@@ -67,7 +66,7 @@ export const routes: Routes = [
   },
   {
     path: 'main',
-    component: MainLayoutComponent,
+    component: HorizontalLayout,
     canActivate: [redirectIfUnauthenticated],
     resolve: [authProfileResolve],
     children: [
@@ -82,15 +81,6 @@ export const routes: Routes = [
             path: '',
             component: MyWords,
             resolve: [dictionariesResolver],
-          },
-          {
-            path: 'new',
-            component: MyWordsDictionaryNew,
-          },
-          {
-            path: ':dictionaryId',
-            component: MyWordsDictionary,
-            resolve: [dictionaryByIdResolver],
           },
         ],
       },

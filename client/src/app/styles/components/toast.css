@@ -5,7 +5,7 @@
 .vm-toast {
   display: grid;
   grid-template-rows: 1fr;
-  @apply m-2 shrink-0 overflow-hidden rounded-lg border border-gray-700 bg-gray-950 text-gray-50;
+  @apply m-2 shrink-0 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-950 text-zinc-50;
 }
 
 .vm-toast-content {

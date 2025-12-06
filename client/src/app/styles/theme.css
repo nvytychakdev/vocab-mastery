@@ -1,11 +1,17 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
+  /* tailwind */
   --default-font-family: 'Inter', 'sans-serif';
+
+  /* spacing */
+  --width-layout: var(--breakpoint-xl);
 }
 
 @utility bg-gradient-primary {
   background:
-    radial-gradient(circle at 50% -25%, var(--color-gray-900), transparent 50%),
-    radial-gradient(circle at 50% 125%, var(--color-gray-900), transparent 50%), var(--color-gray-950);
+    radial-gradient(circle at 50% -25%, var(--color-stone-900), transparent 50%),
+    radial-gradient(circle at 50% 125%, var(--color-stone-900), transparent 50%), var(--color-zinc-950);
 }

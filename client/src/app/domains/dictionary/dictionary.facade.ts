@@ -26,7 +26,7 @@ export class DictionaryFacade {
         const newDictionary: Dictionary = {
           ...dictionary,
           id: data.id,
-          craetedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
         };
         this.state.addItems([newDictionary]);
         this.state.setItemsLoading(false);

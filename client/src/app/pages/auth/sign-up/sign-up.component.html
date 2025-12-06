@@ -1,7 +1,7 @@
 <app-fullscreen-layout>
   <div class="flex flex-col items-center gap-4">
-    <section class="flex min-w-80 flex-col text-gray-500">
-      <span class="bg-gradient-to-b from-gray-50 to-gray-400 bg-clip-text text-2xl font-semibold text-transparent"
+    <section class="flex min-w-80 flex-col text-zinc-500">
+      <span class="bg-gradient-to-b from-zinc-50 to-zinc-400 bg-clip-text text-2xl font-semibold text-transparent"
         >Create new account</span
       >
       <span>Please tell ups a bit about yourself</span>
@@ -16,16 +16,16 @@
     </form>
 
     <section class="my-4 flex w-full items-center gap-2">
-      <div class="h-[1px] shrink grow bg-gray-700"></div>
-      <span class="text-sm text-gray-700">or</span>
-      <div class="h-[1px] shrink grow bg-gray-700"></div>
+      <div class="h-[1px] shrink grow bg-zinc-700"></div>
+      <span class="text-sm text-zinc-700">or</span>
+      <div class="h-[1px] shrink grow bg-zinc-700"></div>
     </section>
 
     <section class="flex w-full flex-col">
       <button vmButton (click)="signUpWithGoogle()">Sign up with Google</button>
     </section>
 
-    <section class="flex items-center text-gray-500">
+    <section class="flex items-center text-zinc-500">
       <span>Already have an account?</span>
       <a vmButton type="link" routerLink="/auth/sign-in">Sign in</a>
     </section>

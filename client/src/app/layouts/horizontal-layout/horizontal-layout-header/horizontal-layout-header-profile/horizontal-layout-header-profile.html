@@ -1,0 +1,17 @@
+<div [vmMenuTrigger]="menu" class="flex cursor-pointer">
+  <div
+    class="flex size-10 shrink-0 grow-0 items-center justify-center overflow-hidden rounded-full opacity-75 transition-opacity hover:opacity-100">
+    @if (profilePictureUrl(); as url) {
+    <img class="h-full w-full object-cover" [src]="profilePictureUrl()" alt="" referrerpolicy="no-referrer" />
+    } @else {
+    <ng-icon name="lucideUser" />
+    }
+  </div>
+</div>
+
+<vm-menu className="!min-w-52" #menu>
+  <div vmMenuItem (click)="signOut()" (keydown)="signOut()" tabindex="0">
+    <ng-icon name="lucideLogOut" size="16" />
+    Sign out
+  </div>
+</vm-menu>

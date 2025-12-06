@@ -1,0 +1,29 @@
+@theme {
+  --animate-slide-in: slide-in 500ms ease-in;
+  --animate-slide-out: slide-out 500ms ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    width: 100%;
+    opacity: 1;
+    overflow: hidden;
+  }
+  to {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+}

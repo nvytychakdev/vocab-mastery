@@ -1,5 +1,7 @@
 @import '@angular/cdk/overlay-prebuilt.css';
 
+@import './app/styles/animations/slide.css';
+
 @import './app/styles/theme.css';
 @import './app/styles/components/button.css';
 @import './app/styles/components/input.css';

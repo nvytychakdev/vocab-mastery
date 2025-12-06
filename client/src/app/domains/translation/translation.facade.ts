@@ -24,7 +24,7 @@ export class WordFacade {
         const newTranslation: Translation = {
           ...translation,
           id: data.id,
-          craetedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
         };
         this.state.addItems([newTranslation]);
         this.state.setItemsLoading(false);

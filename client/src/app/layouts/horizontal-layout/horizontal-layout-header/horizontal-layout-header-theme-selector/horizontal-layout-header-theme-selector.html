@@ -1,0 +1,9 @@
+<button vmButton type="icon" variant="ghost" (click)="themeLoader.cycleThemePreference()">
+  @if (themeLoader.preference() === 'dark') {
+  <ng-icon name="lucideMoon" />
+  } @else if (themeLoader.preference() === 'light') {
+  <ng-icon name="lucideSun" />
+  } @else {
+  <ng-icon name="lucideMonitor" />
+  }
+</button>

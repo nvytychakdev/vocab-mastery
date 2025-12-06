@@ -5,6 +5,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { authInterceptor } from './features/auth/interceptors/auth.interceptor';
+import { provideThemeLoader } from './styles/theme-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,5 +13,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes),
     importProvidersFrom(OverlayModule),
+    provideThemeLoader(),
   ],
 };

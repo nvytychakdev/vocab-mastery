@@ -1,5 +1,5 @@
 .vm-button {
-  @apply cursor-pointer rounded-md outline-offset-2 outline-sky-500 transition-colors focus-visible:outline-2;
+  @apply cursor-pointer rounded-full outline-offset-2 outline-sky-500 transition-colors focus-visible:outline-2;
 }
 .vm-button-link {
   @apply cursor-pointer rounded-md p-2 text-sky-600 outline-offset-2 outline-sky-500 hover:text-sky-500 hover:underline focus-visible:outline-2;
@@ -15,34 +15,38 @@
   @apply p-2 text-sm/4;
 }
 .vm-button-lg {
+  @apply px-4 py-2;
+}
+.vm-button-lg.vm-button-icon,
+.vm-button-lg.vm-button-link {
   @apply p-2;
 }
 
 .vm-button-primary {
-  @apply box-border border border-sky-500 bg-sky-600 text-gray-50 hover:bg-sky-500 disabled:cursor-default disabled:border-gray-700/30 disabled:bg-gray-800/30 disabled:text-gray-500;
+  @apply box-border bg-sky-600 text-gray-50 hover:bg-sky-500 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:disabled:bg-zinc-800/30;
 }
 .vm-button-secondary {
-  @apply box-border border border-gray-700 bg-gray-800 text-gray-50 hover:bg-gray-700 disabled:cursor-default disabled:border-gray-700/30 disabled:bg-gray-800/30 disabled:text-gray-500;
+  @apply box-border bg-zinc-200 text-zinc-800 hover:bg-zinc-300 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:bg-zinc-800 dark:text-gray-50 dark:hover:bg-zinc-700 dark:disabled:bg-zinc-800/30;
 }
 .vm-button-warn {
-  @apply box-border border border-yellow-600 bg-yellow-700 text-gray-50 hover:bg-yellow-600 disabled:cursor-default disabled:border-gray-700/30 disabled:bg-gray-800/30 disabled:text-gray-500;
+  @apply box-border bg-yellow-500 text-gray-50 hover:bg-yellow-400 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:bg-yellow-700 dark:hover:bg-yellow-600 dark:disabled:bg-zinc-800/30;
 }
 .vm-button-danger {
-  @apply box-border border border-rose-700 bg-rose-800 text-gray-50 hover:bg-rose-700 disabled:cursor-default disabled:border-gray-700/30 disabled:bg-gray-800/30 disabled:text-gray-500;
+  @apply box-border bg-rose-600 text-gray-50 hover:bg-rose-700 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:bg-rose-800 dark:hover:bg-rose-700 dark:disabled:bg-zinc-800/30;
 }
 .vm-button-ghost {
-  @apply text-gray-50 hover:bg-gray-50/10 disabled:bg-transparent disabled:text-gray-500;
+  @apply text-zinc-800 hover:bg-zinc-900/5 disabled:bg-transparent disabled:text-zinc-500 dark:text-zinc-50 dark:hover:bg-zinc-50/10;
 }
 
-/* 
+/*
   due to border inside of a button
-  we should shift the icon by a border size 
+  we should shift the icon by a border size
   back into center position
 */
-.vm-button-primary > ng-icon,
+/*.vm-button-primary > ng-icon,
 .vm-button-secondary > ng-icon,
 .vm-button-warn > ng-icon,
 .vm-button-danger > ng-icon,
 .vm-button-ghost > ng-icon {
   translate: -1px -1px;
-}
+}*/

@@ -24,7 +24,7 @@ export class WordFacade {
         const newWord: Word = {
           ...word,
           id: data.id,
-          craetedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
         };
         this.state.addItems([newWord]);
         this.state.setItemsLoading(false);
