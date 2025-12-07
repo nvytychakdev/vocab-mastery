@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx"
@@ -24,6 +25,8 @@ type PostgresDB struct {
 	psql squirrel.StatementBuilderType
 }
 
+const MAX_RETRIES = 5
+
 func Connect() DB {
 	port, err := strconv.ParseUint(os.Getenv("POSTGRES_PORT"), 10, 16)
 	if err != nil {
@@ -31,19 +34,24 @@ func Connect() DB {
 	}
 
 	psql := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
-	conn, err := pgx.Connect(pgx.ConnConfig{
-		Host:     os.Getenv("POSTGRES_HOST"),
-		Port:     uint16(port),
-		User:     os.Getenv("POSTGRES_USER"),
-		Password: os.Getenv("POSTGRES_PASSWORD"),
-		Database: os.Getenv("POSTGRES_DB"),
-	})
-	if err != nil {
-		slog.Error("Not able to connect to the database", "Error", err)
-		return nil
+	for range MAX_RETRIES {
+		conn, err := pgx.Connect(pgx.ConnConfig{
+			Host:     os.Getenv("POSTGRES_HOST"),
+			Port:     uint16(port),
+			User:     os.Getenv("POSTGRES_USER"),
+			Password: os.Getenv("POSTGRES_PASSWORD"),
+			Database: os.Getenv("POSTGRES_DB"),
+		})
+		if err == nil {
+			slog.Info("Database connection established")
+			return &PostgresDB{conn, psql}
+		}
+
+		slog.Error("Not able to connect to the database, retry again.", "Error", err)
+		time.Sleep(5 * time.Second)
 	}
 
-	return &PostgresDB{conn, psql}
+	return nil
 }
 
 func ApplyQueryOptions(builder squirrel.SelectBuilder, opts *model.QueryOptions) squirrel.SelectBuilder {
