@@ -1,20 +1,18 @@
 <div class="min-w-48">
-  <div class="cursor-pointer pr-2 text-xl font-bold text-zinc-800 dark:text-zinc-50" routerLink="/main">
-    VocabMastery
-  </div>
+  <div class="text-foreground cursor-pointer pr-2 text-xl font-bold" routerLink="/main">VocabMastery</div>
 </div>
 
 <div class="flex shrink-0 grow-0 items-center">
   <div class="flex items-center gap-2">
-    @for(option of navOptions; track $index) {
-    <button
-      vmButton
-      [routerLink]="option.link"
-      routerLinkActive="active"
-      #nav="routerLinkActive"
-      [variant]="nav.isActive ? 'secondary' : 'ghost'">
-      {{ option.title }}
-    </button>
+    @for (option of navOptions; track $index) {
+      <button
+        vmButton
+        [routerLink]="option.link"
+        routerLinkActive="active"
+        #nav="routerLinkActive"
+        [variant]="nav.isActive ? 'secondary' : 'ghost'">
+        {{ option.title }}
+      </button>
     }
   </div>
 </div>

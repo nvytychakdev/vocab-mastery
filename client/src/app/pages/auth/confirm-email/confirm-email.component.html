@@ -1,16 +1,14 @@
 <app-fullscreen-layout>
   <div class="flex flex-col items-center gap-4">
-    <section class="flex min-w-80 flex-col text-zinc-500">
-      <span class="bg-gradient-to-b from-zinc-50 to-zinc-400 bg-clip-text text-2xl font-semibold text-transparent">
-        Email verification required
-      </span>
+    <section class="text-foreground-subtle flex min-w-80 flex-col">
+      <span class="text-foreground text-2xl font-semibold"> Email verification required </span>
       <span>
         We've send a verification link to {{ email() }} <br />
         Please follow the instructions in the email to verify your account
       </span>
     </section>
 
-    <section class="flex items-center text-sm text-zinc-500">
+    <section class="text-foreground-subtle flex items-center text-sm">
       <a vmButton type="link" href="#" (click)="$event.preventDefault(); resendEmail()">Resend email</a>
     </section>
   </div>
