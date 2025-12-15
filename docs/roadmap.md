@@ -3,6 +3,7 @@
 This document outlines the phased development plan for the platform. Each phase contains clear goals, core ideas, and implementation notes.
 
 ## Phase 1 — Core Product Foundation (MVP)
+
 ### 🎯 Goal
 
 Build the fundamental learning experience that immediately delivers value to users:
@@ -40,7 +41,7 @@ Build the fundamental learning experience that immediately delivers value to use
 - Streak
 - Recommendations
 
-4. Dashboard
+4. **Dashboard**
 
 - Single entry point for the user
 - Cards: “Continue learning”, “Review words”, “Daily progress”, “Recommended reading”
@@ -68,13 +69,15 @@ Build the fundamental learning experience that immediately delivers value to use
 - Minimal, but high-quality content to bootstrap the platform
 
 ## Phase 2 — Expansion: Grammar & Reading Depth
+
 ### 🎯 Goal
 
 Build structured grammar learning and expand reading content.
 This phase deepens the educational value and turns the platform into a full learning tool.
 
 ### 💡 Key Ideas
-1. Grammar Lessons
+
+1. **Grammar Lessons**
 
 - Small, modular grammar lessons:
 - Explanation (short, simple, clean)
@@ -87,7 +90,7 @@ This phase deepens the educational value and turns the platform into a full lear
 - Simple Past
 - Modals (can, should)
 
-2. Grammar Exercises
+2. **Grammar Exercises**
 
 - Fill-the-gap
 - Choose correct sentence
@@ -96,14 +99,14 @@ This phase deepens the educational value and turns the platform into a full lear
 - Match rule to example
 - Lessons must directly link to quizzes.
 
-3. Reading Expansion
+3. **Reading Expansion**
 
 - Add 100+ new texts across levels
 - Add longer stories (2–5 minutes reading)
 - Add categories: travel, work, school, daily life
 - Improve question variety (ordering, true/false, sentence completion)
 
-4. Content Tools
+4. **Content Tools**
 
 - Build small internal tools to simplify content creation:
 - Grammar lesson editor
@@ -112,6 +115,7 @@ This phase deepens the educational value and turns the platform into a full lear
 - This accelerates content creation and consistency.
 
 ### 🛠 Implementation Details
+
 **Backend**
 
 - New tables: grammar_topics, grammar_lessons, grammar_exercises, exercise_attempts
@@ -124,7 +128,7 @@ This phase deepens the educational value and turns the platform into a full lear
 - Exercise engine building on existing quiz logic
 - Admin pages (if needed) for importing/editing texts
 
-Data Preparation
+**Data Preparation**
 
 - Write grammar topics and lessons
 - Prepare examples and exercises manually
@@ -132,13 +136,14 @@ Data Preparation
 - This phase is content-heavy, less about coding.
 
 ## Phase 3 — Future Features: Listening & Speaking
+
 ### 🎯 Goal
 
 Define future expansions without implementing them yet.
 These are long-term differentiating features but not needed for initial success.
 
 ### 💡 Key Ideas
-1. Listening Module
+1. **Listening Module**
 
 - Short audio clips (30–60 sec)
 - Transcript toggle (show/hide)
@@ -147,7 +152,7 @@ These are long-term differentiating features but not needed for initial success.
 - Categorized difficulty and themes
 - Initial source can be text-to-speech (TTS).
 
-2. Speaking Module
+2. **Speaking Module**
 
 (Concept only — no AI or implementation now)
 Ideas for future:
@@ -156,10 +161,9 @@ Ideas for future:
 - Pronunciation practice with phonetics (IPA)
 - Speaking prompts (simple ones like: “Describe your breakfast.”)
 
-3. Lesson Integration
+3. **Lesson Integration**
 
 In the future:
-
 - Vocabulary should link to audio clips
 - Reading texts should have “Listen to this text”
-- Grammar should have “Speak this example sentence”
+- Grammar should have
