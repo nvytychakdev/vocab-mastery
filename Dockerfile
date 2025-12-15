@@ -23,6 +23,8 @@ FROM alpine:latest
 
 WORKDIR /app
 
+
+COPY --from=builder /app/seeds ./seeds
 COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/vocab-mastery .
 

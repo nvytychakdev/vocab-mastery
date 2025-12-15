@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/docgen"
 	"github.com/go-chi/render"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/db"
+	migrationsData "github.com/nvytychakdev/vocab-mastery/internal/app/db/migrations-data"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/dictionary"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/language"
@@ -45,12 +46,14 @@ func StartServer() {
 	langHandler := &language.LanguageHandler{Deps: deps}
 	mw := vmMiddleware.NewMiddleware(deps)
 
+	migrationRepo := deps.DB.Migration()
+	migrationsData.RunLatest(migrationRepo)
+
 	router.Mount("/api/v1/auth", routes.AuthRouter(authHandler, mw))
 	router.Mount("/api/v1/dictionaries", routes.DictionaryRouter(dictionaryHandler, mw))
 	router.Mount("/api/v1/language", routes.LanguageRoutes(langHandler, mw))
 
 	docgen.PrintRoutes(router)
-
-	http.ListenAndServe(":8080", router)
 	slog.Info("Started server...")
+	http.ListenAndServe(":8080", router)
 }

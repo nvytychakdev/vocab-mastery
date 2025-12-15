@@ -18,6 +18,7 @@ type DB interface {
 	Dictionary() DictionaryRepo
 	Word() WordRepo
 	Translation() TranslationRepo
+	Migration() MigrationRepo
 }
 
 type PostgresDB struct {
