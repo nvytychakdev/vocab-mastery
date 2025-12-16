@@ -18,16 +18,16 @@ export class Badge {
   get classColor() {
     switch (this.color()) {
       case 'green':
-        return 'bg-green-900/50 text-green-500';
+        return 'bg-badge-green/50 text-badge-green-subtle';
       case 'blue':
-        return 'bg-blue-900/50 text-blue-400';
+        return 'bg-badge-blue/50 text-badge-blue-subtle';
       case 'purple':
-        return 'bg-purple-900/50 text-purple-500';
+        return 'bg-badge-purple/50 text-badge-purple-subtle';
       case 'yellow':
-        return `bg-yellow-900/50 text-yellow-500`;
+        return `bg-badge-yellow/50 text-badge-yellow-subtle`;
 
       default:
-        return 'bg-gray-900/50 text-gray-300';
+        return 'bg-badge-zinc/50 text-badge-zinc-subtle';
     }
   }
 }

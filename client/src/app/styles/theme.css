@@ -12,6 +12,18 @@
   --color-foreground-muted: var(--color-zinc-800);
   --color-foreground-subtle: var(--color-zinc-600);
 
+  /* badge */
+  --color-badge-green: var(--color-green-200);
+  --color-badge-green-subtle: var(--color-green-900);
+  --color-badge-blue: var(--color-blue-200);
+  --color-badge-blue-subtle: var(--color-blue-900);
+  --color-badge-purple: var(--color-purple-300);
+  --color-badge-purple-subtle: var(--color-purple-900);
+  --color-badge-yellow: var(--color-yellow-400);
+  --color-badge-yellow-subtle: var(--color-yellow-900);
+  --color-badge-zinc: var(--color-zinc-300);
+  --color-badge-zinc-subtle: var(--color-zinc-800);
+
   /* spacing */
   --width-layout: var(--breakpoint-xl);
 }
@@ -24,6 +36,18 @@
   --color-foreground: var(--color-zinc-50);
   --color-foreground-muted: var(--color-zinc-300);
   --color-foreground-subtle: var(--color-zinc-500);
+
+  /* badge (dark) */
+  --color-badge-green: var(--color-green-900);
+  --color-badge-green-subtle: var(--color-green-400);
+  --color-badge-blue: var(--color-blue-900);
+  --color-badge-blue-subtle: var(--color-blue-400);
+  --color-badge-purple: var(--color-purple-900);
+  --color-badge-purple-subtle: var(--color-purple-400);
+  --color-badge-yellow: var(--color-yellow-900);
+  --color-badge-yellow-subtle: var(--color-yellow-400);
+  --color-badge-zinc: var(--color-zinc-700);
+  --color-badge-zinc-subtle: var(--color-zinc-200);
 }
 
 @layer components {
