@@ -1,1 +1,185 @@
-<p>play works!</p>
+<!-- App Shell -->
+<div class="text-foreground flex min-h-screen">
+  <!-- Main Content -->
+  <main class="flex-1 space-y-16 py-6 lg:py-10">
+    <!-- HOME PAGE -->
+    <section id="home" class="space-y-10">
+      <header class="space-y-2">
+        <h1 class="text-3xl font-semibold">Good evening 👋</h1>
+        <p class="text-foreground-subtle">Here’s a detailed overview of your learning progress</p>
+      </header>
+
+      <!-- Weekly progress chart (static placeholder) -->
+      <div class="bg-surface-subtle border-foreground-subtle space-y-4 rounded-2xl border p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Weekly progress</h2>
+          <span class="text-foreground-subtle text-sm">Words learned</span>
+        </div>
+        <div class="flex h-40 items-end gap-3">
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-2/5 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-3/5 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-1/2 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-4/5 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-3/5 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-5/6 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+          <div class="flex w-full items-end rounded-lg bg-zinc-100">
+            <div class="h-2/3 w-full rounded-lg bg-zinc-900"></div>
+          </div>
+        </div>
+        <div class="flex justify-between text-xs text-zinc-400">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span
+          ><span>Sun</span>
+        </div>
+      </div>
+
+      <!-- Daily word + actions -->
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="bg-surface-subtle border-foreground-subtle space-y-4 rounded-2xl border p-6 lg:col-span-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Word of the day</h2>
+            <span class="text-xs text-zinc-400">Pronunciation · Examples · Save</span>
+          </div>
+          <div class="space-y-2">
+            <p class="text-3xl font-semibold">Resilient</p>
+            <p class="text-zinc-600">Able to recover quickly from difficulties</p>
+            <p class="text-sm text-zinc-400 italic">“She remained resilient despite many setbacks.”</p>
+          </div>
+          <div class="flex gap-3">
+            <button class="rounded-xl bg-zinc-900 px-4 py-2 text-sm text-white">Add to vocabulary</button>
+            <button class="border-foreground-subtle rounded-xl border px-4 py-2 text-sm">Mark as known</button>
+          </div>
+        </div>
+
+        <!-- Daily goals -->
+        <div class="bg-surface-subtle border-foreground-subtle space-y-4 rounded-2xl border p-6">
+          <h2 class="text-lg font-semibold">Today’s goals</h2>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-center justify-between">
+              <span>Learn 10 new words</span>
+              <span class="text-foreground-subtle">8 / 10</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Vocabulary practice</span>
+              <span class="text-foreground-subtle">Completed</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Reading session</span>
+              <span class="text-foreground-subtle">Not started</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Weak words / focus area -->
+      <div class="bg-surface-subtle border-foreground-subtle space-y-4 rounded-2xl border p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Words to review</h2>
+          <a class="text-foreground-subtle text-sm hover:text-zinc-900" href="#">Practice all</a>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-foreground-subtle rounded-full px-3 py-1 text-sm">Outcome</span>
+          <span class="bg-foreground-subtle rounded-full px-3 py-1 text-sm">Despite</span>
+          <span class="bg-foreground-subtle rounded-full px-3 py-1 text-sm">Maintain</span>
+          <span class="bg-foreground-subtle rounded-full px-3 py-1 text-sm">Assume</span>
+          <span class="bg-foreground-subtle rounded-full px-3 py-1 text-sm">Significant</span>
+        </div>
+        <p class="text-xs text-zinc-400">Based on your recent mistakes and slow responses</p>
+      </div>
+    </section>
+
+    <!-- VOCABULARY PAGE -->
+    <section id="vocabulary" class="space-y-8">
+      <header class="space-y-1">
+        <h1 class="text-3xl font-semibold">Vocabulary Practice</h1>
+        <p class="text-foreground-subtle">Choose the correct translation</p>
+      </header>
+
+      <!-- Quiz Card -->
+      <div class="bg-surface-subtle border-foreground-subtle max-w-xl space-y-6 rounded-2xl border p-8">
+        <div class="space-y-1">
+          <p class="text-foreground-subtle text-sm">Question 2 of 10</p>
+          <p class="text-2xl font-semibold">"Achievement"</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <button class="border-foreground-subtle rounded-xl border p-4 text-left hover:border-zinc-900">
+            Досягнення
+          </button>
+          <button class="border-foreground-subtle rounded-xl border p-4 text-left hover:border-zinc-900">
+            Перевага
+          </button>
+          <button class="border-foreground-subtle rounded-xl border p-4 text-left hover:border-zinc-900">Звичка</button>
+          <button class="border-foreground-subtle rounded-xl border p-4 text-left hover:border-zinc-900">
+            Випадок
+          </button>
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button class="text-foreground-subtle text-sm">Skip</button>
+          <button class="rounded-xl bg-zinc-900 px-5 py-2 text-sm text-white">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- READING PAGE -->
+    <section id="reading" class="space-y-8">
+      <header class="space-y-1">
+        <h1 class="text-3xl font-semibold">Reading Practice</h1>
+        <p class="text-foreground-subtle">Read the text and answer the questions</p>
+      </header>
+
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <!-- Text -->
+        <article
+          class="bg-surface-subtle border-foreground-subtle space-y-4 rounded-2xl border p-6 leading-relaxed lg:col-span-2">
+          <h2 class="text-xl font-semibold">A Simple Morning Routine</h2>
+          <p>
+            Every morning, James wakes up at 7 a.m. He makes a cup of coffee and reads the news while eating breakfast.
+            This routine helps him feel calm and prepared for the day ahead.
+          </p>
+          <p>
+            After breakfast, he goes for a short walk before starting work. This habit has improved his focus and
+            energy.
+          </p>
+        </article>
+
+        <!-- Questions -->
+        <div class="bg-surface-subtle border-foreground-subtle space-y-6 rounded-2xl border p-6">
+          <div class="space-y-2">
+            <p class="font-medium">Question</p>
+            <p class="text-sm text-zinc-600">Why does James read the news in the morning?</p>
+          </div>
+
+          <div class="space-y-3">
+            <label class="flex items-start gap-3">
+              <input type="radio" name="q1" class="mt-1" />
+              <span>To relax and prepare for the day</span>
+            </label>
+            <label class="flex items-start gap-3">
+              <input type="radio" name="q1" class="mt-1" />
+              <span>To avoid going to work</span>
+            </label>
+            <label class="flex items-start gap-3">
+              <input type="radio" name="q1" class="mt-1" />
+              <span>To meet friends</span>
+            </label>
+          </div>
+
+          <button class="w-full rounded-xl bg-zinc-900 py-2 text-sm text-white">Submit answer</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

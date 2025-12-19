@@ -1,11 +1,37 @@
+@theme {
+  /* button */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-bg-strong: var(--color-primary-strong);
+  --button-primary-fg: var(--color-foreground-inverse);
+  --button-secondary-bg: var(--color-secondary);
+  --button-secondary-bg-strong: var(--color-secondary-strong);
+  --button-secondary-fg: var(--color-default-inverse);
+  --button-warn-bg: var(--color-warn);
+  --button-warn-bg-strong: var(--color-warn-strong);
+  --button-warn-fg: var(--color-foreground-inverse);
+  --button-danger-bg: var(--color-danger);
+  --button-danger-bg-strong: var(--color-danger-strong);
+  --button-danger-fg: var(--color-foreground-inverse);
+}
+
+.dark {
+  --button-secondary-fg: var(--color-foreground-inverse);
+}
+
 .vm-button {
-  @apply cursor-pointer rounded-full outline-offset-2 outline-sky-500 transition-colors focus-visible:outline-2;
+  @apply outline-primary-strong cursor-pointer rounded-full outline-offset-2 transition-colors focus-visible:outline-2;
 }
 .vm-button-link {
-  @apply cursor-pointer rounded-md p-2 text-sky-600 outline-offset-2 outline-sky-500 hover:text-sky-500 hover:underline focus-visible:outline-2;
+  @apply text-primary outline-primary-strong hover:text-primary-strong cursor-pointer rounded-md p-2 outline-offset-2 hover:underline focus-visible:outline-2;
 }
 .vm-button-icon {
   @apply h-10 w-10 rounded-full text-2xl;
+}
+
+.vm-button:disabled,
+.vm-button-icon:disabled {
+  color: var(--color-foreground-disabled);
+  background-color: color-mix(in oklab, var(--color-surface-disabled) var(--opacity-disabled-medium), transparent);
 }
 
 .vm-button-sm {
@@ -23,19 +49,60 @@
 }
 
 .vm-button-primary {
-  @apply box-border bg-sky-600 text-gray-50 hover:bg-sky-500 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:disabled:bg-zinc-800/30;
+  @apply box-border disabled:cursor-default;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-fg);
+
+  &:not(:disabled):hover {
+    @media (hover: hover) {
+      background-color: var(--button-primary-bg-strong);
+    }
+  }
 }
+
 .vm-button-secondary {
-  @apply box-border bg-zinc-200 text-zinc-800 hover:bg-zinc-300 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:bg-zinc-800 dark:text-gray-50 dark:hover:bg-zinc-700 dark:disabled:bg-zinc-800/30;
+  @apply box-border disabled:cursor-default;
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-fg);
+
+  &:not(:disabled):hover {
+    @media (hover: hover) {
+      background-color: var(--button-secondary-bg-strong);
+    }
+  }
 }
+
 .vm-button-warn {
-  @apply box-border bg-yellow-500 text-gray-50 hover:bg-yellow-400 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:bg-yellow-700 dark:hover:bg-yellow-600 dark:disabled:bg-zinc-800/30;
+  @apply box-border disabled:cursor-default;
+  background-color: var(--button-warn-bg);
+  color: var(--button-warn-fg);
+
+  &:not(:disabled):hover {
+    @media (hover: hover) {
+      background-color: var(--button-warn-bg-strong);
+    }
+  }
 }
+
 .vm-button-danger {
-  @apply box-border bg-rose-600 text-gray-50 hover:bg-rose-700 disabled:cursor-default disabled:border-zinc-700/30 disabled:bg-zinc-400/20 disabled:text-gray-500 dark:bg-rose-800 dark:hover:bg-rose-700 dark:disabled:bg-zinc-800/30;
+  @apply box-border disabled:cursor-default;
+  background-color: var(--button-danger-bg);
+  color: var(--button-danger-fg);
+
+  &:not(:disabled):hover {
+    @media (hover: hover) {
+      background-color: var(--button-danger-bg-strong);
+    }
+  }
 }
 .vm-button-ghost {
-  @apply text-zinc-800 hover:bg-zinc-900/5 disabled:cursor-default disabled:bg-transparent disabled:text-zinc-500 disabled:hover:bg-transparent dark:text-zinc-50 dark:hover:bg-zinc-50/10;
+  @apply text-default-inverse dark:text-foreground-inverse disabled:text-default-subtle disabled:cursor-default disabled:bg-transparent disabled:hover:bg-transparent;
+
+  &:hover {
+    @media (hover: hover) {
+      background-color: color-mix(in oklab, var(--color-foreground) var(--opacity-hover-soft), transparent);
+    }
+  }
 }
 
 /*

@@ -1,6 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
-import { Dictionary } from '@domain/dictionary/dictionary.interface';
+import { Component, signal } from '@angular/core';
+import { ALPHABET, ENGLISH_LEVEL, EnglishLevel } from '@feature/dictionary/dictionary.model';
 
 @Component({
   selector: 'app-my-words',
@@ -9,14 +8,20 @@ import { Dictionary } from '@domain/dictionary/dictionary.interface';
   styleUrl: './my-words.css',
 })
 export class MyWords {
-  readonly dictionaryFacade = inject(DictionaryFacade);
-  readonly selectedDictionary = signal<Dictionary | null>(null);
+  readonly englishLevel = Object.values(ENGLISH_LEVEL);
+  readonly selectedEnglishLevel = signal<EnglishLevel | undefined>(undefined);
+  readonly alphabet = ALPHABET;
+  readonly selectedChar = signal<string | undefined>(undefined);
 
-  onDictionarySelection(dictionary: Dictionary) {
-    if (this.selectedDictionary()) {
-      this.selectedDictionary.set(null);
-    } else {
-      this.selectedDictionary.set(dictionary);
-    }
+  readonly words = ['word', 'word', 'word'];
+  readonly groups = [this.words, this.words, this.words];
+
+  onLevelSelection(level: EnglishLevel) {
+    this.selectedEnglishLevel.set(level);
+  }
+
+  onAlphabetSelection(char: string) {
+    const isSelected = this.selectedChar() === char;
+    this.selectedChar.set(isSelected ? undefined : char);
   }
 }

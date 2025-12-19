@@ -7,22 +7,33 @@
   /* colors */
   --color-surface: var(--color-zinc-50);
   --color-surface-subtle: var(--color-zinc-100);
+  --color-surface-disabled: var(--color-zinc-300);
 
   --color-foreground: var(--color-zinc-900);
   --color-foreground-muted: var(--color-zinc-800);
-  --color-foreground-subtle: var(--color-zinc-600);
+  --color-foreground-subtle: var(--color-zinc-400);
+  --color-foreground-inverse: var(--color-zinc-50);
+  --color-foreground-disabled: var(--color-zinc-500);
 
-  /* badge */
-  --color-badge-green: var(--color-green-200);
-  --color-badge-green-subtle: var(--color-green-900);
-  --color-badge-blue: var(--color-blue-200);
-  --color-badge-blue-subtle: var(--color-blue-900);
-  --color-badge-purple: var(--color-purple-300);
-  --color-badge-purple-subtle: var(--color-purple-900);
-  --color-badge-yellow: var(--color-yellow-400);
-  --color-badge-yellow-subtle: var(--color-yellow-900);
-  --color-badge-zinc: var(--color-zinc-300);
-  --color-badge-zinc-subtle: var(--color-zinc-800);
+  --color-primary: var(--color-sky-600);
+  --color-primary-strong: var(--color-sky-500);
+  --color-secondary: var(--color-zinc-200);
+  --color-secondary-strong: var(--color-zinc-300);
+  --color-warn: var(--color-yellow-500);
+  --color-warn-strong: var(--color-yellow-400);
+  --color-danger: var(--color-rose-600);
+  --color-danger-strong: var(--color-rose-700);
+  --color-default: var(--color-zinc-500);
+  --color-default-subtle: var(--color-zinc-600);
+  --color-default-inverse: var(--color-zinc-800);
+
+  /* opacity */
+  --opacity-soft: 20%;
+  --opacity-medium: 20%;
+  --opacity-hover-soft: 5%;
+  --opacity-hover-medium: 10%;
+  --opacity-disabled-soft: 20%;
+  --opacity-disabled-medium: 30%;
 
   /* spacing */
   --width-layout: var(--breakpoint-xl);
@@ -32,22 +43,32 @@
   /* colors */
   --color-surface: var(--color-zinc-950);
   --color-surface-subtle: var(--color-zinc-900);
+  --color-surface-disabled: var(--color-zinc-700);
 
   --color-foreground: var(--color-zinc-50);
   --color-foreground-muted: var(--color-zinc-300);
   --color-foreground-subtle: var(--color-zinc-500);
+  --color-foreground-disabled: var(--color-zinc-500);
 
-  /* badge (dark) */
-  --color-badge-green: var(--color-green-900);
-  --color-badge-green-subtle: var(--color-green-400);
-  --color-badge-blue: var(--color-blue-900);
-  --color-badge-blue-subtle: var(--color-blue-400);
-  --color-badge-purple: var(--color-purple-900);
-  --color-badge-purple-subtle: var(--color-purple-400);
-  --color-badge-yellow: var(--color-yellow-900);
-  --color-badge-yellow-subtle: var(--color-yellow-400);
-  --color-badge-zinc: var(--color-zinc-700);
-  --color-badge-zinc-subtle: var(--color-zinc-200);
+  --color-primary: var(--color-sky-600);
+  --color-primary-strong: var(--color-sky-500);
+  --color-secondary: var(--color-zinc-800);
+  --color-secondary-strong: var(--color-zinc-700);
+  --color-warn: var(--color-yellow-600);
+  --color-warn-strong: var(--color-yellow-500);
+  --color-danger: var(--color-rose-600);
+  --color-danger-strong: var(--color-rose-500);
+  --color-default: var(--color-zinc-400);
+  --color-default-subtle: var(--color-zinc-500);
+  --color-default-inverse: var(--color-zinc-800);
+
+  /* opacity */
+  --opacity-soft: 20%;
+  --opacity-medium: 20%;
+  --opacity-hover-soft: 10%;
+  --opacity-hover-medium: 30%;
+  --opacity-disabled-soft: 10%;
+  --opacity-disabled-medium: 30%;
 }
 
 @layer components {
