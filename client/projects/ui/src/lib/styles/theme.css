@@ -1,5 +1,3 @@
-@import 'tailwindcss';
-
 @theme {
   /* tailwind */
   --default-font-family: 'Inter', 'sans-serif';
@@ -7,13 +5,14 @@
   /* colors */
   --color-surface: var(--color-zinc-50);
   --color-surface-subtle: var(--color-zinc-100);
+  --color-surface-muted: var(--color-zinc-200);
   --color-surface-disabled: var(--color-zinc-300);
 
   --color-foreground: var(--color-zinc-900);
-  --color-foreground-muted: var(--color-zinc-800);
+  --color-foreground-muted: var(--color-zinc-500);
   --color-foreground-subtle: var(--color-zinc-400);
   --color-foreground-inverse: var(--color-zinc-50);
-  --color-foreground-disabled: var(--color-zinc-500);
+  --color-foreground-disabled: var(--color-zinc-400);
 
   --color-primary: var(--color-sky-600);
   --color-primary-strong: var(--color-sky-500);
@@ -30,6 +29,7 @@
   /* opacity */
   --opacity-soft: 20%;
   --opacity-medium: 20%;
+  --opacity-strong: 50%;
   --opacity-hover-soft: 5%;
   --opacity-hover-medium: 10%;
   --opacity-disabled-soft: 20%;
@@ -43,12 +43,13 @@
   /* colors */
   --color-surface: var(--color-zinc-950);
   --color-surface-subtle: var(--color-zinc-900);
+  --color-surface-muted: var(--color-zinc-800);
   --color-surface-disabled: var(--color-zinc-700);
 
   --color-foreground: var(--color-zinc-50);
-  --color-foreground-muted: var(--color-zinc-300);
+  --color-foreground-muted: var(--color-zinc-400);
   --color-foreground-subtle: var(--color-zinc-500);
-  --color-foreground-disabled: var(--color-zinc-500);
+  --color-foreground-disabled: var(--color-zinc-400);
 
   --color-primary: var(--color-sky-600);
   --color-primary-strong: var(--color-sky-500);
@@ -64,30 +65,12 @@
 
   /* opacity */
   --opacity-soft: 20%;
-  --opacity-medium: 20%;
+  --opacity-medium: 30%;
+  --opacity-strong: 50%;
   --opacity-hover-soft: 10%;
   --opacity-hover-medium: 30%;
   --opacity-disabled-soft: 10%;
   --opacity-disabled-medium: 30%;
-}
-
-@layer components {
-  .typography {
-    /* p {
-      font-size: var(--text-base);
-      color: var(--color-gray-700);
-    }
-    h1 {
-      font-size: var(--text-2xl--line-height);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-gray-950);
-    }
-    h2 {
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-gray-950);
-    } */
-  }
 }
 
 @utility bg-gradient-primary {

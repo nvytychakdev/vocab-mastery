@@ -1,0 +1,17 @@
+@import '@angular/cdk/overlay-prebuilt.css';
+
+/* theme*/
+@import './theme.css';
+@import './typography.css';
+
+/* animations */
+@import './animations/slide.css';
+
+/* components */
+@import '../button/button.css';
+@import '../input/input.css';
+@import '../badge/badge.css';
+@import '../toast/toast.css';
+@import '../menu/menu.css';
+@import '../card/card.css';
+@import '../toggle-button/toggle-button.css';

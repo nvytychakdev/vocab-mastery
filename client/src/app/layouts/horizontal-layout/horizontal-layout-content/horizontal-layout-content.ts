@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-horizontal-layout-content',
   imports: [],
   host: {
-    class: 'w-full max-w-(--width-layout) px-4',
+    class: 'w-full max-w-(--width-layout) px-8',
   },
   templateUrl: './horizontal-layout-content.html',
   styleUrl: './horizontal-layout-content.css',

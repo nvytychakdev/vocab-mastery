@@ -1,0 +1,25 @@
+.vm-toggle-button-group {
+  @apply inline-flex w-fit items-center justify-center rounded-full;
+
+  background-color: var(--color-surface-subtle);
+}
+
+.vm-toggle-button {
+  @apply cursor-pointer rounded-full px-4 py-2 text-sm transition-colors;
+
+  &:hover {
+    @media (hover: hover) {
+      background-color: color-mix(in oklab, var(--color-foreground) var(--opacity-hover-soft), transparent);
+    }
+  }
+}
+
+.vm-toggle-button-active {
+  background: color-mix(in oklab, var(--color-foreground) var(--opacity-soft), transparent);
+
+  &:hover {
+    @media (hover: hover) {
+      background-color: color-mix(in oklab, var(--color-foreground) var(--opacity-medium), transparent);
+    }
+  }
+}

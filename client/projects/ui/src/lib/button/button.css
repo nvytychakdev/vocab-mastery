@@ -96,7 +96,7 @@
   }
 }
 .vm-button-ghost {
-  @apply text-default-inverse dark:text-foreground-inverse disabled:text-default-subtle disabled:cursor-default disabled:bg-transparent disabled:hover:bg-transparent;
+  @apply text-default-inverse dark:text-foreground-inverse disabled:cursor-default disabled:bg-transparent disabled:hover:bg-transparent;
 
   &:hover {
     @media (hover: hover) {

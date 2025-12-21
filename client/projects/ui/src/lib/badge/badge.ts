@@ -2,6 +2,14 @@ import { ChangeDetectionStrategy, Component, HostBinding, input } from '@angular
 
 type BadgeColor = 'gray' | 'green' | 'blue' | 'yellow' | 'purple';
 
+const BadgeColors: Record<BadgeColor, string> = {
+  green: 'vm-badge-green',
+  blue: 'vm-badge-blue',
+  purple: 'vm-badge-purple',
+  yellow: 'vm-badge-yellow',
+  gray: 'vm-badge-gray',
+};
+
 @Component({
   selector: 'vm-badge',
   imports: [],
@@ -16,17 +24,6 @@ export class Badge {
   }
 
   get classColor() {
-    switch (this.color()) {
-      case 'green':
-        return 'bg-green-900/50 text-green-500';
-      case 'blue':
-        return 'bg-blue-900/50 text-blue-400';
-      case 'purple':
-        return 'bg-purple-900/50 text-purple-500';
-      case 'yellow':
-        return `bg-yellow-900/50 text-yellow-500`;
-      default:
-        return 'bg-gray-900/50 text-gray-300';
-    }
+    return BadgeColors[this.color()];
   }
 }

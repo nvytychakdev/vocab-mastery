@@ -1,0 +1,23 @@
+.vm-badge {
+  @apply inline-block rounded px-2 py-1 text-sm font-medium;
+}
+
+.vm-badge-green {
+  @apply bg-green-600/10 text-green-800 dark:bg-green-900/50 dark:text-green-500;
+}
+
+.vm-badge-blue {
+  @apply bg-blue-600/10 text-blue-800 dark:bg-blue-800/50 dark:text-blue-400;
+}
+
+.vm-badge-purple {
+  @apply bg-purple-600/10 text-purple-800 dark:bg-purple-800/50 dark:text-purple-400;
+}
+
+.vm-badge-yellow {
+  @apply bg-yellow-600/10 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-500;
+}
+
+.vm-badge-gray {
+  @apply bg-zinc-600/10 text-zinc-800 dark:bg-zinc-600/50 dark:text-zinc-300;
+}

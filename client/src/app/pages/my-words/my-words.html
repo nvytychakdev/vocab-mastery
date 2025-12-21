@@ -1,41 +1,40 @@
-<section class="my-10 flex w-full items-center justify-center gap-2 rounded-full text-xl">
-  <div class="bg-surface-subtle flex w-fit items-center justify-center rounded-full">
+<section class="mt-4 flex w-full items-center justify-center gap-2 rounded-full text-xl">
+  <vm-toggle-button-group [value]="selectedEnglishLevel()" (valueChange)="onLevelSelection($event)">
     @for (level of englishLevel; track $index) {
+      <vm-toggle-button [value]="level">{{ level }}</vm-toggle-button>
+    }
+  </vm-toggle-button-group>
+</section>
+
+<section class="text-foreground-subtle bg-surface sticky top-0 w-full text-xl">
+  <div class="flex items-center justify-center py-8">
+    @for (char of alphabet; track $index) {
       <div
-        class="hover:bg-foreground/5 cursor-pointer rounded-full px-4 py-2 text-sm"
-        [class.bg-foreground/10]="selectedEnglishLevel() === level"
-        tabindex="0"
-        (keypress)="onLevelSelection(level)"
-        (click)="onLevelSelection(level)">
-        {{ level }}
+        class="hover:text-foreground flex min-h-8 min-w-8 cursor-pointer items-center justify-center"
+        [class.text-foreground]="selectedChar() === char"
+        tabindex="1"
+        (click)="onAlphabetSelection(char)"
+        (keypress)="onAlphabetSelection(char)">
+        {{ char }}
       </div>
     }
   </div>
+  <div class="bg-surface-muted h-[1px]"></div>
 </section>
 
-<section class="text-foreground-subtle my-8 flex w-full items-center justify-center  text-xl">
-  @for (char of alphabet; track $index) {
-    <div
-      class="hover:text-foreground cursor-pointer min-w-8 min-h-8 flex items-center justify-center"
-      [class.text-foreground]="selectedChar() === char"
-      tabindex="1"
-      (click)="onAlphabetSelection(char)"
-      (keypress)="onAlphabetSelection(char)">
-      {{ char }}
-    </div>
-  }
-</section>
-
-<section class="flex flex-col gap-8 pt-8">
+<section class="typography flex flex-col">
   @for (group of groups; track $index) {
-    <div class="flex gap-4">
-      @for (word of group; track $index) {
-        <div>{{ word }}</div>
-      }
+    <div class="my-8 flex gap-24">
+      <h1 class="text-muted flex-1/6">{{ group.letter }}</h1>
+      <div class="grid flex-5/6 grid-cols-3 gap-4">
+        @for (word of group.words; track $index) {
+          <p class="w-1/3">{{ word }}</p>
+        }
+      </div>
     </div>
 
     @if (!$last) {
-      <div class="bg-surface-subtle h-[1px]"></div>
+      <div class="bg-surface-muted h-[1px]"></div>
     }
   }
 </section>

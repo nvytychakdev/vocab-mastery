@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMonitor, lucideMoon, lucideSun } from '@ng-icons/lucide';
 import { Button } from '@vm/ui';
-import { ThemeLoader } from '../../../../styles/theme-loader';
+import { ThemeLoader } from '../../../../../../projects/ui/src/lib/theme/theme-loader';
 
 @Component({
   selector: 'app-horizontal-layout-header-theme-selector',

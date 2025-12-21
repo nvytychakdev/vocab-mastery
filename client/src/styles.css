@@ -1,11 +1,3 @@
-@import '@angular/cdk/overlay-prebuilt.css';
+@import 'tailwindcss';
 
-@import './app/styles/animations/slide.css';
-
-@import './app/styles/theme.css';
-@import './app/styles/components/button.css';
-@import './app/styles/components/input.css';
-@import './app/styles/components/badge.css';
-@import './app/styles/components/toast.css';
-@import './app/styles/components/menu.css';
-@import './app/styles/components/card.css';
+@import '../projects/ui/src/lib/styles/index.css';

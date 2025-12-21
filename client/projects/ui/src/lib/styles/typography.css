@@ -1,0 +1,45 @@
+@layer components {
+  .typography {
+    h1 {
+      font-size: var(--text-5xl);
+      font-weight: var(--font-weight-bold);
+      line-height: var(--text-5xl--line-height);
+      color: var(--color-foreground);
+    }
+    h2 {
+      font-size: var(--text-3xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--text-3xl--line-height);
+      color: var(--color-foreground);
+    }
+    h3 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--text-xl--line-height);
+      color: var(--color-foreground);
+    }
+    p {
+      font-size: var(--text-base);
+      color: var(--color-foreground);
+    }
+    small {
+      font-size: var(--text-xs);
+      line-height: var(--text-xs--line-height);
+      color: var(--color-foreground);
+    }
+  }
+}
+
+@layer utilities {
+  .text-muted {
+    color: var(--color-foreground-muted);
+  }
+
+  .text-subtle {
+    color: var(--color-foreground-subtle);
+  }
+
+  .text-disabled {
+    color: var(--color-foreground-disabled);
+  }
+}

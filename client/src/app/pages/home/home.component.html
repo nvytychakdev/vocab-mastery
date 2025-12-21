@@ -1,4 +1,4 @@
-<div class="flex items-start gap-2 p-4">
+<div class="flex items-start gap-2 py-4">
   <button vmButton variant="primary" (click)="openDefault()">Open Default</button>
   <button vmButton variant="secondary" (click)="openShort()">Open Short</button>
   <button vmButton variant="warn" (click)="openError()">Open Error</button>
@@ -6,7 +6,7 @@
   <button vmButton variant="ghost" (click)="openWarn()">Open Warn</button>
 </div>
 
-<div class="flex items-start gap-2 p-4">
+<div class="flex items-start gap-2 py-4">
   <button vmButton variant="primary" disabled (click)="openDefault()">Open Default</button>
   <button vmButton variant="secondary" disabled (click)="openShort()">Open Short</button>
   <button vmButton variant="warn" disabled (click)="openError()">Open Error</button>
@@ -14,7 +14,7 @@
   <button vmButton variant="ghost" disabled (click)="openWarn()">Open Warn</button>
 </div>
 
-<div class="flex items-start gap-2 p-4">
+<div class="flex items-start gap-2 py-4">
   <button vmButton type="icon" variant="primary" (click)="openDefault()">
     <ng-icon size="24" name="lucidePlus" />
   </button>
@@ -27,19 +27,19 @@
 </div>
 
 <div class="flex gap-2">
-  <div class="flex flex-col items-start gap-2 p-4">
+  <div class="flex flex-col items-start gap-2 py-4">
     <button vmButton size="small" (click)="openDefault()">Small</button>
     <button vmButton size="medium" (click)="openShort()">Medium</button>
     <button vmButton size="large" (click)="openShort()">Large</button>
   </div>
-  <div class="flex flex-col items-start gap-2 p-4">
+  <div class="flex flex-col items-start gap-2 py-4">
     <button vmButton size="small" type="link" (click)="openDefault()">Open</button>
     <button vmButton size="medium" type="link" (click)="openDefault()">Open</button>
     <button vmButton size="large" type="link" (click)="openDefault()">Open</button>
   </div>
 </div>
 
-<div class="flex gap-2 p-4">
+<div class="flex gap-2 py-4">
   <vm-badge>Test</vm-badge>
   <vm-badge color="green">Test</vm-badge>
   <vm-badge color="blue">Test</vm-badge>
@@ -47,7 +47,7 @@
   <vm-badge color="yellow">Test</vm-badge>
 </div>
 
-<div class="flex gap-2 p-4">
+<div class="flex gap-2 py-4">
   <button vmButton [vmMenuTrigger]="menu" size="large">Menu</button>
   <vm-menu #menu="vmMenu">
     <div vmMenuItem>Item 1</div>
@@ -57,7 +57,7 @@
   </vm-menu>
 </div>
 
-<div class="flex items-start gap-2 p-4">
+<div class="flex items-start gap-2 py-4">
   <vm-card>
     <div title>Title</div>
     <div value>Value</div>
@@ -75,9 +75,34 @@
   </vm-card>
 </div>
 
-<div class="flex items-start gap-2 p-4">
+<div class="flex items-start gap-2 py-4">
   <input type="text" vmInput />
   <input type="text" vmInput placeholder="Placeholder..." />
 
   <textarea type="text" vmInput placeholder="Placeholder..."></textarea>
+</div>
+
+<div class="typography flex flex-col gap-2 py-4">
+  <h1>Header 1</h1>
+  <h2>Header 2</h2>
+  <h3>Header 3</h3>
+  <p>
+    Paragraph: Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde nemo fugiat, excepturi rem asperiores
+    provident obcaecati enim, dolores modi suscipit voluptates quas? Repellendus culpa voluptate repellat sunt quam,
+    facilis maxime.
+  </p>
+  <p class="text-muted">
+    Muted Paragraph: Lorem ipsum, dolor sit amet consectetur adipisicing elit. Incidunt ducimus harum eius expedita
+    dolorem cumque pariatur accusamus quia nihil maiores, aliquid inventore ea nulla quos dicta vero corporis. Dicta,
+    provident!
+  </p>
+  <p class="text-subtle">
+    Subtle Paragraph: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique cumque nisi ad cum. Enim quas
+    voluptatem hic quos praesentium, quisquam, similique exercitationem recusandae consequuntur aut magni reiciendis
+    explicabo dicta deserunt.
+  </p>
+  <small>
+    Small text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit architecto labore, ut, magni consequuntur
+    iure corporis voluptate at ipsam modi nostrum magnam, quo ab quos natus laborum assumenda reiciendis illum!
+  </small>
 </div>
