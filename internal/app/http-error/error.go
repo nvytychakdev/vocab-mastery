@@ -3,6 +3,7 @@ package httpError
 import (
 	"log/slog"
 	"net/http"
+	"runtime"
 
 	"github.com/go-chi/render"
 )
@@ -55,7 +56,12 @@ func (e *ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
 }
 
 func NewErrorResponse(code int, statusCode int16, err error) *ErrorResponse {
-	slog.Error("Response error", "Err", err, "Code", code, "StatusCode", statusCode)
+	_, file, line, ok := runtime.Caller(1)
+	if ok {
+		slog.Error("Response error", "Err", err, "Code", code, "StatusCode", statusCode, "File", file, "Line", line)
+	} else {
+		slog.Error("Response error", "Err", err, "Code", code, "StatusCode", statusCode, "File", "unidentified")
+	}
 
 	return &ErrorResponse{
 		Error:      err,
