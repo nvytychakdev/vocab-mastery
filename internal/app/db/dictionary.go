@@ -51,7 +51,7 @@ func (db *dictionaryRepo) DeleteByID(dictionaryId string) error {
 
 func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error) {
 	query, args, err := db.psql.
-		Select("id", "owner_id", "title", "created_at").
+		Select("id", "owner_id", "title", "level", "is_default", "created_at").
 		From("dictionaries").Where(sq.Eq{"id": dictionaryId}).ToSql()
 
 	if err != nil {
@@ -61,8 +61,10 @@ func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error
 	var dictionary model.Dictionary
 	err = db.conn.QueryRow(query, args...).Scan(
 		&dictionary.ID,
-		&dictionary.UserID,
+		&dictionary.OwnerID,
 		&dictionary.Title,
+		&dictionary.Level,
+		&dictionary.IsDefault,
 		&dictionary.CreatedAt,
 	)
 	return &dictionary, err
@@ -70,8 +72,13 @@ func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error
 
 func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
 	queryBuilder := db.psql.
-		Select("id", "owner_id", "title", "created_at").
-		From("dictionaries").Where(sq.Eq{"owner_id": userId})
+		Select("id", "owner_id", "title", "level", "is_default", "created_at").
+		From("dictionaries").Where(
+		sq.Or{
+			sq.Eq{"owner_id": userId},
+			sq.Eq{"is_default": true},
+		},
+	)
 
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
@@ -91,8 +98,10 @@ func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) 
 		var dictionary model.Dictionary
 		err := rows.Scan(
 			&dictionary.ID,
-			&dictionary.UserID,
+			&dictionary.OwnerID,
 			&dictionary.Title,
+			&dictionary.Level,
+			&dictionary.IsDefault,
 			&dictionary.CreatedAt,
 		)
 

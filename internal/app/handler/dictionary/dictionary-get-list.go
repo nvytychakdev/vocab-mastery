@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
@@ -23,6 +24,7 @@ func (auth *DictionaryHandler) DictionaryGetList(w http.ResponseWriter, r *http.
 
 	dictionaries, total, err := auth.Deps.DB.Dictionary().ListByUserId(userId, opts)
 	if err != nil {
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return
 	}
 

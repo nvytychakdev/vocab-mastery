@@ -6,9 +6,9 @@ import (
 
 type Dictionary struct {
 	ID        string    `json:"id,omitempty"`
-	UserID    string    `json:"-"`
+	OwnerID   *string   `json:"-"`
 	Title     string    `json:"title"`
-	Level     string    `json:"level"`
+	Level     *string   `json:"level"`
 	IsDefault bool      `json:"isDefault"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 }

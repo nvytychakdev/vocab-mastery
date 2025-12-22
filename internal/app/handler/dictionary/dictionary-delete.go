@@ -19,6 +19,11 @@ func (d DictionaryDeleteResponse) Render(w http.ResponseWriter, r *http.Request)
 func (auth *DictionaryHandler) DictionaryDeleteByID(w http.ResponseWriter, r *http.Request) {
 	dictionary := middleware.GetDictionaryContext(r)
 
+	if dictionary.OwnerID == nil {
+		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrUnauthorized, nil))
+		return
+	}
+
 	err := auth.Deps.DB.Dictionary().DeleteByID(dictionary.ID)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
