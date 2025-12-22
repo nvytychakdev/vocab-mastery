@@ -7,7 +7,7 @@ import (
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 )
 
-func DictionaryRouter(dh *dictionary.DictionaryHandler, mw *middleware.Middleware) *chi.Mux {
+func DictionaryRouter(dh *dictionary.DictionaryHandler, wh *word.WordHandler, mw *middleware.Middleware) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(mw.Authorized)
 	router.Post("/", dh.DictionaryCreate)
@@ -16,9 +16,7 @@ func DictionaryRouter(dh *dictionary.DictionaryHandler, mw *middleware.Middlewar
 		r.Use(mw.DictionaryContext)
 		r.With(mw.IncludeContext).Get("/", dh.DictionaryGetByID)
 		r.Delete("/", dh.DictionaryDeleteByID)
-
-		wh := &word.WordHandler{Deps: dh.Deps}
-		WordRouter(r, wh, mw)
+		WordDictionaryRouter(r, wh, mw)
 	})
 
 	return router

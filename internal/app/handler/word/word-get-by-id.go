@@ -27,9 +27,8 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 
 	response := &WordGetByIdResponse{
 		ID:        word.ID,
-		CreatedAt: word.CreatedAt,
 		Word:      word.Word,
-		Language:  word.Language,
+		CreatedAt: word.CreatedAt,
 	}
 
 	if include != nil && include["translations"] {
