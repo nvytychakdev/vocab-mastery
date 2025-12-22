@@ -1,7 +1,6 @@
-CREATE TABLE IF NOT EXISTS translations (
+CREATE TABLE IF NOT EXISTS word_meanings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
     word_id UUID REFERENCES words (id) ON DELETE CASCADE,
-    word TEXT NOT NULL,
-    language TEXT NOT NULL,
+    definition TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()
 )

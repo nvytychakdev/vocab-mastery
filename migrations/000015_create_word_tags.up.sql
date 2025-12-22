@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS word_tags (
+    word_id UUID REFERENCES words (id) ON DELETE CASCADE,
+    tag_id UUID REFERENCES tags (id) ON DELETE CASCADE
+)
