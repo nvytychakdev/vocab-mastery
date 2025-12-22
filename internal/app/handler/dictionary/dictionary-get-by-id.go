@@ -10,11 +10,10 @@ import (
 )
 
 type DictionaryGetByIdResponse struct {
-	ID          string        `json:"id"`
-	CreatedAt   time.Time     `json:"craetedAt"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	Words       []*model.Word `json:"words,omitempty"`
+	ID        string        `json:"id"`
+	CreatedAt time.Time     `json:"craetedAt"`
+	Title     string        `json:"name"`
+	Words     []*model.Word `json:"words,omitempty"`
 }
 
 func (u *DictionaryGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -26,10 +25,9 @@ func (dh *DictionaryHandler) DictionaryGetByID(w http.ResponseWriter, r *http.Re
 	include := middleware.GetIncludeContext(r)
 
 	response := &DictionaryGetByIdResponse{
-		ID:          dictionary.ID,
-		CreatedAt:   dictionary.CreatedAt,
-		Name:        dictionary.Name,
-		Description: dictionary.Description,
+		ID:        dictionary.ID,
+		CreatedAt: dictionary.CreatedAt,
+		Title:     dictionary.Title,
 	}
 
 	if include != nil && include["words"] {

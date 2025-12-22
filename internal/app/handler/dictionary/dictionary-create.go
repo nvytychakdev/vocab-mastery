@@ -10,16 +10,12 @@ import (
 )
 
 type DictionaryCreateRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Title string `json:"name"`
 }
 
 func (s *DictionaryCreateRequest) Bind(r *http.Request) error {
-	if s.Name == "" {
+	if s.Title == "" {
 		return errors.New("name field is required")
-	}
-	if s.Description == "" {
-		return errors.New("description is required")
 	}
 	return nil
 }
@@ -47,7 +43,7 @@ func (dh *DictionaryHandler) DictionaryCreate(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	dictionaryId, err := dh.Deps.DB.Dictionary().Create(userId, data.Name, data.Description)
+	dictionaryId, err := dh.Deps.DB.Dictionary().Create(userId, data.Title)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))
 		return

@@ -7,7 +7,7 @@ import (
 )
 
 type DictionaryRepo interface {
-	Create(userId string, name string, description string) (string, error)
+	Create(userId string, title string) (string, error)
 	DeleteByID(id string) error
 	GetByID(id string) (*model.Dictionary, error)
 	ListByUserId(userID string, opts *model.QueryOptions) ([]*model.Dictionary, int, error)
@@ -22,11 +22,11 @@ func (db *PostgresDB) Dictionary() DictionaryRepo {
 	return &dictionaryRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *dictionaryRepo) Create(userId string, name string, description string) (string, error) {
+func (db *dictionaryRepo) Create(userId string, title string) (string, error) {
 	query, args, err := db.psql.
 		Insert("dictionaries").
-		Columns("user_id", "name", "description").
-		Values(userId, name, description).
+		Columns("owner_id", "title", "is_default").
+		Values(userId, title, false).
 		Suffix("RETURNING \"id\"").ToSql()
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (db *dictionaryRepo) DeleteByID(dictionaryId string) error {
 
 func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error) {
 	query, args, err := db.psql.
-		Select("id", "user_id", "name", "description", "created_at").
+		Select("id", "owner_id", "title", "created_at").
 		From("dictionaries").Where(sq.Eq{"id": dictionaryId}).ToSql()
 
 	if err != nil {
@@ -62,8 +62,7 @@ func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error
 	err = db.conn.QueryRow(query, args...).Scan(
 		&dictionary.ID,
 		&dictionary.UserID,
-		&dictionary.Name,
-		&dictionary.Description,
+		&dictionary.Title,
 		&dictionary.CreatedAt,
 	)
 	return &dictionary, err
@@ -71,8 +70,8 @@ func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error
 
 func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
 	queryBuilder := db.psql.
-		Select("id", "user_id", "name", "description", "created_at").
-		From("dictionaries").Where(sq.Eq{"user_id": userId})
+		Select("id", "owner_id", "title", "created_at").
+		From("dictionaries").Where(sq.Eq{"owner_id": userId})
 
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
@@ -93,8 +92,7 @@ func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) 
 		err := rows.Scan(
 			&dictionary.ID,
 			&dictionary.UserID,
-			&dictionary.Name,
-			&dictionary.Description,
+			&dictionary.Title,
 			&dictionary.CreatedAt,
 		)
 
@@ -106,7 +104,7 @@ func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) 
 
 	totalQuery, totalArgs, err := db.psql.
 		Select("COUNT(*)").From("dictionaries").
-		Where(sq.Eq{"user_id": userId}).ToSql()
+		Where(sq.Eq{"owner_id": userId}).ToSql()
 
 	if err != nil {
 		return nil, 0, err
