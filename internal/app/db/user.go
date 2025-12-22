@@ -28,7 +28,7 @@ func (db *PostgresDB) User() UserRepo {
 
 func (p *userRepo) Create(email string, passwordHash string, name string) (string, error) {
 	query, args, err := p.psql.Insert("users").
-		Columns("email", "oassword_hash", "name", "auth_provider").
+		Columns("email", "password_hash", "name", "auth_provider").
 		Values(email, passwordHash, name, "local").
 		Suffix("RETURNING \"id\"").ToSql()
 
@@ -138,7 +138,7 @@ func (p *userRepo) SetEmailConfirmed(id string) error {
 	query, args, err := p.psql.
 		Update("users").
 		Set("is_email_confirmed", "TRUE").
-		From("users").Where(sq.Eq{"id": id}).ToSql()
+		Where(sq.Eq{"id": id}).ToSql()
 
 	if err != nil {
 		return err

@@ -44,11 +44,11 @@ func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (string, 
 	var usedAt *time.Time
 
 	query, args, err := p.psql.
-		Select("userId", "used_at").From("user_tokens").
+		Select("user_id", "used_at").From("user_tokens").
 		Where(sq.And{
 			sq.Eq{"token": token},
 			sq.Eq{"type": tokenType},
-			sq.Eq{"expires_at": "now()"},
+			sq.Gt{"expires_at": "now()"},
 		}).ToSql()
 
 	if err != nil {
