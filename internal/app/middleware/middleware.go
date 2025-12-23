@@ -6,7 +6,7 @@ type contextKey string
 
 const WORD_KEY contextKey = "word"
 const USER_ID_KEY contextKey = "userId"
-const SESSION_ID_KEY contextKey = "userId"
+const SESSION_ID_KEY contextKey = "sessionId"
 const DICTIONARY_KEY contextKey = "dictionary"
 const TRANSLATION_KEY contextKey = "translation"
 const INCLUDE_KEY contextKey = "include"

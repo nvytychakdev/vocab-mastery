@@ -1,6 +1,7 @@
 package word
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -11,11 +12,16 @@ import (
 )
 
 type WordGetByIdResponse struct {
-	ID           uuid.UUID            `json:"id"`
-	CreatedAt    time.Time            `json:"craetedAt"`
-	Word         string               `json:"name"`
-	Language     string               `json:"description"`
-	Translations []*model.Translation `json:"translations,omitempty"`
+	ID        uuid.UUID                    `json:"id"`
+	Word      string                       `json:"name"`
+	CreatedAt time.Time                    `json:"craetedAt"`
+	Meanings  []WordGetByIdMeaningResponse `json:"meanings,omitempty"`
+}
+
+type WordGetByIdMeaningResponse struct {
+	*model.WordMeaning
+	Examples []*model.WordExample `json:"examples,omitempty"`
+	Synonyms []*model.WordSynonym `json:"synonyms,omitempty"`
 }
 
 func (u *WordGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -24,7 +30,6 @@ func (u *WordGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) err
 
 func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 	word := middleware.GetWordContext(r)
-	include := middleware.GetIncludeContext(r)
 
 	response := &WordGetByIdResponse{
 		ID:        word.ID,
@@ -32,12 +37,51 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: word.CreatedAt,
 	}
 
-	if include != nil && include["translations"] {
-		translations, _, err := wh.Deps.DB.Translation().ListByWordID(word.ID, nil)
-		if err == nil {
-			response.Translations = translations
-		}
+	meanings, _, err := wh.Deps.DB.WordMeaning().ListAllByWordIDs(uuid.UUIDs{word.ID})
+	if err != nil {
+		slog.Error("Not able to get meanings by word id", "error", err)
+		return
 	}
+
+	meaningIds := make(uuid.UUIDs, 0, len(meanings))
+	for _, meaning := range meanings {
+		meaningIds = append(meaningIds, meaning.ID)
+	}
+
+	examples, _, err := wh.Deps.DB.WordExample().ListAllByMeaningIDs(meaningIds)
+	if err != nil {
+		slog.Error("Not able to get meanings by word id", "error", err)
+		return
+	}
+
+	synonyms, _, err := wh.Deps.DB.WordSynonym().ListAllByMeaningIDs(meaningIds)
+	if err != nil {
+		slog.Error("Not able to get meanings by word id", "error", err)
+		return
+	}
+
+	var meaningsRes []WordGetByIdMeaningResponse
+	for _, meaning := range meanings {
+		meaningRes := WordGetByIdMeaningResponse{
+			WordMeaning: meaning,
+		}
+
+		for _, example := range examples {
+			if example.MeaningID == meaning.ID {
+				meaningRes.Examples = append(meaningRes.Examples, example)
+			}
+		}
+
+		for _, synonym := range synonyms {
+			if synonym.MeaningID == meaning.ID {
+				meaningRes.Synonyms = append(meaningRes.Synonyms, synonym)
+			}
+		}
+
+		meaningsRes = append(meaningsRes, meaningRes)
+	}
+
+	response.Meanings = meaningsRes
 
 	render.Render(w, r, response)
 }

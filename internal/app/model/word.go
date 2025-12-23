@@ -13,19 +13,21 @@ type Word struct {
 }
 
 type WordMeaning struct {
-	ID           string `json:"id"`
-	WordID       string `json:"-"`
-	Definition   string `json:"definition"`
-	PartOfSpeech string `json:"partOfSpeech"`
+	ID           uuid.UUID `json:"id"`
+	WordID       uuid.UUID `json:"-"`
+	Definition   string    `json:"definition"`
+	PartOfSpeech string    `json:"partOfSpeech"`
 }
 
 type WordExample struct {
 	ID        uuid.UUID `json:"id"`
-	MeaningID string    `json:"-"`
+	MeaningID uuid.UUID `json:"-"`
 	Text      string    `json:"text"`
 }
 
 type WordSynonym struct {
-	SynonymWordID string `json:"-"`
-	MeaningID     string `json:"-"`
+	ID        uuid.UUID `json:"id"`
+	Word      string    `json:"word"`
+	CreatedAt time.Time `json:"-"`
+	MeaningID uuid.UUID `json:"-"`
 }

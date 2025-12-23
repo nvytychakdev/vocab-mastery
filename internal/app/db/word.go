@@ -12,6 +12,7 @@ type WordRepo interface {
 	DeleteByID(wordId uuid.UUID) error
 	GetByID(wordId uuid.UUID) (*model.Word, error)
 	ListByDictionaryID(dictionaryId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error)
+	ListByWordIDs(wordIDs uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error)
 	ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error)
 }
 
@@ -69,11 +70,55 @@ func (db *wordRepo) GetByID(wordId uuid.UUID) (*model.Word, error) {
 	return &word, err
 }
 
-func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error) {
+func (db *wordRepo) ListByWordIDs(wordIDs uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "word", "created_at").
-		From("words").Where(sq.Eq{"dictionary_id": dictionaryId})
+		From("words").
+		Where(sq.Eq{"id": wordIDs})
 
+	query, args, err := queryBuilder.ToSql()
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	rows, err := db.conn.Query(query, args...)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	defer rows.Close()
+
+	var words = []*model.Word{}
+	for rows.Next() {
+		var word model.Word
+		err := rows.Scan(
+			&word.ID,
+			&word.Word,
+			&word.CreatedAt,
+		)
+
+		if err != nil {
+			return nil, 0, err
+		}
+		words = append(words, &word)
+	}
+
+	return words, len(words), rows.Err()
+}
+
+func listByDictionaryIDQuery(builder sq.SelectBuilder, dictionaryId uuid.UUID) sq.SelectBuilder {
+	return builder.
+		From("dictionaries d").
+		Join("dictionary_words dw ON dw.dictionary_id = d.id").
+		Join("words w ON w.id = dw.word_id").
+		Where(sq.Eq{"d.id": dictionaryId})
+}
+
+func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error) {
+	baseQuery := db.psql.Select("w.id", "w.word", "w.created_at")
+
+	queryBuilder := listByDictionaryIDQuery(baseQuery, dictionaryId)
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
 	if err != nil {
@@ -102,9 +147,8 @@ func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.Query
 		words = append(words, &word)
 	}
 
-	totalQuery, totalArgs, err := db.psql.
-		Select("COUNT(*)").From("words").
-		Where(sq.Eq{"dictionary_id": dictionaryId}).ToSql()
+	baseCountBuilder := db.psql.Select("COUNT(*)")
+	totalQuery, totalArgs, err := listByDictionaryIDQuery(baseCountBuilder, dictionaryId).ToSql()
 
 	if err != nil {
 		return nil, 0, err

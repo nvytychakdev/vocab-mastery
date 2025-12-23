@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/google/uuid"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
@@ -25,7 +24,6 @@ func (u *WordGetListResponse) Render(w http.ResponseWriter, r *http.Request) err
 }
 
 func (wh *WordHandler) WordGetListByDictionary(w http.ResponseWriter, r *http.Request) {
-	include := middleware.GetIncludeContext(r)
 	opts := middleware.GetQueryOptionsContext(r)
 	dictionary := middleware.GetDictionaryContext(r)
 
@@ -36,30 +34,10 @@ func (wh *WordHandler) WordGetListByDictionary(w http.ResponseWriter, r *http.Re
 	}
 
 	var wordsList []*WordListItem
-	group := make(map[string][]*model.Translation)
 
 	for _, w := range words {
 		item := &WordListItem{Word: w}
 		wordsList = append(wordsList, item)
-	}
-
-	if include != nil && include["translations"] {
-		wordIDs := make([]uuid.UUID, 0, len(words))
-
-		for _, word := range words {
-			wordIDs = append(wordIDs, word.ID)
-		}
-
-		translations, err := wh.Deps.DB.Translation().ListByWordIDs(wordIDs)
-		if err == nil {
-			for _, t := range translations {
-				group[t.WordId.String()] = append(group[t.WordId.String()], t)
-			}
-
-			for _, w := range wordsList {
-				w.Translations = group[w.ID.String()]
-			}
-		}
 	}
 
 	response := &WordGetListResponse{
@@ -89,6 +67,7 @@ func (wh *WordHandler) WordGetList(w http.ResponseWriter, r *http.Request) {
 	for _, w := range words {
 		item := &WordListItem{Word: w}
 		wordsList = append(wordsList, item)
+
 	}
 
 	response := &WordGetListResponse{

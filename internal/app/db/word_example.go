@@ -2,12 +2,13 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type WordExampleRepo interface {
-	ListAllByMeaningIDs(meaningIds []string) ([]*model.WordExample, int, error)
+	ListAllByMeaningIDs(meaningIds uuid.UUIDs) ([]*model.WordExample, int, error)
 }
 
 type wordExampleRepo struct {
@@ -19,11 +20,11 @@ func (db *PostgresDB) WordExample() WordExampleRepo {
 	return &wordExampleRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *wordExampleRepo) ListAllByMeaningIDs(meaningIds []string) ([]*model.WordExample, int, error) {
+func (db *wordExampleRepo) ListAllByMeaningIDs(meaningIDs uuid.UUIDs) ([]*model.WordExample, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "meaning_id", "text").
 		From("word_examples").
-		Where("meaning_id = ANY(?)", meaningIds)
+		Where(sq.Eq{"meaning_id": meaningIDs})
 
 	query, args, err := queryBuilder.ToSql()
 
@@ -38,20 +39,20 @@ func (db *wordExampleRepo) ListAllByMeaningIDs(meaningIds []string) ([]*model.Wo
 
 	defer rows.Close()
 
-	var meanings = []*model.WordExample{}
+	var examples = []*model.WordExample{}
 	for rows.Next() {
-		var meaning model.WordExample
+		var example model.WordExample
 		err := rows.Scan(
-			&meaning.ID,
-			&meaning.MeaningID,
-			&meaning.Text,
+			&example.ID,
+			&example.MeaningID,
+			&example.Text,
 		)
 
 		if err != nil {
 			return nil, 0, err
 		}
-		meanings = append(meanings, &meaning)
+		examples = append(examples, &example)
 	}
 
-	return meanings, len(meanings), rows.Err()
+	return examples, len(examples), rows.Err()
 }

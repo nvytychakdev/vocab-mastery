@@ -2,12 +2,13 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type WordMeaningRepo interface {
-	ListAllByWordIDs(wordIds []string) ([]*model.WordMeaning, int, error)
+	ListAllByWordIDs(wordIds uuid.UUIDs) ([]*model.WordMeaning, int, error)
 }
 
 type wordMeaningRepo struct {
@@ -19,12 +20,14 @@ func (db *PostgresDB) WordMeaning() WordMeaningRepo {
 	return &wordMeaningRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *wordMeaningRepo) ListAllByWordIDs(wordIds []string) ([]*model.WordMeaning, int, error) {
+func (db *wordMeaningRepo) ListAllByWordIDs(wordIDs uuid.UUIDs) ([]*model.WordMeaning, int, error) {
 	queryBuilder := db.psql.
 		Select("wm.id", "wm.word_id", "pos.code AS part_of_speech", "wm.definition").
 		From("word_meanings wm").
-		Where("word_id = ANY(?)", wordIds).
-		Join("parts_of_speech pos ON pos.id = wm.id")
+		Join("parts_of_speech pos ON wm.part_of_speech_id = pos.id").
+		Where(sq.Eq{
+			"wm.word_id": wordIDs,
+		})
 
 	query, args, err := queryBuilder.ToSql()
 

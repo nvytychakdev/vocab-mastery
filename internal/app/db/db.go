@@ -17,6 +17,9 @@ type DB interface {
 	UserToken() UserTokenRepo
 	Dictionary() DictionaryRepo
 	Word() WordRepo
+	WordMeaning() WordMeaningRepo
+	WordSynonym() WordSynonymRepo
+	WordExample() WordExampleRepo
 	Translation() TranslationRepo
 	Migration() MigrationRepo
 }
