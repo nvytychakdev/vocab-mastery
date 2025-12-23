@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 )
 
 type ProfileResponse struct {
-	ID         string    `json:"id"`
+	ID         uuid.UUID `json:"id"`
 	CreatedAt  time.Time `json:"craetedAt"`
 	Email      string    `json:"email"`
 	Name       string    `json:"name"`

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 )
 
@@ -32,6 +33,6 @@ func (m *Middleware) Authorized(next http.Handler) http.Handler {
 	})
 }
 
-func GetAuthorizedUserId(r *http.Request) string {
-	return r.Context().Value(USER_ID_KEY).(string)
+func GetAuthorizedUserId(r *http.Request) uuid.UUID {
+	return r.Context().Value(USER_ID_KEY).(uuid.UUID)
 }

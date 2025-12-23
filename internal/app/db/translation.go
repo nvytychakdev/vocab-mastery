@@ -2,16 +2,17 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type TranslationRepo interface {
-	Create(wordID string, word string, language string) (string, error)
-	DeleteByID(id string) error
-	GetByID(id string) (*model.Translation, error)
-	ListByWordID(wordId string, opts *model.QueryOptions) ([]*model.Translation, int, error)
-	ListByWordIDs(wordIDs []string) ([]*model.Translation, error)
+	Create(wordID uuid.UUID, word string, language string) (string, error)
+	DeleteByID(id uuid.UUID) error
+	GetByID(id uuid.UUID) (*model.Translation, error)
+	ListByWordID(wordId uuid.UUID, opts *model.QueryOptions) ([]*model.Translation, int, error)
+	ListByWordIDs(wordIDs uuid.UUIDs) ([]*model.Translation, error)
 }
 
 type translationRepo struct {
@@ -23,7 +24,7 @@ func (db *PostgresDB) Translation() TranslationRepo {
 	return &translationRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *translationRepo) Create(wordId string, word string, language string) (string, error) {
+func (db *translationRepo) Create(wordId uuid.UUID, word string, language string) (string, error) {
 	query, args, err := db.psql.
 		Insert("translations").
 		Columns("word_id", "word", "language").
@@ -39,7 +40,7 @@ func (db *translationRepo) Create(wordId string, word string, language string) (
 	return translationId, err
 }
 
-func (db *translationRepo) DeleteByID(translationId string) error {
+func (db *translationRepo) DeleteByID(translationId uuid.UUID) error {
 	query, args, err := db.psql.Delete("translations").Where(sq.Eq{"id": translationId}).ToSql()
 
 	if err != nil {
@@ -50,7 +51,7 @@ func (db *translationRepo) DeleteByID(translationId string) error {
 	return err
 }
 
-func (db *translationRepo) GetByID(translationId string) (*model.Translation, error) {
+func (db *translationRepo) GetByID(translationId uuid.UUID) (*model.Translation, error) {
 	query, args, err := db.psql.
 		Select("id", "word_id", "word", "language", "created_at").
 		From("translations").Where(sq.Eq{"id": translationId}).ToSql()
@@ -70,7 +71,7 @@ func (db *translationRepo) GetByID(translationId string) (*model.Translation, er
 	return &translation, err
 }
 
-func (db *translationRepo) ListByWordID(wordId string, opts *model.QueryOptions) ([]*model.Translation, int, error) {
+func (db *translationRepo) ListByWordID(wordId uuid.UUID, opts *model.QueryOptions) ([]*model.Translation, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "word_id", "word", "language", "created_at").
 		From("translations").Where(sq.Eq{"word_id": wordId})
@@ -122,7 +123,7 @@ func (db *translationRepo) ListByWordID(wordId string, opts *model.QueryOptions)
 	return words, total, rows.Err()
 }
 
-func (db *translationRepo) ListByWordIDs(wordIDs []string) ([]*model.Translation, error) {
+func (db *translationRepo) ListByWordIDs(wordIDs uuid.UUIDs) ([]*model.Translation, error) {
 	queryBuilder := db.psql.
 		Select("id", "word_id", "word", "language", "created_at").
 		From("translations").Where(sq.Eq{"word_id": wordIDs})

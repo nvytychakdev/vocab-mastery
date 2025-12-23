@@ -4,16 +4,17 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type SessionRepo interface {
-	Create(userID string, jti string) (string, error)
-	Exists(id string) (bool, error)
-	UpdateJti(id string, jti string) error
-	GetByID(id string) (*model.Session, error)
-	DeleteByID(id string) error
+	Create(userID uuid.UUID, jti string) (uuid.UUID, error)
+	Exists(id uuid.UUID) (bool, error)
+	UpdateJti(id uuid.UUID, jti string) error
+	GetByID(id uuid.UUID) (*model.Session, error)
+	DeleteByID(id uuid.UUID) error
 }
 
 type sessionRepo struct {
@@ -25,7 +26,7 @@ func (db *PostgresDB) Session() SessionRepo {
 	return &sessionRepo{conn: db.conn, psql: db.psql}
 }
 
-func (p *sessionRepo) Create(userId string, jti string) (string, error) {
+func (p *sessionRepo) Create(userId uuid.UUID, jti string) (uuid.UUID, error) {
 	expiresAt := time.Now().Add(90 * 24 * time.Hour)
 
 	query, args, err := p.psql.
@@ -35,15 +36,15 @@ func (p *sessionRepo) Create(userId string, jti string) (string, error) {
 		Suffix("RETURNING \"id\"").ToSql()
 
 	if err != nil {
-		return "", err
+		return uuid.Nil, err
 	}
 
-	var sessionId string
+	var sessionId uuid.UUID
 	err = p.conn.QueryRow(query, args...).Scan(&sessionId)
 	return sessionId, err
 }
 
-func (p *sessionRepo) Exists(id string) (bool, error) {
+func (p *sessionRepo) Exists(id uuid.UUID) (bool, error) {
 	query, args, err := p.psql.Select("1").
 		Prefix("SELECT EXISTS (").
 		From("sessions").
@@ -61,7 +62,7 @@ func (p *sessionRepo) Exists(id string) (bool, error) {
 	return exists, err
 }
 
-func (p *sessionRepo) UpdateJti(id string, jti string) error {
+func (p *sessionRepo) UpdateJti(id uuid.UUID, jti string) error {
 	query, args, err := p.psql.
 		Update("sessions").Set("jti", jti).Set("refreshed_at", "now()").
 		Where(sq.Eq{"id": id}).ToSql()
@@ -74,7 +75,7 @@ func (p *sessionRepo) UpdateJti(id string, jti string) error {
 	return err
 }
 
-func (p *sessionRepo) GetByID(id string) (*model.Session, error) {
+func (p *sessionRepo) GetByID(id uuid.UUID) (*model.Session, error) {
 	query, args, err := p.psql.
 		Select("id", "jti", "user_id", "expires_at", "created_at").
 		From("sessions").Where(sq.Eq{"id": id}).ToSql()
@@ -88,7 +89,7 @@ func (p *sessionRepo) GetByID(id string) (*model.Session, error) {
 	return &session, err
 }
 
-func (p *sessionRepo) DeleteByID(id string) error {
+func (p *sessionRepo) DeleteByID(id uuid.UUID) error {
 
 	query, args, err := p.psql.
 		Delete("sessions").

@@ -2,19 +2,20 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type UserRepo interface {
-	Create(email string, password string, name string) (string, error)
-	CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error)
+	Create(email string, password string, name string) (uuid.UUID, error)
+	CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (uuid.UUID, error)
 	Exists(email string) (bool, error)
 	ExistsByProvider(email string, provider string) (bool, error)
-	GetByID(id string) (*model.User, error)
+	GetByID(id uuid.UUID) (*model.User, error)
 	GetByEmail(email string) (*model.User, error)
 	GetByEmailWithPwd(email string) (*model.UserWithPwd, error)
-	SetEmailConfirmed(id string) error
+	SetEmailConfirmed(id uuid.UUID) error
 }
 
 type userRepo struct {
@@ -26,32 +27,32 @@ func (db *PostgresDB) User() UserRepo {
 	return &userRepo{conn: db.conn, psql: db.psql}
 }
 
-func (p *userRepo) Create(email string, passwordHash string, name string) (string, error) {
+func (p *userRepo) Create(email string, passwordHash string, name string) (uuid.UUID, error) {
 	query, args, err := p.psql.Insert("users").
 		Columns("email", "password_hash", "name", "auth_provider").
 		Values(email, passwordHash, name, "local").
 		Suffix("RETURNING \"id\"").ToSql()
 
 	if err != nil {
-		return "", err
+		return uuid.Nil, err
 	}
 
-	var userId string
+	var userId uuid.UUID
 	err = p.conn.QueryRow(query, args...).Scan(&userId)
 	return userId, err
 }
 
-func (p *userRepo) CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (string, error) {
+func (p *userRepo) CreateOAuth(email string, name string, provider string, providerId string, pictureUrl string, emailVerified bool) (uuid.UUID, error) {
 	query, args, err := p.psql.Insert("users").
 		Columns("email", "name", "auth_provider", "auth_provider_user_id", "picture_url", "is_email_confirmed").
 		Values(email, name, provider, providerId, pictureUrl, emailVerified).
 		Suffix("RETURNING \"id\"").ToSql()
 
 	if err != nil {
-		return "", err
+		return uuid.Nil, err
 	}
 
-	var userId string
+	var userId uuid.UUID
 	err = p.conn.QueryRow(query, args...).Scan(&userId)
 	return userId, err
 }
@@ -92,7 +93,7 @@ func (p *userRepo) ExistsByProvider(email string, provider string) (bool, error)
 	return exists, err
 }
 
-func (p *userRepo) GetByID(id string) (*model.User, error) {
+func (p *userRepo) GetByID(id uuid.UUID) (*model.User, error) {
 	query, args, err := p.psql.
 		Select("id", "email", "name", "created_at", "picture_url").
 		From("users").Where(sq.Eq{"id": id}).ToSql()
@@ -134,7 +135,7 @@ func (p *userRepo) GetByEmailWithPwd(email string) (*model.UserWithPwd, error) {
 	return &user, err
 }
 
-func (p *userRepo) SetEmailConfirmed(id string) error {
+func (p *userRepo) SetEmailConfirmed(id uuid.UUID) error {
 	query, args, err := p.psql.
 		Update("users").
 		Set("is_email_confirmed", "TRUE").

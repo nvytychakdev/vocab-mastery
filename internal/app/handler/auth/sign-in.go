@@ -29,8 +29,8 @@ func (s *SignInRequest) Bind(r *http.Request) error {
 }
 
 type SignInUser struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
+	ID    uuid.UUID `json:"id"`
+	Email string    `json:"email"`
 }
 
 type SignInTokens struct {

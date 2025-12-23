@@ -2,15 +2,16 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type DictionaryRepo interface {
-	Create(userId string, title string) (string, error)
-	DeleteByID(id string) error
-	GetByID(id string) (*model.Dictionary, error)
-	ListByUserId(userID string, opts *model.QueryOptions) ([]*model.Dictionary, int, error)
+	Create(userId uuid.UUID, title string) (uuid.UUID, error)
+	DeleteByID(id uuid.UUID) error
+	GetByID(id uuid.UUID) (*model.Dictionary, error)
+	ListByUserId(userID uuid.UUID, opts *model.QueryOptions) ([]*model.Dictionary, int, error)
 }
 
 type dictionaryRepo struct {
@@ -22,7 +23,7 @@ func (db *PostgresDB) Dictionary() DictionaryRepo {
 	return &dictionaryRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *dictionaryRepo) Create(userId string, title string) (string, error) {
+func (db *dictionaryRepo) Create(userId uuid.UUID, title string) (uuid.UUID, error) {
 	query, args, err := db.psql.
 		Insert("dictionaries").
 		Columns("owner_id", "title", "is_default").
@@ -30,15 +31,15 @@ func (db *dictionaryRepo) Create(userId string, title string) (string, error) {
 		Suffix("RETURNING \"id\"").ToSql()
 
 	if err != nil {
-		return "", err
+		return uuid.Nil, err
 	}
 
-	var dictionaryId string
+	var dictionaryId uuid.UUID
 	err = db.conn.QueryRow(query, args...).Scan(&dictionaryId)
 	return dictionaryId, err
 }
 
-func (db *dictionaryRepo) DeleteByID(dictionaryId string) error {
+func (db *dictionaryRepo) DeleteByID(dictionaryId uuid.UUID) error {
 	query, args, err := db.psql.Delete("dictionaries").Where(sq.Eq{"id": dictionaryId}).ToSql()
 
 	if err != nil {
@@ -49,7 +50,7 @@ func (db *dictionaryRepo) DeleteByID(dictionaryId string) error {
 	return err
 }
 
-func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error) {
+func (db *dictionaryRepo) GetByID(dictionaryId uuid.UUID) (*model.Dictionary, error) {
 	query, args, err := db.psql.
 		Select("id", "owner_id", "title", "level", "is_default", "created_at").
 		From("dictionaries").Where(sq.Eq{"id": dictionaryId}).ToSql()
@@ -70,7 +71,7 @@ func (db *dictionaryRepo) GetByID(dictionaryId string) (*model.Dictionary, error
 	return &dictionary, err
 }
 
-func (db *dictionaryRepo) ListByUserId(userId string, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
+func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "owner_id", "title", "level", "is_default", "created_at").
 		From("dictionaries").Where(

@@ -47,7 +47,7 @@ created_at          timestamptz
 
 
 ```
-dictonary_words
+dictionary_words
 --------------------------------------
 dictionary_id       UUID FK -> dictionaries.id
 word_id             UUID FK -> words.id
@@ -67,7 +67,7 @@ code                text
 words
 --------------------------------------
 id                  UUID PK
-word text           NOT NULL
+word                text NOT NULL
 created_at          timestamptz 
 ```
 
@@ -85,7 +85,7 @@ part_of_speech_id   UUID FK -> parts_of_speech.id
 word_examples
 --------------------------------------
 id                  UUID PK
-meaning_id          UUID FK -> words.id
+meaning_id          UUID FK -> word_meanings.id
 text                text NOT NULL
 ```
 

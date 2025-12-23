@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 )
@@ -22,7 +23,7 @@ func (s *DictionaryCreateRequest) Bind(r *http.Request) error {
 
 // Response
 type DictionaryCreateResponse struct {
-	ID string `json:"id"`
+	ID uuid.UUID `json:"id"`
 }
 
 func (*DictionaryCreateResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -30,7 +31,7 @@ func (*DictionaryCreateResponse) Render(w http.ResponseWriter, r *http.Request) 
 }
 
 func (dh *DictionaryHandler) DictionaryCreate(w http.ResponseWriter, r *http.Request) {
-	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(string)
+	userId, ok := r.Context().Value(middleware.USER_ID_KEY).(uuid.UUID)
 	if !ok {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, nil))
 		return

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
@@ -43,7 +44,7 @@ func (wh *WordHandler) WordGetListByDictionary(w http.ResponseWriter, r *http.Re
 	}
 
 	if include != nil && include["translations"] {
-		wordIDs := make([]string, 0, len(words))
+		wordIDs := make([]uuid.UUID, 0, len(words))
 
 		for _, word := range words {
 			wordIDs = append(wordIDs, word.ID)
@@ -52,11 +53,11 @@ func (wh *WordHandler) WordGetListByDictionary(w http.ResponseWriter, r *http.Re
 		translations, err := wh.Deps.DB.Translation().ListByWordIDs(wordIDs)
 		if err == nil {
 			for _, t := range translations {
-				group[t.WordId] = append(group[t.WordId], t)
+				group[t.WordId.String()] = append(group[t.WordId.String()], t)
 			}
 
 			for _, w := range wordsList {
-				w.Translations = group[w.ID]
+				w.Translations = group[w.ID.String()]
 			}
 		}
 	}

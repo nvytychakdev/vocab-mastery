@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type UserData struct {
@@ -12,7 +14,7 @@ type UserData struct {
 
 type User struct {
 	UserData
-	ID        string    `json:"id,omitempty"`
+	ID        uuid.UUID `json:"id,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 

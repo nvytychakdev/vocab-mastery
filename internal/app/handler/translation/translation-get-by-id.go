@@ -5,11 +5,12 @@ import (
 	"time"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 )
 
 type TranslationGetByIdResponse struct {
-	ID        string    `json:"id"`
+	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"craetedAt"`
 	Word      string    `json:"name"`
 	Language  string    `json:"description"`

@@ -54,7 +54,7 @@ func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if s.RefreshTokenID != claims.ID {
+	if s.RefreshTokenID.String() != claims.ID {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusUnauthorized, httpError.ErrTokenRevoked, nil))
 		return
 	}

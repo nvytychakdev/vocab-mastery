@@ -7,13 +7,21 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 func (mw *Middleware) TranslationContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		translationId := chi.URLParam(r, "translationId")
+		translationIdParam := chi.URLParam(r, "translationId")
+
+		translationId, err := uuid.Parse(translationIdParam)
+		if err != nil {
+			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
+			return
+		}
+
 		translation, err := mw.Deps.DB.Translation().GetByID(translationId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))

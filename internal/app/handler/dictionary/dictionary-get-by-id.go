@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type DictionaryGetByIdResponse struct {
-	ID        string        `json:"id"`
+	ID        uuid.UUID     `json:"id"`
 	CreatedAt time.Time     `json:"craetedAt"`
 	Title     string        `json:"name"`
 	Words     []*model.Word `json:"words,omitempty"`

@@ -2,16 +2,17 @@ package db
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 type WordRepo interface {
-	Create(dictionaryId string, word string, language string) (string, error)
-	DeleteByID(wordId string) error
-	GetByID(wordId string) (*model.Word, error)
-	ListByDictionaryID(dictionaryId string, opts *model.QueryOptions) ([]*model.Word, int, error)
-	ListAll(userId string, opts *model.QueryOptions) ([]*model.Word, int, error)
+	Create(dictionaryId uuid.UUID, word string, language string) (string, error)
+	DeleteByID(wordId uuid.UUID) error
+	GetByID(wordId uuid.UUID) (*model.Word, error)
+	ListByDictionaryID(dictionaryId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error)
+	ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error)
 }
 
 type wordRepo struct {
@@ -23,7 +24,7 @@ func (db *PostgresDB) Word() WordRepo {
 	return &wordRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *wordRepo) Create(dictionaryId string, word string, language string) (string, error) {
+func (db *wordRepo) Create(dictionaryId uuid.UUID, word string, language string) (string, error) {
 	query, args, err := db.psql.
 		Insert("words").
 		Columns("dictionary_id", "word", "language").
@@ -39,7 +40,7 @@ func (db *wordRepo) Create(dictionaryId string, word string, language string) (s
 	return wordId, err
 }
 
-func (db *wordRepo) DeleteByID(wordId string) error {
+func (db *wordRepo) DeleteByID(wordId uuid.UUID) error {
 	query, args, err := db.psql.Delete("words").Where(sq.Eq{"id": wordId}).ToSql()
 
 	if err != nil {
@@ -50,7 +51,7 @@ func (db *wordRepo) DeleteByID(wordId string) error {
 	return err
 }
 
-func (db *wordRepo) GetByID(wordId string) (*model.Word, error) {
+func (db *wordRepo) GetByID(wordId uuid.UUID) (*model.Word, error) {
 	query, args, err := db.psql.
 		Select("id", "word", "created_at").
 		From("words").Where(sq.Eq{"id": wordId}).ToSql()
@@ -68,7 +69,7 @@ func (db *wordRepo) GetByID(wordId string) (*model.Word, error) {
 	return &word, err
 }
 
-func (db *wordRepo) ListByDictionaryID(dictionaryId string, opts *model.QueryOptions) ([]*model.Word, int, error) {
+func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "word", "created_at").
 		From("words").Where(sq.Eq{"dictionary_id": dictionaryId})
@@ -118,7 +119,7 @@ func (db *wordRepo) ListByDictionaryID(dictionaryId string, opts *model.QueryOpt
 	return words, total, rows.Err()
 }
 
-func listAllQuery(builder sq.SelectBuilder, userId string) sq.SelectBuilder {
+func listAllQuery(builder sq.SelectBuilder, userId uuid.UUID) sq.SelectBuilder {
 	return builder.From("dictionaries d").
 		Join("dictionary_words dw ON dw.dictionary_id = d.id").
 		Join("words w ON dw.word_id = w.id").
@@ -128,7 +129,7 @@ func listAllQuery(builder sq.SelectBuilder, userId string) sq.SelectBuilder {
 		})
 }
 
-func (db *wordRepo) ListAll(userId string, opts *model.QueryOptions) ([]*model.Word, int, error) {
+func (db *wordRepo) ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error) {
 	baseBuilder := db.psql.Select("w.id", "w.word", "w.created_at")
 	queryBuilder := listAllQuery(baseBuilder, userId)
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()

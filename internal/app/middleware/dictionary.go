@@ -7,13 +7,21 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 func (mw *Middleware) DictionaryContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		dictionaryId := chi.URLParam(r, "dictionaryId")
+		dictionaryIdParam := chi.URLParam(r, "dictionaryId")
+
+		dictionaryId, err := uuid.Parse(dictionaryIdParam)
+		if err != nil {
+			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
+			return
+		}
+
 		dictionary, err := mw.Deps.DB.Dictionary().GetByID(dictionaryId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))

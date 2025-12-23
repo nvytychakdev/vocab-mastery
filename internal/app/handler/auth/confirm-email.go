@@ -10,6 +10,7 @@ import (
 	"text/template"
 
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 	"gopkg.in/mail.v2"
@@ -78,7 +79,7 @@ func (auth *AuthHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	auth.signInComplete(w, r, user)
 }
 
-func (auth *AuthHandler) sendEmailConfirm(w http.ResponseWriter, r *http.Request, userId string, email string) {
+func (auth *AuthHandler) sendEmailConfirm(w http.ResponseWriter, r *http.Request, userId uuid.UUID, email string) {
 	_, token, err := auth.Deps.DB.UserToken().Create(userId, model.EMAIL_CONFIRM_TOKEN)
 	if err != nil {
 		render.Render(w, r, httpError.NewErrorResponse(http.StatusInternalServerError, httpError.ErrInternalServer, err))

@@ -7,13 +7,20 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	httpError "github.com/nvytychakdev/vocab-mastery/internal/app/http-error"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
 func (mw *Middleware) WordContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		wordId := chi.URLParam(r, "wordId")
+		wordIdParam := chi.URLParam(r, "wordId")
+		wordId, err := uuid.Parse(wordIdParam)
+		if err != nil {
+			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))
+			return
+		}
+
 		word, err := mw.Deps.DB.Word().GetByID(wordId)
 		if err != nil {
 			render.Render(w, r, httpError.NewErrorResponse(http.StatusNotFound, httpError.ErrNotFound, err))

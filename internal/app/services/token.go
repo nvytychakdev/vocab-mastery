@@ -9,6 +9,7 @@ import (
 
 	"github.com/coreos/go-oidc"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 )
 
@@ -18,16 +19,16 @@ const (
 )
 
 type TokenClaims struct {
-	Type      string `json:"type"`
-	SessionId string `json:"sessionId,omitempty"`
-	UserId    string `json:"userId,omitempty"`
+	Type      string    `json:"type"`
+	SessionId uuid.UUID `json:"sessionId,omitempty"`
+	UserId    uuid.UUID `json:"userId,omitempty"`
 	jwt.RegisteredClaims
 }
 
 type AuthService interface {
 	ParseToken(tokenString string) (*jwt.Token, *TokenClaims, error)
-	CreateAccessToken(userId string) (string, int64, error)
-	CreateRefreshToken(sessionId string, jti string) (string, int64, error)
+	CreateAccessToken(userId uuid.UUID) (string, int64, error)
+	CreateRefreshToken(sessionId uuid.UUID, jti string) (string, int64, error)
 	HandleGoogleOAuth(config *oauth2.Config, code string, claims interface{}) error
 }
 
@@ -68,7 +69,7 @@ func (as *authService) ParseToken(tokenString string) (*jwt.Token, *TokenClaims,
 	return token, claims, err
 }
 
-func (as *authService) CreateAccessToken(userId string) (string, int64, error) {
+func (as *authService) CreateAccessToken(userId uuid.UUID) (string, int64, error) {
 	claims := &TokenClaims{
 		Type:   TokenTypeAccess,
 		UserId: userId,
@@ -83,7 +84,7 @@ func (as *authService) CreateAccessToken(userId string) (string, int64, error) {
 	return createToken(as.TokenSecret, claims)
 }
 
-func (as *authService) CreateRefreshToken(sessionId string, jti string) (string, int64, error) {
+func (as *authService) CreateRefreshToken(sessionId uuid.UUID, jti string) (string, int64, error) {
 	claims := &TokenClaims{
 		Type:      TokenTypeRefresh,
 		SessionId: sessionId,

@@ -9,8 +9,8 @@ import (
 )
 
 type UserTokenRepo interface {
-	Create(userId string, tokenType string) (string, string, error)
-	FindNonExpired(token string, tokenType string) (string, *time.Time, error)
+	Create(userId uuid.UUID, tokenType string) (uuid.UUID, string, error)
+	FindNonExpired(token string, tokenType string) (uuid.UUID, *time.Time, error)
 	SetUsed(token string) error
 }
 
@@ -23,7 +23,7 @@ func (db *PostgresDB) UserToken() UserTokenRepo {
 	return &userTokenRepo{conn: db.conn, psql: db.psql}
 }
 
-func (p *userTokenRepo) Create(userId string, tokenType string) (string, string, error) {
+func (p *userTokenRepo) Create(userId uuid.UUID, tokenType string) (uuid.UUID, string, error) {
 	token, expiresAt := generateEmailConfirmToken()
 
 	query, args, err := p.psql.Insert("user_tokens").
@@ -31,16 +31,16 @@ func (p *userTokenRepo) Create(userId string, tokenType string) (string, string,
 		Values(userId, token, tokenType, expiresAt).Suffix("RETURNING \"id\"").ToSql()
 
 	if err != nil {
-		return "", "", nil
+		return uuid.Nil, "", nil
 	}
 
-	var userTokenId string
+	var userTokenId uuid.UUID
 	err = p.conn.QueryRow(query, args...).Scan(&userTokenId)
 	return userTokenId, token, err
 }
 
-func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (string, *time.Time, error) {
-	var userId string
+func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (uuid.UUID, *time.Time, error) {
+	var userId uuid.UUID
 	var usedAt *time.Time
 
 	query, args, err := p.psql.
@@ -52,7 +52,7 @@ func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (string, 
 		}).ToSql()
 
 	if err != nil {
-		return "", nil, err
+		return uuid.Nil, nil, err
 	}
 
 	err = p.conn.QueryRow(query, args...).Scan(&userId, &usedAt)
