@@ -1,11 +1,12 @@
 import { Entity } from '@core/interfaces/dto.interface';
-import { Translation } from '@domain/translation/translation.interface';
 
-export type WordBase = { word: string; language: string };
-export type WithTranslations<T extends WordBase> = T & { translations: Translation[] };
+export type WordBase = { word: string };
+export type WordMeaningBase = { definition: string; partOfSpeech: string };
+export type WordExampleBase = { text: string };
 
 export type Word = Entity<WordBase>;
-export type WordWithTranslation = Entity<WordBase & { translations?: Translation[] }>;
+export type WordExample = Entity<WordExampleBase>;
+export type WordMeaning = Entity<WordMeaningBase & { examples: WordExample[]; synonyms: Word[] }>;
+export type WordDetails = Entity<WordBase & { meanings: WordMeaning }>;
 
 export type WordListItem = Entity<WordBase>;
-export type WordListItemWithTranslation = Entity<WordBase & { translations?: Translation[] }>;

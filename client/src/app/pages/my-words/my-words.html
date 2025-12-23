@@ -23,12 +23,14 @@
 </section>
 
 <section class="typography flex flex-col">
-  @for (group of groups; track $index) {
+  @for (group of groups(); track $index) {
     <div class="my-8 flex gap-24">
       <h1 class="text-muted flex-1/6">{{ group.letter }}</h1>
       <div class="grid flex-5/6 grid-cols-3 gap-4">
-        @for (word of group.words; track $index) {
-          <p class="w-1/3">{{ word }}</p>
+        @for (wordItem of group.words; track $index) {
+          <p class="cursor-pointer transition-all hover:scale-103 hover:font-bold">
+            {{ wordItem.word }}
+          </p>
         }
       </div>
     </div>

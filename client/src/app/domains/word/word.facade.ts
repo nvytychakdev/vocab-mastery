@@ -32,9 +32,9 @@ export class WordFacade {
     );
   }
 
-  loadAll(dictionaryId: string) {
+  loadAll() {
     this.state.setItemsLoading(true);
-    return this.api.getAllWithTranslations({ params: { dictionaryId } }).pipe(
+    return this.api.getAll({ query: { limit: 1000 } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.state.setItems(data.items);

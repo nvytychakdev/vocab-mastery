@@ -1,17 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Api } from '@core/api/api';
 import { ApiEntity } from '@core/api/api-entity';
-import { ApiListQueryParams, ApiOptions, ApiUrlParams } from '@core/api/api.interface';
-import {
-  WithTranslations,
-  Word,
-  WordListItem,
-  WordListItemWithTranslation,
-  WordWithTranslation,
-} from './word.interface';
+import { ApiOptions, ApiUrlParams } from '@core/api/api.interface';
+import { Word, WordListItem } from './word.interface';
 
 enum WordEndpoint {
-  Words = 'api/v1/dictionaries/:dictionaryId/words',
+  Words = 'api/v1/words',
+  DictionaryWords = 'api/v1/dictionaries/:dictionaryId/words',
 }
 
 @Injectable({
@@ -26,16 +21,5 @@ export class WordApi extends ApiEntity<Word, WordListItem> {
 
   protected override getEntityUrl(options?: ApiOptions<ApiUrlParams>): string {
     return this.getApiUrl(WordEndpoint.Words, options);
-  }
-
-  getByIdWithTranslations(id: string) {
-    return this.getById<WithTranslations<WordWithTranslation>>(id, { query: { include: ['translations'] } });
-  }
-
-  getAllWithTranslations(options?: ApiOptions<ApiUrlParams, ApiListQueryParams>) {
-    return this.getAll<WithTranslations<WordListItemWithTranslation>>({
-      params: options?.params,
-      query: { ...options?.query, include: ['translations'] },
-    });
   }
 }

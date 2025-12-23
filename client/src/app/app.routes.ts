@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
-import { dictionariesResolver } from '@feature/dictionary/dictionary.resolver';
 import { catchError, map, of } from 'rxjs';
 import { authProfileResolve } from './features/auth/auth-profile.resolver';
 import { AuthService } from './features/auth/auth.service';
@@ -80,7 +79,6 @@ export const routes: Routes = [
           {
             path: '',
             component: MyWords,
-            resolve: [dictionariesResolver],
           },
         ],
       },

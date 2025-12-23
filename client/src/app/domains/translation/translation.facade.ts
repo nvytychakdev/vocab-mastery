@@ -6,7 +6,7 @@ import { Translation, TranslationBase } from './translation.interface';
 import { TranslationState } from './translation.state';
 
 @Injectable({ providedIn: 'root' })
-export class WordFacade {
+export class TranslationFacade {
   private readonly destroyRef = inject(DestroyRef);
   private readonly state = inject(TranslationState);
   private readonly api = inject(TranslationApi);

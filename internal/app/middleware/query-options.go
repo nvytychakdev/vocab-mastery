@@ -15,7 +15,7 @@ func (mw *Middleware) QueryOptionsContext(next http.Handler) http.Handler {
 		sortBy := r.URL.Query().Get("sortBy")
 		sortDir := r.URL.Query().Get("dir")
 
-		if limit <= 0 || limit > 100 {
+		if limit <= 0 || limit > 1000 {
 			limit = 20
 		}
 
