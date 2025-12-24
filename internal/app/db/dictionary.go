@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log/slog"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
@@ -75,7 +74,6 @@ func (db *dictionaryRepo) GetByID(dictionaryId uuid.UUID) (*model.Dictionary, er
 }
 
 func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
-	slog.Info("LIST USER")
 
 	queryBuilder := db.psql.
 		Select("id", "owner_id", "title", "level", "is_default", "created_at").
@@ -86,11 +84,7 @@ func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOption
 		},
 	)
 
-	slog.Info("QUERY BUILDER SUCCESS")
-
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
-	slog.Info("SOMETHING WRONG WITH QUERY?", "query", query)
-
 	if err != nil {
 		return nil, 0, err
 	}
