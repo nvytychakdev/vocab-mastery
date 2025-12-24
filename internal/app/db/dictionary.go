@@ -1,9 +1,12 @@
 package db
 
 import (
+	"context"
+	"log/slog"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -15,7 +18,7 @@ type DictionaryRepo interface {
 }
 
 type dictionaryRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -35,7 +38,7 @@ func (db *dictionaryRepo) Create(userId uuid.UUID, title string) (uuid.UUID, err
 	}
 
 	var dictionaryId uuid.UUID
-	err = db.conn.QueryRow(query, args...).Scan(&dictionaryId)
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(&dictionaryId)
 	return dictionaryId, err
 }
 
@@ -46,7 +49,7 @@ func (db *dictionaryRepo) DeleteByID(dictionaryId uuid.UUID) error {
 		return err
 	}
 
-	_, err = db.conn.Exec(query, args...)
+	_, err = db.conn.Exec(context.Background(), query, args...)
 	return err
 }
 
@@ -60,7 +63,7 @@ func (db *dictionaryRepo) GetByID(dictionaryId uuid.UUID) (*model.Dictionary, er
 	}
 
 	var dictionary model.Dictionary
-	err = db.conn.QueryRow(query, args...).Scan(
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(
 		&dictionary.ID,
 		&dictionary.OwnerID,
 		&dictionary.Title,
@@ -72,6 +75,8 @@ func (db *dictionaryRepo) GetByID(dictionaryId uuid.UUID) (*model.Dictionary, er
 }
 
 func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Dictionary, int, error) {
+	slog.Info("LIST USER")
+
 	queryBuilder := db.psql.
 		Select("id", "owner_id", "title", "level", "is_default", "created_at").
 		From("dictionaries").Where(
@@ -81,13 +86,16 @@ func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOption
 		},
 	)
 
+	slog.Info("QUERY BUILDER SUCCESS")
+
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
+	slog.Info("SOMETHING WRONG WITH QUERY?", "query", query)
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -121,7 +129,7 @@ func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOption
 	}
 
 	var total int
-	err = db.conn.QueryRow(totalQuery, totalArgs...).Scan(&total)
+	err = db.conn.QueryRow(context.Background(), totalQuery, totalArgs...).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}

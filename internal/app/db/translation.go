@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -16,7 +18,7 @@ type TranslationRepo interface {
 }
 
 type translationRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -36,7 +38,7 @@ func (db *translationRepo) Create(wordId uuid.UUID, word string, language string
 	}
 
 	var translationId string
-	err = db.conn.QueryRow(query, args...).Scan(&translationId)
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(&translationId)
 	return translationId, err
 }
 
@@ -47,7 +49,7 @@ func (db *translationRepo) DeleteByID(translationId uuid.UUID) error {
 		return err
 	}
 
-	_, err = db.conn.Exec(query, args...)
+	_, err = db.conn.Exec(context.Background(), query, args...)
 	return err
 }
 
@@ -61,7 +63,7 @@ func (db *translationRepo) GetByID(translationId uuid.UUID) (*model.Translation,
 	}
 
 	var translation model.Translation
-	err = db.conn.QueryRow(query, args...).Scan(
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(
 		&translation.ID,
 		&translation.WordId,
 		&translation.Word,
@@ -82,7 +84,7 @@ func (db *translationRepo) ListByWordID(wordId uuid.UUID, opts *model.QueryOptio
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -115,7 +117,7 @@ func (db *translationRepo) ListByWordID(wordId uuid.UUID, opts *model.QueryOptio
 	}
 
 	var total int
-	err = db.conn.QueryRow(totalQuery, totalArgs...).Scan(&total)
+	err = db.conn.QueryRow(context.Background(), totalQuery, totalArgs...).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -134,7 +136,7 @@ func (db *translationRepo) ListByWordIDs(wordIDs uuid.UUIDs) ([]*model.Translati
 		return nil, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, err
 	}

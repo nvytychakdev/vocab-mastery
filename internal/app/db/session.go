@@ -1,11 +1,12 @@
 package db
 
 import (
+	"context"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -18,7 +19,7 @@ type SessionRepo interface {
 }
 
 type sessionRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -40,7 +41,7 @@ func (p *sessionRepo) Create(userId uuid.UUID, jti string) (uuid.UUID, error) {
 	}
 
 	var sessionId uuid.UUID
-	err = p.conn.QueryRow(query, args...).Scan(&sessionId)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&sessionId)
 	return sessionId, err
 }
 
@@ -58,7 +59,7 @@ func (p *sessionRepo) Exists(id uuid.UUID) (bool, error) {
 	}
 
 	var exists bool
-	err = p.conn.QueryRow(query, args...).Scan(&exists)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&exists)
 	return exists, err
 }
 
@@ -71,7 +72,7 @@ func (p *sessionRepo) UpdateJti(id uuid.UUID, jti string) error {
 		return err
 	}
 
-	_, err = p.conn.Exec(query, args...)
+	_, err = p.conn.Exec(context.Background(), query, args...)
 	return err
 }
 
@@ -85,7 +86,7 @@ func (p *sessionRepo) GetByID(id uuid.UUID) (*model.Session, error) {
 	}
 
 	var session model.Session
-	err = p.conn.QueryRow(query, args...).Scan(&session.ID, &session.RefreshTokenID, &session.UserID, &session.ExpiresAt, &session.CreatedAt)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&session.ID, &session.RefreshTokenID, &session.UserID, &session.ExpiresAt, &session.CreatedAt)
 	return &session, err
 }
 
@@ -99,6 +100,6 @@ func (p *sessionRepo) DeleteByID(id uuid.UUID) error {
 		return err
 	}
 
-	_, err = p.conn.Exec(query, args...)
+	_, err = p.conn.Exec(context.Background(), query, args...)
 	return err
 }

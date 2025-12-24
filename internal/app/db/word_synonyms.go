@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -12,7 +14,7 @@ type WordSynonymRepo interface {
 }
 
 type wordSynonymsRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -25,7 +27,8 @@ func (db *wordSynonymsRepo) ListAllByMeaningIDs(wordIDs uuid.UUIDs) ([]*model.Wo
 		Select("w.id AS id", "ws.meaning_id", "w.word AS word", "w.created_at AS created_at").
 		From("word_synonyms ws").
 		Join("words w ON w.id = ws.synonym_word_id").
-		Where(sq.Eq{"ws.meaning_id": wordIDs})
+		Where(sq.Eq{"ws.meaning_id": wordIDs}).
+		OrderBy("word DESC")
 
 	query, args, err := queryBuilder.ToSql()
 
@@ -33,7 +36,7 @@ func (db *wordSynonymsRepo) ListAllByMeaningIDs(wordIDs uuid.UUIDs) ([]*model.Wo
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}

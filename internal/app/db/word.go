@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -17,7 +19,7 @@ type WordRepo interface {
 }
 
 type wordRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -37,7 +39,7 @@ func (db *wordRepo) Create(dictionaryId uuid.UUID, word string, language string)
 	}
 
 	var wordId string
-	err = db.conn.QueryRow(query, args...).Scan(&wordId)
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(&wordId)
 	return wordId, err
 }
 
@@ -48,7 +50,7 @@ func (db *wordRepo) DeleteByID(wordId uuid.UUID) error {
 		return err
 	}
 
-	_, err = db.conn.Exec(query, args...)
+	_, err = db.conn.Exec(context.Background(), query, args...)
 	return err
 }
 
@@ -62,7 +64,7 @@ func (db *wordRepo) GetByID(wordId uuid.UUID) (*model.Word, error) {
 	}
 
 	var word model.Word
-	err = db.conn.QueryRow(query, args...).Scan(
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(
 		&word.ID,
 		&word.Word,
 		&word.CreatedAt,
@@ -76,13 +78,13 @@ func (db *wordRepo) ListByWordIDs(wordIDs uuid.UUID, opts *model.QueryOptions) (
 		From("words").
 		Where(sq.Eq{"id": wordIDs})
 
-	query, args, err := queryBuilder.ToSql()
+	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -125,7 +127,7 @@ func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.Query
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -155,7 +157,7 @@ func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.Query
 	}
 
 	var total int
-	err = db.conn.QueryRow(totalQuery, totalArgs...).Scan(&total)
+	err = db.conn.QueryRow(context.Background(), totalQuery, totalArgs...).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -182,7 +184,7 @@ func (db *wordRepo) ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*mode
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -212,7 +214,7 @@ func (db *wordRepo) ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*mode
 	}
 
 	var total int
-	err = db.conn.QueryRow(totalQuery, totalArgs...).Scan(&total)
+	err = db.conn.QueryRow(context.Background(), totalQuery, totalArgs...).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}

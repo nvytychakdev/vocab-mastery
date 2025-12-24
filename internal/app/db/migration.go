@@ -4,7 +4,7 @@ import (
 	"log/slog"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type MigrationRepo interface {
@@ -13,7 +13,7 @@ type MigrationRepo interface {
 }
 
 type migrationRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 

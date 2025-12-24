@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -12,7 +14,7 @@ type WordExampleRepo interface {
 }
 
 type wordExampleRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -24,7 +26,8 @@ func (db *wordExampleRepo) ListAllByMeaningIDs(meaningIDs uuid.UUIDs) ([]*model.
 	queryBuilder := db.psql.
 		Select("id", "meaning_id", "text").
 		From("word_examples").
-		Where(sq.Eq{"meaning_id": meaningIDs})
+		Where(sq.Eq{"meaning_id": meaningIDs}).
+		OrderBy("text DESC")
 
 	query, args, err := queryBuilder.ToSql()
 
@@ -32,7 +35,7 @@ func (db *wordExampleRepo) ListAllByMeaningIDs(meaningIDs uuid.UUIDs) ([]*model.
 		return nil, 0, err
 	}
 
-	rows, err := db.conn.Query(query, args...)
+	rows, err := db.conn.Query(context.Background(), query, args...)
 	if err != nil {
 		return nil, 0, err
 	}

@@ -13,7 +13,7 @@ import (
 
 type WordGetByIdResponse struct {
 	ID        uuid.UUID                    `json:"id"`
-	Word      string                       `json:"name"`
+	Word      string                       `json:"word"`
 	CreatedAt time.Time                    `json:"craetedAt"`
 	Meanings  []WordGetByIdMeaningResponse `json:"meanings,omitempty"`
 }

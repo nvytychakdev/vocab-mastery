@@ -1,11 +1,12 @@
 package db
 
 import (
+	"context"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserTokenRepo interface {
@@ -15,7 +16,7 @@ type UserTokenRepo interface {
 }
 
 type userTokenRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -35,7 +36,7 @@ func (p *userTokenRepo) Create(userId uuid.UUID, tokenType string) (uuid.UUID, s
 	}
 
 	var userTokenId uuid.UUID
-	err = p.conn.QueryRow(query, args...).Scan(&userTokenId)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&userTokenId)
 	return userTokenId, token, err
 }
 
@@ -55,7 +56,7 @@ func (p *userTokenRepo) FindNonExpired(token string, tokenType string) (uuid.UUI
 		return uuid.Nil, nil, err
 	}
 
-	err = p.conn.QueryRow(query, args...).Scan(&userId, &usedAt)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&userId, &usedAt)
 	return userId, usedAt, err
 }
 
@@ -69,7 +70,7 @@ func (p *userTokenRepo) SetUsed(token string) error {
 		return err
 	}
 
-	_, err = p.conn.Exec(query, args...)
+	_, err = p.conn.Exec(context.Background(), query, args...)
 	return err
 }
 

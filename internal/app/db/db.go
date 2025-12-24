@@ -1,13 +1,16 @@
 package db
 
 import (
+	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -25,7 +28,7 @@ type DB interface {
 }
 
 type PostgresDB struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql squirrel.StatementBuilderType
 }
 
@@ -37,15 +40,17 @@ func Connect() DB {
 		slog.Debug("Failed to retrieve postgres port")
 	}
 
+	connString := fmt.Sprintf(
+		"postgres://%s:%s@%s:%d/%s",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_HOST"),
+		port,
+		os.Getenv("POSTGRES_DB"),
+	)
 	psql := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 	for range MAX_RETRIES {
-		conn, err := pgx.Connect(pgx.ConnConfig{
-			Host:     os.Getenv("POSTGRES_HOST"),
-			Port:     uint16(port),
-			User:     os.Getenv("POSTGRES_USER"),
-			Password: os.Getenv("POSTGRES_PASSWORD"),
-			Database: os.Getenv("POSTGRES_DB"),
-		})
+		conn, err := pgxpool.New(context.Background(), connString)
 		if err == nil {
 			slog.Info("Database connection established")
 			return &PostgresDB{conn, psql}
@@ -59,14 +64,13 @@ func Connect() DB {
 }
 
 func ApplyQueryOptions(builder squirrel.SelectBuilder, opts *model.QueryOptions) squirrel.SelectBuilder {
-
 	if opts.Pagination != nil {
 		builder = builder.Offset(uint64(opts.Pagination.Offset)).Limit(uint64(opts.Pagination.Limit))
 	}
 
 	if opts.Sort != nil {
 		orderBy := opts.Sort.Field
-		if opts.Sort.Direction == "desc" {
+		if strings.ToLower(opts.Sort.Direction) == "desc" {
 			orderBy += " DESC"
 		}
 		builder = builder.OrderBy(orderBy)

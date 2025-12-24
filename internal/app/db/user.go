@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/model"
 )
 
@@ -19,7 +21,7 @@ type UserRepo interface {
 }
 
 type userRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
@@ -38,7 +40,7 @@ func (p *userRepo) Create(email string, passwordHash string, name string) (uuid.
 	}
 
 	var userId uuid.UUID
-	err = p.conn.QueryRow(query, args...).Scan(&userId)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&userId)
 	return userId, err
 }
 
@@ -53,7 +55,7 @@ func (p *userRepo) CreateOAuth(email string, name string, provider string, provi
 	}
 
 	var userId uuid.UUID
-	err = p.conn.QueryRow(query, args...).Scan(&userId)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&userId)
 	return userId, err
 }
 
@@ -68,7 +70,7 @@ func (p *userRepo) Exists(email string) (bool, error) {
 	}
 
 	var exists bool
-	err = p.conn.QueryRow(query, args...).Scan(&exists)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&exists)
 	return exists, err
 }
 
@@ -89,7 +91,7 @@ func (p *userRepo) ExistsByProvider(email string, provider string) (bool, error)
 	}
 
 	var exists bool
-	err = p.conn.QueryRow(query, args...).Scan(&exists)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&exists)
 	return exists, err
 }
 
@@ -103,7 +105,7 @@ func (p *userRepo) GetByID(id uuid.UUID) (*model.User, error) {
 	}
 
 	var user model.User
-	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
 }
 
@@ -117,7 +119,7 @@ func (p *userRepo) GetByEmail(email string) (*model.User, error) {
 	}
 
 	var user model.User
-	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&user.ID, &user.Email, &user.Name, &user.CreatedAt, &user.PictureUrl)
 	return &user, err
 }
 
@@ -131,7 +133,7 @@ func (p *userRepo) GetByEmailWithPwd(email string) (*model.UserWithPwd, error) {
 	}
 
 	var user model.UserWithPwd
-	err = p.conn.QueryRow(query, args...).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
+	err = p.conn.QueryRow(context.Background(), query, args...).Scan(&user.ID, &user.Email, &user.Password, &user.IsEmailConfirmed, &user.CreatedAt)
 	return &user, err
 }
 
@@ -145,6 +147,6 @@ func (p *userRepo) SetEmailConfirmed(id uuid.UUID) error {
 		return err
 	}
 
-	_, err = p.conn.Exec(query, args...)
+	_, err = p.conn.Exec(context.Background(), query, args...)
 	return err
 }
