@@ -26,7 +26,7 @@ import { HorizontalLayoutHeaderThemeSelector } from './horizontal-layout-header-
 export class HorizontalLayoutHeader {
   readonly navOptions = [
     { title: 'Home', link: '/main/home', icon: 'lucideHouse' },
-    { title: 'Words', link: '/main/my-words', icon: 'lucideListPlus' },
+    { title: 'Words', link: '/main/words', icon: 'lucideListPlus' },
     { title: 'Flashcards', link: '/main/play', icon: 'lucideGamepad' },
   ] as const;
 }

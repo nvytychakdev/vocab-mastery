@@ -33,7 +33,7 @@ import { MainLayoutSidebarProfileComponent } from './main-layout-sidebar-profile
 export class MainLayoutSidebarComponent {
   readonly navOptions = [
     { title: 'Home', link: '/main/home', icon: 'lucideHouse' },
-    { title: 'My Words', link: '/main/my-words', icon: 'lucideListPlus' },
+    { title: 'My Words', link: '/main/words', icon: 'lucideListPlus' },
     { title: 'Play', link: '/main/play', icon: 'lucideGamepad' },
   ] as const;
 }

@@ -1,0 +1,29 @@
+@if (words.activeWord(); as activeWord) {
+  <div class="typography w-full max-w-2xl pt-16">
+    <h1>{{ activeWord.word }}</h1>
+    @for (meaning of activeWord.meanings; track meaning.id) {
+      <div class="my-4 flex flex-col items-start">
+        <vm-badge color="yellow">{{ meaning.partOfSpeech }}</vm-badge>
+        <p>{{ meaning.definition }}</p>
+
+        <p class="text-muted italic">Examples:</p>
+        <ul class="flex list-disc gap-4">
+          @for (example of meaning.examples; track example.id) {
+            <li>
+              <p class="italic">{{ example.text }}</p>
+            </li>
+          }
+        </ul>
+
+        <p class="text-muted italic">Synonyms:</p>
+        <div class="flex gap-4">
+          @for (synonym of meaning.synonyms; track synonym.id) {
+            <p class="cursor-pointer transition-all hover:scale-103 hover:font-bold" [routerLink]="'../' + synonym.id">
+              {{ synonym.word }}
+            </p>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

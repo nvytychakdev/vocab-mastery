@@ -2,7 +2,6 @@ import { DestroyRef, inject, Injectable } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { WordApi } from './word.api';
-import { Word, WordBase } from './word.interface';
 import { WordState } from './word.state';
 
 @Injectable({ providedIn: 'root' })
@@ -15,22 +14,8 @@ export class WordFacade {
   readonly wordsChanges$ = this.state.listItemsChanges$;
   readonly wordsLoading = this.state.listItemsLoading;
   readonly wordsLoadingChanges$ = this.state.listItemsLoadingChanges$;
-
-  create(dictionaryId: string, word: WordBase) {
-    this.state.setItemsLoading(true);
-    return this.api.create(word, { params: { dictionaryId } }).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(data => {
-        const newWord: Word = {
-          ...word,
-          id: data.id,
-          createdAt: new Date().toISOString(),
-        };
-        this.state.addItems([newWord]);
-        this.state.setItemsLoading(false);
-      })
-    );
-  }
+  readonly activeWord = this.state.activeItem;
+  readonly activeWordChanges$ = this.state.activeItemChanges$;
 
   loadAll() {
     this.state.setItemsLoading(true);
@@ -39,6 +24,15 @@ export class WordFacade {
       tap(data => {
         this.state.setItems(data.items);
         this.state.setItemsLoading(false);
+      })
+    );
+  }
+
+  loadActive(id: string) {
+    return this.api.getById(id).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(data => {
+        this.state.setActiveItem(data);
       })
     );
   }

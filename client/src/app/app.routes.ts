@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
+import { wordByIdResolver } from '@feature/word/word.resolver';
 import { catchError, map, of } from 'rxjs';
 import { authProfileResolve } from './features/auth/auth-profile.resolver';
 import { AuthService } from './features/auth/auth.service';
@@ -10,8 +11,9 @@ import { SignInComponent } from './pages/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth/sign-up/sign-up.component';
 import { UsedEmailComponent } from './pages/auth/used-email/used-email.component';
 import { HomeComponent } from './pages/home/home.component';
-import { MyWords } from './pages/my-words/my-words';
 import { PlayComponent } from './pages/play/play.component';
+import { Words } from './pages/words/words';
+import { WordsDetails } from './pages/words/words-details/words-details';
 
 const { redirectIfAuthenticated, redirectIfUnauthenticated } = authRedirectGuards({
   redirectAuth: '/main',
@@ -74,11 +76,16 @@ export const routes: Routes = [
         component: HomeComponent,
       },
       {
-        path: 'my-words',
+        path: 'words',
         children: [
           {
             path: '',
-            component: MyWords,
+            component: Words,
+          },
+          {
+            path: ':wordId',
+            component: WordsDetails,
+            resolve: [wordByIdResolver],
           },
         ],
       },

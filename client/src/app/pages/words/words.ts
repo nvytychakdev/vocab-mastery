@@ -1,17 +1,21 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
 import { WordFacade } from '@domain/word/word.facade';
 import { WordListItem } from '@domain/word/word.interface';
 import { ALPHABET, ENGLISH_LEVEL, EnglishLevel } from '@feature/dictionary/dictionary.model';
 import { ToggleButton, ToggleButtonGroup } from '@vm/ui';
 
 @Component({
-  selector: 'app-my-words',
-  imports: [ToggleButtonGroup, ToggleButton],
-  templateUrl: './my-words.html',
-  styleUrl: './my-words.css',
+  selector: 'app-words',
+  imports: [ToggleButtonGroup, ToggleButton, RouterLink, RouterLink],
+  templateUrl: './words.html',
+  styleUrl: './words.css',
 })
-export class MyWords implements OnInit {
+export class Words implements OnInit {
   readonly words = inject(WordFacade);
+  readonly dictionaries = inject(DictionaryFacade);
+
   readonly englishLevel = Object.values(ENGLISH_LEVEL);
   readonly selectedEnglishLevel = signal<EnglishLevel | undefined>(undefined);
   readonly alphabet = ALPHABET;
@@ -34,6 +38,7 @@ export class MyWords implements OnInit {
 
   ngOnInit() {
     // TODO: move to resolver
+    this.dictionaries.loadAll().subscribe();
     this.words.loadAll().subscribe();
   }
 
