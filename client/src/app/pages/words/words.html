@@ -1,9 +1,11 @@
 <section class="mt-5 flex w-full items-center justify-center gap-3 rounded-full text-xl">
-  <vm-toggle-button-group [field]="filtersForm.dictionaryId">
-    @for (dictionary of dictionaries.dictionaries(); track $index) {
-      <vm-toggle-button [value]="dictionary.id">{{ dictionary.level || dictionary.title }}</vm-toggle-button>
-    }
-  </vm-toggle-button-group>
+  @if (!dictionaries.dictionariesLoading()) {
+    <vm-toggle-button-group [field]="filtersForm.dictionaryId">
+      @for (dictionary of dictionaries.dictionaries(); track $index) {
+        <vm-toggle-button [value]="dictionary.id">{{ dictionary.level || dictionary.title }}</vm-toggle-button>
+      }
+    </vm-toggle-button-group>
+  }
 </section>
 
 <section class="text-foreground-subtle bg-surface sticky top-0 w-full text-xl">
@@ -23,22 +25,26 @@
 </section>
 
 <section class="typography flex flex-col">
-  @for (group of groups(); track $index) {
-    <div class="my-8 flex gap-24">
-      <h1 class="flex-1/6 !font-normal">{{ group.letter }}</h1>
-      <div class="grid flex-5/6 grid-cols-3 gap-4">
-        @for (wordItem of group.words; track $index) {
-          <span>
-            <p class="cursor-pointer transition-all hover:scale-103 hover:font-bold" [routerLink]="wordItem.id">
-              {{ wordItem.word }}
-            </p>
-          </span>
-        }
+  @if (!words.wordsLoading()) {
+    @for (group of groups(); track $index) {
+      <div class="my-8 flex gap-24">
+        <h1 class="flex-1/6 !font-normal">{{ group.letter }}</h1>
+        <div class="grid flex-5/6 grid-cols-3 gap-4">
+          @for (wordItem of group.words; track $index) {
+            <span>
+              <p
+                class="w-fit cursor-pointer transition-all hover:scale-110 hover:font-semibold"
+                [routerLink]="wordItem.id">
+                {{ wordItem.word }}
+              </p>
+            </span>
+          }
+        </div>
       </div>
-    </div>
 
-    @if (!$last) {
-      <div class="bg-surface-muted h-[1px]"></div>
+      @if (!$last) {
+        <div class="bg-surface-muted h-[1px]"></div>
+      }
     }
   }
 </section>

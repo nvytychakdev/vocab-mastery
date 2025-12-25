@@ -3,7 +3,7 @@
     <h1>{{ activeWord.word }}</h1>
     @for (meaning of activeWord.meanings; track meaning.id) {
       <div class="my-4 flex flex-col items-start">
-        <vm-badge color="yellow">{{ meaning.partOfSpeech }}</vm-badge>
+        <vm-badge [color]="getPartOfSpeechColor(meaning.partOfSpeech)">{{ meaning.partOfSpeech }}</vm-badge>
         <div class="mt-4 mb-8 ml-4">
           <h3>{{ meaning.definition }}</h3>
 

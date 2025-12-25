@@ -6,16 +6,36 @@
   @apply bg-green-600/10 text-green-800 dark:bg-green-900/50 dark:text-green-500;
 }
 
+.vm-badge-lime {
+  @apply bg-lime-600/10 text-lime-800 dark:bg-lime-900/50 dark:text-lime-500;
+}
+
 .vm-badge-blue {
   @apply bg-blue-600/10 text-blue-800 dark:bg-blue-800/50 dark:text-blue-400;
+}
+
+.vm-badge-sky {
+  @apply bg-sky-600/10 text-sky-800 dark:bg-sky-900/50 dark:text-sky-500;
 }
 
 .vm-badge-purple {
   @apply bg-purple-600/10 text-purple-800 dark:bg-purple-800/50 dark:text-purple-400;
 }
 
+.vm-badge-pink {
+  @apply bg-pink-600/10 text-pink-800 dark:bg-pink-900/50 dark:text-pink-500;
+}
+
 .vm-badge-yellow {
   @apply bg-yellow-600/10 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-500;
+}
+
+.vm-badge-orange {
+  @apply bg-orange-600/10 text-orange-800 dark:bg-orange-900/50 dark:text-orange-500;
+}
+
+.vm-badge-red {
+  @apply bg-red-600/10 text-red-800 dark:bg-red-900/50 dark:text-red-500;
 }
 
 .vm-badge-gray {

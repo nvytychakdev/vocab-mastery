@@ -1,5 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Field, form } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
@@ -7,7 +7,7 @@ import { WordFacade } from '@domain/word/word.facade';
 import { WordListItem } from '@domain/word/word.interface';
 import { ALPHABET } from '@feature/dictionary/dictionary.model';
 import { ToggleButton, ToggleButtonGroup } from '@vm/ui';
-import { distinctUntilChanged, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-words',
@@ -16,6 +16,7 @@ import { distinctUntilChanged, switchMap, tap } from 'rxjs';
   styleUrl: './words.css',
 })
 export class Words implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   readonly words = inject(WordFacade);
   readonly dictionaries = inject(DictionaryFacade);
 
@@ -43,13 +44,12 @@ export class Words implements OnInit {
   });
 
   ngOnInit() {
-    // TODO: move to resolver
     this.dictionaries.loadAll().subscribe();
     this.dictionaryFilterChanges$
       .pipe(
         distinctUntilChanged(),
-        tap(dictionaryId => console.log(dictionaryId)),
-        switchMap(dictionaryId => this.words.loadAll(dictionaryId))
+        switchMap(dictionaryId => this.words.loadAll(dictionaryId)),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }

@@ -35,7 +35,7 @@
 * [ ] FE: Loading and page transitions improvements. Move data fetching into the component (avoid resolvers). Dispaly loading states for data fragments loaded from the server.
 * [ ] FE: Implement words list smart pagination on scroll. Wrap all words with autosize virtual scroll, implement segments fetching one by one.
 * [x] Server: Fill database with all levels of English. A1-2, B1-2, C1-2.
-* [ ] API: `/words` filter by `dictionaryId` query params.
+* [x] API: `/words` filter by `dictionaryId` query params.
 * [ ] API: Streamline words creation. Populate meanings, examples and relations between them.
 * [ ] API: Add existing words to personal dictionary.
 * [ ] Server: Review all meanings, make sure there are no ducplicated, and all of them are precisely described. Collect new meanings/words with better LLM as v2 seeds.
@@ -43,7 +43,7 @@
 * [ ] Server: Populate all words with translations to Russian language.
 * [ ] API: Quiz flashcards API. 
 * [ ] FE: Migrate to SignalForms API of Angular (experimental)
-* [ ] FE: Map "part of speech" to different colors 
+* [x] FE: Map "part of speech" to different colors 
 * [ ] FE: Refactor Words and Words details, move them into the feature-based structure from the page components
 
 ## Low Priority:
@@ -54,3 +54,6 @@
 * [ ] Server: Add API docs
 * [ ] FE: Implement Words + Translations API integration with UI
 * [ ] Server: Translation autocomplete API with Google Translate and Dictonary integration
+
+## Issues
+* [ ] Server: Investigate /refresh-token not being refreshed properly at some times
