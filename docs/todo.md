@@ -1,3 +1,7 @@
+# Todo
+
+## High priority
+
 * [x] FE: Setup Tailwind and Prettier
 * [x] FE: Create auth pages for the app: Login, Register
 * [x] FE: Interface to display dictionaries
@@ -18,20 +22,32 @@
 * [x] Server: Add pagination support for all GET/POST requests
 * [x] Server: Add `include` fields functionality to GET requests
 * [x] Server: Add `include` fields functionality to GET lists requests
-* [ ] Server: Add sort support for all GET/POST requests
+* [x] Server: Add sort support for all GET/POST requests
 * [ ] Server: Add filters support for all GET/POST requests
-* [ ] Server: Refactor pagination to be reusable for all queries
-* [ ] Server: Refactor sort to be reusable for all queries
+* [x] Server: Refactor pagination to be reusable for all queries
+* [x] Server: Refactor sort to be reusable for all queries
 * [x] Server: Setup `Words` table schema in DB 
 * [x] API: Basic auth rotues `/sign-in`, `/sign-out`, `/register`, `/refresh`
 * [x] API: Advanced OAuth (google sign in support)
 * [x] API: CRUD for Dictionaries 
 * [x] API: CRUD for Words and Translations
-* [ ] API: Games API (quiz, etc.)
+* [x] FE: Implement Dictionaries API integration with UI
+* [ ] FE: Loading and page transitions improvements. Move data fetching into the component (avoid resolvers). Dispaly loading states for data fragments loaded from the server.
+* [ ] FE: Implement words list smart pagination on scroll. Wrap all words with autosize virtual scroll, implement segments fetching one by one.
+* [ ] Server: Fill database with all levels of English. A1-2, B1-2, C1-2.
+* [ ] API: `/words` filter by `dictionaryId` query params.
+* [ ] API: Streamline words creation. Populate meanings, examples and relations between them.
+* [ ] API: Add existing words to personal dictionary.
+* [ ] Server: Review all meanings, make sure there are no ducplicated, and all of them are precisely described. Collect new meanings/words with better LLM as v2 seeds.
+* [ ] Server: Review all synonyms. Make sure during word's creation, all synonyms will be linked back to original word and vice versa. 
+* [ ] Server: Populate all words with translations to Russian language.
+* [ ] API: Quiz flashcards API. 
+
+## Low Priority:
+
 * [ ] Server: Add coverage for Auth tests on server
 * [ ] Server: Add coverage for Dictionaries tests on server
 * [x] Server: Refactor Auth to rely on Squirrel
 * [ ] Server: Add API docs
-* [ ] FE: Implement Dictionaries API integration with UI
 * [ ] FE: Implement Words + Translations API integration with UI
 * [ ] Server: Translation autocomplete API with Google Translate and Dictonary integration
