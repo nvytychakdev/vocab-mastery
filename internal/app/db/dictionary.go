@@ -116,7 +116,12 @@ func (db *dictionaryRepo) ListByUserId(userId uuid.UUID, opts *model.QueryOption
 
 	totalQuery, totalArgs, err := db.psql.
 		Select("COUNT(*)").From("dictionaries").
-		Where(sq.Eq{"owner_id": userId}).ToSql()
+		Where(
+			sq.Or{
+				sq.Eq{"owner_id": userId},
+				sq.Eq{"is_default": true},
+			},
+		).ToSql()
 
 	if err != nil {
 		return nil, 0, err

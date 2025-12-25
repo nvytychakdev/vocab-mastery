@@ -165,19 +165,27 @@ func (db *wordRepo) ListByDictionaryID(dictionaryId uuid.UUID, opts *model.Query
 	return words, total, rows.Err()
 }
 
-func listAllQuery(builder sq.SelectBuilder, userId uuid.UUID) sq.SelectBuilder {
-	return builder.From("dictionaries d").
-		Join("dictionary_words dw ON dw.dictionary_id = d.id").
+func listAllQuery(builder sq.SelectBuilder, userId uuid.UUID, opts *model.QueryOptions) sq.SelectBuilder {
+	query := builder.From("dictionary_words dw").
+		Join("dictionaries d ON dw.dictionary_id = d.id").
 		Join("words w ON dw.word_id = w.id").
 		Where(sq.Or{
 			sq.Eq{"d.owner_id": userId},
 			sq.Eq{"d.is_default": true},
 		})
+
+	if opts.Filters != nil {
+		if opts.Filters.DictionaryID != nil {
+			query = query.Where(sq.Eq{"d.id": *opts.Filters.DictionaryID})
+		}
+	}
+
+	return query
 }
 
 func (db *wordRepo) ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*model.Word, int, error) {
 	baseBuilder := db.psql.Select("w.id", "w.word", "w.created_at")
-	queryBuilder := listAllQuery(baseBuilder, userId)
+	queryBuilder := listAllQuery(baseBuilder, userId, opts)
 	query, args, err := ApplyQueryOptions(queryBuilder, opts).ToSql()
 
 	if err != nil {
@@ -207,7 +215,7 @@ func (db *wordRepo) ListAll(userId uuid.UUID, opts *model.QueryOptions) ([]*mode
 	}
 
 	baseCountBuilder := db.psql.Select("COUNT(*)")
-	totalQuery, totalArgs, err := listAllQuery(baseCountBuilder, userId).ToSql()
+	totalQuery, totalArgs, err := listAllQuery(baseCountBuilder, userId, opts).ToSql()
 
 	if err != nil {
 		return nil, 0, err
