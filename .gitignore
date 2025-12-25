@@ -39,6 +39,9 @@
 /client/testem.log
 /client/typings
 
+/scripts/*
+/seeds/*
+
 # System files
 .DS_Store
 Thumbs.db
