@@ -18,15 +18,17 @@ export class WordFacade {
   readonly activeWord = this.state.activeItem;
   readonly activeWordChanges$ = this.state.activeItemChanges$;
 
-  loadAll() {
+  loadAll(dictionaryId?: string) {
     this.state.setItemsLoading(true);
-    return this.api.getAll({ query: { limit: WORDS_LIMIT, sortBy: WORDS_SORT_BY, dir: WORDS_SORT_DIR } }).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(data => {
-        this.state.setItems(data.items);
-        this.state.setItemsLoading(false);
-      })
-    );
+    return this.api
+      .getAll({ query: { dictionaryId, limit: WORDS_LIMIT, sortBy: WORDS_SORT_BY, dir: WORDS_SORT_DIR } })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(data => {
+          this.state.setItems(data.items);
+          this.state.setItemsLoading(false);
+        })
+      );
   }
 
   loadActive(id: string) {

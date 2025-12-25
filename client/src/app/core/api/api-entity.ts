@@ -24,6 +24,7 @@ export abstract class ApiEntity<
     const params = new HttpParams();
     if (!options?.query) return params;
     return Object.entries(options.query).reduce((prm, [key, value]) => {
+      if (!value) return prm;
       if (Array.isArray(value)) return value.reduce((p, v) => p.append(key, v), prm);
       return prm.set(key, value);
     }, params);

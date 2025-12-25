@@ -1,7 +1,7 @@
 export type ApiUrlParams = Record<string, string>;
 
 export type ApiListQuerySortDir = 'asc' | 'desc';
-export type ApiQueryParams = Partial<{ include: string | string[] }>;
+export type ApiQueryParams = Partial<{ dictionaryId: string }>;
 export type ApiListQueryParams = Partial<
   {
     sortBy: string;
