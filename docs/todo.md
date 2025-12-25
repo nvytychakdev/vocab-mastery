@@ -42,6 +42,9 @@
 * [ ] Server: Review all synonyms. Make sure during word's creation, all synonyms will be linked back to original word and vice versa. 
 * [ ] Server: Populate all words with translations to Russian language.
 * [ ] API: Quiz flashcards API. 
+* [ ] FE: Migrate to SignalForms API of Angular (experimental)
+* [ ] FE: Map "part of speech" to different colors 
+* [ ] FE: Refactor Words and Words details, move them into the feature-based structure from the page components
 
 ## Low Priority:
 
