@@ -34,7 +34,7 @@
 * [x] FE: Implement Dictionaries API integration with UI
 * [ ] FE: Loading and page transitions improvements. Move data fetching into the component (avoid resolvers). Dispaly loading states for data fragments loaded from the server.
 * [ ] FE: Implement words list smart pagination on scroll. Wrap all words with autosize virtual scroll, implement segments fetching one by one.
-* [ ] Server: Fill database with all levels of English. A1-2, B1-2, C1-2.
+* [x] Server: Fill database with all levels of English. A1-2, B1-2, C1-2.
 * [ ] API: `/words` filter by `dictionaryId` query params.
 * [ ] API: Streamline words creation. Populate meanings, examples and relations between them.
 * [ ] API: Add existing words to personal dictionary.

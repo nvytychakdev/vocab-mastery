@@ -1,10 +1,11 @@
 export type ApiUrlParams = Record<string, string>;
 
+export type ApiListQuerySortDir = 'asc' | 'desc';
 export type ApiQueryParams = Partial<{ include: string | string[] }>;
 export type ApiListQueryParams = Partial<
   {
     sortBy: string;
-    dir: string;
+    dir: ApiListQuerySortDir;
     limit: number;
     offset: number;
   } & ApiQueryParams

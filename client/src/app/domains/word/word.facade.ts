@@ -2,6 +2,7 @@ import { DestroyRef, inject, Injectable } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { WordApi } from './word.api';
+import { WORDS_LIMIT, WORDS_SORT_BY, WORDS_SORT_DIR } from './word.model';
 import { WordState } from './word.state';
 
 @Injectable({ providedIn: 'root' })
@@ -19,7 +20,7 @@ export class WordFacade {
 
   loadAll() {
     this.state.setItemsLoading(true);
-    return this.api.getAll({ query: { limit: 1000 } }).pipe(
+    return this.api.getAll({ query: { limit: WORDS_LIMIT, sortBy: WORDS_SORT_BY, dir: WORDS_SORT_DIR } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.state.setItems(data.items);
@@ -33,17 +34,6 @@ export class WordFacade {
       takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.state.setActiveItem(data);
-      })
-    );
-  }
-
-  deleteById(dictionaryId: string, wordId: string) {
-    this.state.setItemsLoading(true);
-    return this.api.deleteById(wordId, { params: { dictionaryId } }).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(() => {
-        this.state.removeItemById(wordId);
-        this.state.setItemsLoading(false);
       })
     );
   }
