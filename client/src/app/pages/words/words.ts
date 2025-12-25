@@ -1,14 +1,17 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Field, form } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
 import { WordFacade } from '@domain/word/word.facade';
 import { WordListItem } from '@domain/word/word.interface';
-import { ALPHABET, ENGLISH_LEVEL, EnglishLevel } from '@feature/dictionary/dictionary.model';
+import { ALPHABET } from '@feature/dictionary/dictionary.model';
 import { ToggleButton, ToggleButtonGroup } from '@vm/ui';
+import { distinctUntilChanged, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-words',
-  imports: [ToggleButtonGroup, ToggleButton, RouterLink, RouterLink],
+  imports: [ToggleButtonGroup, ToggleButton, RouterLink, RouterLink, Field],
   templateUrl: './words.html',
   styleUrl: './words.css',
 })
@@ -16,8 +19,11 @@ export class Words implements OnInit {
   readonly words = inject(WordFacade);
   readonly dictionaries = inject(DictionaryFacade);
 
-  readonly englishLevel = Object.values(ENGLISH_LEVEL);
-  readonly selectedEnglishLevel = signal<EnglishLevel | undefined>(undefined);
+  readonly filtersModel = signal({ dictionaryId: '', letter: '' });
+  readonly filtersForm = form(this.filtersModel);
+
+  readonly dictionaryFilterChanges$ = toObservable(this.filtersForm.dictionaryId().value);
+
   readonly alphabet = ALPHABET;
   readonly selectedChar = signal<string | undefined>(undefined);
 
@@ -39,11 +45,13 @@ export class Words implements OnInit {
   ngOnInit() {
     // TODO: move to resolver
     this.dictionaries.loadAll().subscribe();
-    this.words.loadAll().subscribe();
-  }
-
-  onLevelSelection(level: string | number | undefined) {
-    this.selectedEnglishLevel.set(level as EnglishLevel);
+    this.dictionaryFilterChanges$
+      .pipe(
+        distinctUntilChanged(),
+        tap(dictionaryId => console.log(dictionaryId)),
+        switchMap(dictionaryId => this.words.loadAll(dictionaryId))
+      )
+      .subscribe();
   }
 
   onAlphabetSelection(char: string) {

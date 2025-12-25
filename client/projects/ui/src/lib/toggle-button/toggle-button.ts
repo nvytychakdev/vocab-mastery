@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { ToggleButtonState } from './toggle-button-state';
+import { TOGGLE_BUTTON_GROUP } from './toggle-button-group';
 
 @Component({
   selector: 'vm-toggle-button',
@@ -17,11 +17,23 @@ import { ToggleButtonState } from './toggle-button-state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToggleButton {
-  private readonly toggleState = inject(ToggleButtonState);
-  readonly value = input.required<string | number>();
-  readonly isSelected = computed(() => this.toggleState.activeToggle() === this.value());
+  private readonly toggleState = inject(TOGGLE_BUTTON_GROUP, { optional: true });
+
+  readonly value = input.required<string>();
+  readonly isSelected = computed(() => this.toggleState?.value() === this.value());
 
   onButtonSelect() {
-    this.toggleState.setActiveToggle(this.value());
+    const value = this.value();
+    const currentValue = this.toggleState?.value();
+
+    if (currentValue && currentValue === value) {
+      this.toggleState?.value.set('');
+      return;
+    }
+
+    if (value) {
+      this.toggleState?.value.set(value);
+      return;
+    }
   }
 }

@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, model, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ToggleButtonState } from './toggle-button-state';
+import { ChangeDetectionStrategy, Component, InjectionToken, model } from '@angular/core';
+import { FormValueControl } from '@angular/forms/signals';
+
+export const TOGGLE_BUTTON_GROUP = new InjectionToken<ToggleButtonGroup>('TOGGLE_BUTTON_GROUP');
 
 @Component({
   selector: 'vm-toggle-button-group',
@@ -8,21 +9,9 @@ import { ToggleButtonState } from './toggle-button-state';
   template: `<div class="vm-toggle-button-group">
     <ng-content select="vm-toggle-button" />
   </div>`,
-  providers: [ToggleButtonState],
+  providers: [{ provide: TOGGLE_BUTTON_GROUP, useExisting: ToggleButtonGroup }],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleButtonGroup implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-  readonly toggleState = inject(ToggleButtonState);
-
-  readonly value = model<string | number | undefined>(undefined);
-
-  ngOnInit() {
-    const value = this.value();
-    if (value) this.toggleState.setActiveToggle(value);
-
-    this.toggleState.activeToggleChanges$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
-      this.value.set(value || undefined);
-    });
-  }
+export class ToggleButtonGroup implements FormValueControl<string> {
+  readonly value = model<string>('');
 }

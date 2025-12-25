@@ -1,7 +1,7 @@
 <section class="mt-5 flex w-full items-center justify-center gap-3 rounded-full text-xl">
-  <vm-toggle-button-group [value]="selectedEnglishLevel()" (valueChange)="onLevelSelection($event)">
+  <vm-toggle-button-group [field]="filtersForm.dictionaryId">
     @for (dictionary of dictionaries.dictionaries(); track $index) {
-      <vm-toggle-button [value]="dictionary.level">{{ dictionary.title }}</vm-toggle-button>
+      <vm-toggle-button [value]="dictionary.id">{{ dictionary.level || dictionary.title }}</vm-toggle-button>
     }
   </vm-toggle-button-group>
 </section>
