@@ -1,4 +1,4 @@
-<section class="mt-4 flex w-full items-center justify-center gap-2 rounded-full text-xl">
+<section class="mt-5 flex w-full items-center justify-center gap-3 rounded-full text-xl">
   <vm-toggle-button-group [value]="selectedEnglishLevel()" (valueChange)="onLevelSelection($event)">
     @for (dictionary of dictionaries.dictionaries(); track $index) {
       <vm-toggle-button [value]="dictionary.level">{{ dictionary.title }}</vm-toggle-button>
@@ -25,7 +25,7 @@
 <section class="typography flex flex-col">
   @for (group of groups(); track $index) {
     <div class="my-8 flex gap-24">
-      <h1 class="text-muted flex-1/6">{{ group.letter }}</h1>
+      <h1 class="flex-1/6 !font-normal">{{ group.letter }}</h1>
       <div class="grid flex-5/6 grid-cols-3 gap-4">
         @for (wordItem of group.words; track $index) {
           <span>
