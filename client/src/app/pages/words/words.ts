@@ -6,12 +6,12 @@ import { DictionaryFacade } from '@domain/dictionary/dictionary.facade';
 import { WordFacade } from '@domain/word/word.facade';
 import { WordListItem } from '@domain/word/word.interface';
 import { ALPHABET } from '@feature/dictionary/dictionary.model';
-import { ToggleButton, ToggleButtonGroup } from '@vm/ui';
+import { Divider, ToggleButton, ToggleButtonGroup } from '@vm/ui';
 import { distinctUntilChanged, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-words',
-  imports: [ToggleButtonGroup, ToggleButton, RouterLink, RouterLink, Field],
+  imports: [ToggleButtonGroup, ToggleButton, RouterLink, RouterLink, Field, Divider],
   templateUrl: './words.html',
   styleUrl: './words.css',
 })

@@ -45,6 +45,8 @@
 * [ ] FE: Migrate to SignalForms API of Angular (experimental)
 * [x] FE: Map "part of speech" to different colors 
 * [ ] FE: Refactor Words and Words details, move them into the feature-based structure from the page components
+* [ ] FE: Add way to get back from word details. Breadcrumbs? Keep track of the full path of the user? 
+* [x] FE: Dictionary breakpoints for better fit on small screens
 
 ## Low Priority:
 

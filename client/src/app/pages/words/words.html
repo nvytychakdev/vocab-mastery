@@ -21,7 +21,8 @@
       </div>
     }
   </div>
-  <div class="bg-surface-muted h-[1px]"></div>
+
+  <vm-divider />
 </section>
 
 <section class="typography flex flex-col">
@@ -29,7 +30,7 @@
     @for (group of groups(); track $index) {
       <div class="my-8 flex gap-24">
         <h1 class="flex-1/6 !font-normal">{{ group.letter }}</h1>
-        <div class="grid flex-5/6 grid-cols-3 gap-4">
+        <div class="grid flex-5/6 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           @for (wordItem of group.words; track $index) {
             <span>
               <p
@@ -43,7 +44,7 @@
       </div>
 
       @if (!$last) {
-        <div class="bg-surface-muted h-[1px]"></div>
+        <vm-divider />
       }
     }
   }

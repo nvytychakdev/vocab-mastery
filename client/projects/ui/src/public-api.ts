@@ -5,6 +5,7 @@
 export * from './lib/badge';
 export * from './lib/button';
 export * from './lib/card';
+export * from './lib/divider';
 export * from './lib/input';
 export * from './lib/menu';
 export * from './lib/theme';
