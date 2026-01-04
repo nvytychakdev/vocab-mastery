@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: vocab_mastery
+      POSTGRES_DB: ${POSTGRES_DB} 
     ports:
       - "5432:5432"
     volumes:
@@ -31,7 +31,7 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/vocab_mastery?sslmode=disable",
+        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable",
         "up",
       ]
     profiles:
@@ -60,7 +60,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=vocab_mastery
+      - POSTGRES_DB=${POSTGRES_DB}
       - MAILTRAP_USER=${MAILTRAP_USER}
       - MAILTRAP_PASSWORD=${MAILTRAP_PASSWORD}
     restart: unless-stopped
