@@ -1,6 +1,5 @@
-
 def get_full_prompt(word, level):
-  return f"""
+    return f"""
     You are an English lexicographer creating learner dictionary data.
 
     You will receive a WORD LINE that may contain metadata in brackets.
@@ -92,3 +91,4 @@ def get_full_prompt(word, level):
     Word line: "{word}"
     CEFR level: "{level}"
   """
+

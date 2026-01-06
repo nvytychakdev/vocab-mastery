@@ -3,7 +3,7 @@ import json
 import helpers.db as db
 from dotenv import load_dotenv
 
-load_dotenv('../.env')
+load_dotenv("../.env")
 
 inputs = [
     {"level": "A1", "dictionary_id": "fbdff10e-2d36-4387-be01-489b917a36e3"},
@@ -15,12 +15,13 @@ inputs = [
 ]
 data = {}
 
+
 def fill_words(cur, data, dictionary_id):
     try:
         for entry in data:
             # 1. main word
             word_id = db.upsert_word(cur, entry["word"])
-            word_dictionary_id = db.upsert_dictionary_word(cur, dictionary_id,  word_id)
+            word_dictionary_id = db.upsert_dictionary_word(cur, dictionary_id, word_id)
 
             for meaning in entry["meanings"]:
                 print(meaning)
@@ -29,10 +30,7 @@ def fill_words(cur, data, dictionary_id):
 
                 # 3. meaning
                 meaning_id = db.insert_meaning(
-                    cur,
-                    word_id,
-                    meaning["definition"],
-                    pos_id
+                    cur, word_id, meaning["definition"], pos_id
                 )
 
                 # 4. example
@@ -41,6 +39,7 @@ def fill_words(cur, data, dictionary_id):
             print(f"✅ Word '{entry['word']}' committed")
     except Exception as e:
         print(f"❌ Failed to ingest '{data['word']}': {e}")
+
 
 def fill_synonyms(cur, data):
     for entry in data:
@@ -52,11 +51,13 @@ def fill_synonyms(cur, data):
                 if not existing_word_id:
                     syn_word_id = db.upsert_word(cur, syn)
                 else:
-                    syn_word_id =existing_word_id 
+                    syn_word_id = existing_word_id
                 db.insert_synonym(cur, meaning_id, syn_word_id)
                 print(f"✅ Synonym '{syn}' committed")
 
+
 # ---------- MAIN INGESTION ----------
+
 
 def run():
     conn = db.connect()
@@ -66,12 +67,17 @@ def run():
             with conn.cursor() as cur:
                 for input in inputs:
                     print(input)
-                    with open(f"../seeds/{input['level']}-output-v2.json", "r", encoding="utf-8") as f:
-                        data[input['level']] = json.load(f)
-                        fill_words(cur, data[input["level"]], input['dictionary_id']) 
+                    with open(
+                        f"../seeds/{input['level']}-output-v2.json",
+                        "r",
+                        encoding="utf-8",
+                    ) as f:
+                        data[input["level"]] = json.load(f)
+                        fill_words(cur, data[input["level"]], input["dictionary_id"])
                 for input in inputs:
-                    fill_synonyms(cur, data[input['level']]) 
+                    fill_synonyms(cur, data[input["level"]])
     print("✅ Word ingested successfully")
+
 
 if __name__ == "__main__":
     run()
