@@ -1,6 +1,7 @@
 import typer
 import questionary
 import feed_collector
+import words_translator
 import words_collector
 
 app = typer.Typer()
@@ -8,6 +9,7 @@ app = typer.Typer()
 OPTIONS = {
     "Collect words definitions based on CERF dictionaries": words_collector.run,
     "Feed collected words to VocabMastery Database": feed_collector.run,
+    "Translate all existing Words records from Database": words_translator.run,
 }
 
 
@@ -26,4 +28,3 @@ def main():
 
 if __name__ == "__main__":
     app()
-

@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 import uuid
 import psycopg
 from psycopg.rows import dict_row
@@ -36,7 +37,6 @@ def upsert_word(cur, word):
 
 
 def get_meaning(cur, definition):
-    # 1️⃣ Try to find existing word in this dictionary
     cur.execute(
         """
         SELECT w.id AS id
@@ -54,21 +54,39 @@ def get_meaning(cur, definition):
 
 
 def get_word(cur, word):
-    # 1️⃣ Try to find existing word in this dictionary
     cur.execute(
         """
         SELECT w.id AS id
         FROM words w
         WHERE w.word = %s
         LIMIT 1
-    """,
-        (word,),
+    """
     )
 
     row = cur.fetchone()
     if row:
         return row["id"]
     return None
+
+
+def get_words_list(cur) -> Optional[list[dict[str, str]]]:
+    cur.execute(
+        """
+        SELECT w.word, w.id, wm.definition, wm.id AS definition_id
+        FROM word_meanings AS wm 
+        JOIN words AS w ON w.id = wm.word_id 
+    """,
+    )
+
+    rows = cur.fetchall()
+    return [
+        {
+            "word": row["word"],
+            "meaning": row["definition"],
+            "meaning_id": str(row["definition_id"]),
+        }
+        for row in rows
+    ]
 
 
 def upsert_part_of_speech(cur, code):

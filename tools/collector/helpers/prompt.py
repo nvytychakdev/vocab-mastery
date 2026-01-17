@@ -92,3 +92,27 @@ def get_full_prompt(word, level):
     CEFR level: "{level}"
   """
 
+
+def get_translate_prompt(word, meaning, language):
+    return f"""
+      You are a professional linguist and translator.
+
+      Task:
+      - Translate the English word below into {language} based strictly on its meaning/context.
+      - Use only {language} (Cyrillic) words.
+      - Provide the most natural and commonly used translations.
+      - Include only words that match the intended meaning.
+      - Return **at least 1 and at most 6 translations**.
+      - Each translation must be a non-empty string.
+      - Do NOT include empty strings, nulls, or placeholders.
+      - Do NOT include explanations, comments, or extra text.
+      - Output MUST be valid JSON.
+      - Output MUST match the schema exactly.
+      - Output MUST contain list of strings (no objects or numbers allowed).
+
+      Schema:
+      ["<translation1>", "<translation2>"]
+
+      Word: {word} 
+      Meaning / Context: {meaning} 
+  """
