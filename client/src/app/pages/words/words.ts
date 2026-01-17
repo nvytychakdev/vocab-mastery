@@ -1,4 +1,15 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Field, form } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
@@ -23,6 +34,13 @@ export class Words implements OnInit {
   readonly filtersModel = signal({ dictionaryId: '', letter: '' });
   readonly filtersForm = form(this.filtersModel);
 
+  readonly letterControls = viewChild<unknown, ElementRef<HTMLDivElement>>('letterControls', {
+    read: ElementRef<HTMLDivElement>,
+  });
+  readonly letterSections = viewChildren<unknown, ElementRef<HTMLDivElement>>('letterSection', {
+    read: ElementRef<HTMLDivElement>,
+  });
+
   readonly dictionaryFilterChanges$ = toObservable(this.filtersForm.dictionaryId().value);
 
   readonly alphabet = ALPHABET;
@@ -43,6 +61,12 @@ export class Words implements OnInit {
     return Object.entries(groupedWords).map(([key, value]) => ({ letter: key, words: value }));
   });
 
+  constructor() {
+    effect(() => {
+      this.handleScrollLetters();
+    });
+  }
+
   ngOnInit() {
     this.dictionaries.loadAll().subscribe();
     this.dictionaryFilterChanges$
@@ -54,8 +78,39 @@ export class Words implements OnInit {
       .subscribe();
   }
 
+  private handleScrollLetters() {
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) {
+          const char = visible.at(0)?.target.getAttribute('data-letter');
+          this.selectedChar.set(char || undefined);
+        }
+      },
+      {
+        threshold: [0, 1],
+      }
+    );
+
+    this.letterSections().forEach(section => observer.observe(section.nativeElement));
+  }
+
   onAlphabetSelection(char: string) {
     const isSelected = this.selectedChar() === char;
     this.selectedChar.set(isSelected ? undefined : char);
+    if (!this.selectedChar()) return;
+    this.scrollToLetterSection(char);
+  }
+
+  private scrollToLetterSection(char: string) {
+    const controlsHeight = this.letterControls()?.nativeElement.getBoundingClientRect().height || 0;
+    const block = this.letterSections().find(d => d.nativeElement.classList.contains(`letter-${char}`))?.nativeElement;
+    if (!block) return;
+
+    const blockSize = block.getBoundingClientRect();
+    const blockY = blockSize.top + window.scrollY - (controlsHeight + blockSize.x);
+    window.scrollTo({ behavior: 'smooth', top: blockY });
   }
 }

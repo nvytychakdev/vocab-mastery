@@ -8,8 +8,8 @@
   }
 </section>
 
-<section class="text-foreground-subtle bg-surface sticky top-0 w-full text-xl">
-  <div class="flex items-center justify-center py-8">
+<section class="text-foreground-subtle bg-surface sticky top-0 w-full text-xl" #letterControls>
+  <div class="flex flex-wrap items-center justify-center py-8">
     @for (char of alphabet; track $index) {
       <div
         class="hover:text-foreground flex min-h-8 min-w-8 cursor-pointer items-center justify-center"
@@ -27,8 +27,8 @@
 
 <section class="typography flex flex-col">
   @if (!words.wordsLoading()) {
-    @for (group of groups(); track $index) {
-      <div class="my-8 flex gap-24">
+    @for (group of groups(); track group.letter) {
+      <div class="my-8 flex gap-24" [class]="'letter-' + group.letter" [attr.data-letter]="group.letter" #letterSection>
         <h1 class="flex-1/6 !font-normal">{{ group.letter }}</h1>
         <div class="grid flex-5/6 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           @for (wordItem of group.words; track $index) {
