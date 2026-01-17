@@ -1,6 +1,7 @@
 import typer
 import questionary
 import feed_collector
+import feed_translations
 import words_translator
 import words_collector
 
@@ -10,6 +11,7 @@ OPTIONS = {
     "Collect words definitions based on CERF dictionaries": words_collector.run,
     "Feed collected words to VocabMastery Database": feed_collector.run,
     "Translate all existing Words records from Database": words_translator.run,
+    "Feed collected translations to VocabMastery Database": feed_translations.run,
 }
 
 

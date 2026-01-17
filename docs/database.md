@@ -107,7 +107,6 @@ name                text
 ```
 
 ```
-
 word_translations
 --------------------------------------
 id                  UUID PK 

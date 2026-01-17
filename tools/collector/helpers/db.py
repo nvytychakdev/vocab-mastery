@@ -114,6 +114,18 @@ def insert_meaning(cur, word_id, definition, pos_id):
     return meaning_id
 
 
+def insert_translation(cur, meaning_id, language_code, translation):
+    translation_id = uuid.uuid4()
+    cur.execute(
+        """
+        INSERT INTO word_translations (id, meaning_id, language, translation)
+        VALUES (%s, %s, %s, %s)
+    """,
+        (translation_id, meaning_id, language_code, translation),
+    )
+    return translation_id
+
+
 def insert_example(cur, meaning_id, text):
     cur.execute(
         """
