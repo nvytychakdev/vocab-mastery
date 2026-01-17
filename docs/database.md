@@ -138,14 +138,54 @@ tag_id              UUID FK -> tags.id
 ## Learning 
 
 ```
-
-user_words
+user_words_progress
 --------------------------------------
+id                            UUID PK
+user_id                       UUID FK -> users.id
+meaning_id                    UUID FK -> word_meanings.id
+status                        text -- 'new' | 'learning' | 'review' | 'mastered'
+difficulty                    int
+
+times_seen_recall             int
+times_correct_recall          int
+times_incorrect_recall        int
+next_review_at_recall         timestamptz
+
+
+times_seen_recognition        int
+times_correct_recognition     int
+times_incorrect_recognition   int
+next_review_at_recognition    timestamptz
+
+last_seen_at                  timestamptz
+created_at                    timestamptz 
+```
+
+```
+flashcard_sessions
+--------------------------------------
+id                  UUID PK
 user_id             UUID FK -> users.id
-word_id             UUID FK -> words.id
-status              text (new, ongoing, mastered)
-difficuly           int
-last_seen           timestamptz
+started_at          timestamptz
+ended_at            timestamptz
+cards_total         int
+cards_completed     int
+```
+
+```
+flashcard_attempts
+--------------------------------------
+id                  UUID PK
+session_id          UUID FK -> flashcard_sessions.id
+meaning_id          UUID FK -> word_meanings.id
+
+direction           text NOT NULL  -- 'recall' or 'recognition'
+prompt_language     text NOT NULL  -- 'EN' or user's native language, the language of the question
+answer_language     text NOT NULL  -- 'EN' or user's native language, the language of the answer options
+
+is_correct          boolean
+response_time_ms    int
+created_at          timestamptz
 ```
 
 ## Usage Labels

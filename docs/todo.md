@@ -38,9 +38,9 @@
 - [x] API: `/words` filter by `dictionaryId` query params.
 - [ ] API: Streamline words creation. Populate meanings, examples and relations between them.
 - [ ] API: Add existing words to personal dictionary.
-- [ ] Server: Review all meanings, make sure there are no duplicated, and all of them are precisely described. Collect new meanings/words with better LLM as v2 seeds.
-- [ ] Server: Review all synonyms. Make sure during word's creation, all synonyms will be linked back to original word and vice versa.
-- [ ] Server: Populate all words with translations to Russian language.
+- [x] Server: Review all meanings, make sure there are no duplicated, and all of them are precisely described. Collect new meanings/words with better LLM as v2 seeds.
+- [x] Server: Review all synonyms. Make sure during word's creation, all synonyms will be linked back to original word and vice versa.
+- [x] Server: Populate all words with translations to Russian language.
 - [ ] API: Quiz flashcards API.
 - [ ] FE: Migrate to SignalForms API of Angular (experimental)
 - [x] FE: Map "part of speech" to different colors
@@ -54,7 +54,7 @@
 - [ ] Server: Add coverage for Dictionaries tests on server
 - [x] Server: Refactor Auth to rely on Squirrel
 - [ ] Server: Add API docs
-- [ ] FE: Implement Words + Translations API integration with UI
+- [x] FE: Implement Words + Translations API integration with UI
 - [ ] Server: Translation autocomplete API with Google Translate and Dictionary integration
 
 ## Issues
