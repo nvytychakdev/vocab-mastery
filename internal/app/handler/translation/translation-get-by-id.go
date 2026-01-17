@@ -11,7 +11,7 @@ import (
 
 type TranslationGetByIdResponse struct {
 	ID        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"craetedAt"`
+	CreatedAt time.Time `json:"createdAt"`
 	Word      string    `json:"name"`
 	Language  string    `json:"description"`
 }

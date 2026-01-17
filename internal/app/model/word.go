@@ -31,3 +31,10 @@ type WordSynonym struct {
 	CreatedAt time.Time `json:"-"`
 	MeaningID uuid.UUID `json:"-"`
 }
+
+type WordTranslation struct {
+	ID          uuid.UUID `json:"id"`
+	Language    string    `json:"language"`
+	Translation string    `json:"translation"`
+	MeaningID   uuid.UUID `json:"-"`
+}

@@ -12,7 +12,7 @@ import (
 
 type DictionaryGetByIdResponse struct {
 	ID        uuid.UUID     `json:"id"`
-	CreatedAt time.Time     `json:"craetedAt"`
+	CreatedAt time.Time     `json:"createdAt"`
 	Title     string        `json:"name"`
 	Words     []*model.Word `json:"words,omitempty"`
 }

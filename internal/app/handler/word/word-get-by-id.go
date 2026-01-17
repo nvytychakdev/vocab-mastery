@@ -14,14 +14,15 @@ import (
 type WordGetByIdResponse struct {
 	ID        uuid.UUID                    `json:"id"`
 	Word      string                       `json:"word"`
-	CreatedAt time.Time                    `json:"craetedAt"`
+	CreatedAt time.Time                    `json:"createdAt"`
 	Meanings  []WordGetByIdMeaningResponse `json:"meanings,omitempty"`
 }
 
 type WordGetByIdMeaningResponse struct {
 	*model.WordMeaning
-	Examples []*model.WordExample `json:"examples,omitempty"`
-	Synonyms []*model.WordSynonym `json:"synonyms,omitempty"`
+	Examples     []*model.WordExample     `json:"examples,omitempty"`
+	Synonyms     []*model.WordSynonym     `json:"synonyms,omitempty"`
+	Translations []*model.WordTranslation `json:"translations,omitempty"`
 }
 
 func (u *WordGetByIdResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -50,13 +51,19 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 
 	examples, _, err := wh.Deps.DB.WordExample().ListAllByMeaningIDs(meaningIds)
 	if err != nil {
-		slog.Error("Not able to get meanings by word id", "error", err)
+		slog.Error("Not able to get examples by meanings ids", "error", err)
 		return
 	}
 
 	synonyms, _, err := wh.Deps.DB.WordSynonym().ListAllByMeaningIDs(meaningIds)
 	if err != nil {
-		slog.Error("Not able to get meanings by word id", "error", err)
+		slog.Error("Not able to get synonyms by meanings ids", "error", err)
+		return
+	}
+
+	translations, _, err := wh.Deps.DB.WordTranslation().ListAllByMeaningIDs(meaningIds)
+	if err != nil {
+		slog.Error("Not able to get synonyms by meanings ids", "error", err)
 		return
 	}
 
@@ -75,6 +82,12 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 		for _, synonym := range synonyms {
 			if synonym.MeaningID == meaning.ID {
 				meaningRes.Synonyms = append(meaningRes.Synonyms, synonym)
+			}
+		}
+
+		for _, translation := range translations {
+			if translation.MeaningID == meaning.ID {
+				meaningRes.Translations = append(meaningRes.Translations, translation)
 			}
 		}
 

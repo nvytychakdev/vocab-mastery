@@ -23,6 +23,7 @@ type DB interface {
 	WordMeaning() WordMeaningRepo
 	WordSynonym() WordSynonymRepo
 	WordExample() WordExampleRepo
+	WordTranslation() WordTranslationsRepo
 	Translation() TranslationRepo
 	Migration() MigrationRepo
 }

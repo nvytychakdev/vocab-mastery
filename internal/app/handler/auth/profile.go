@@ -12,7 +12,7 @@ import (
 
 type ProfileResponse struct {
 	ID         uuid.UUID `json:"id"`
-	CreatedAt  time.Time `json:"craetedAt"`
+	CreatedAt  time.Time `json:"createdAt"`
 	Email      string    `json:"email"`
 	Name       string    `json:"name"`
 	PictureUrl *string   `json:"pictureUrl"`
