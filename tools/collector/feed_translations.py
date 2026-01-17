@@ -27,6 +27,6 @@ def run():
                             cur,
                             entry["meaning_id"],
                             language_code,
-                            translation,
+                            translation.strip(),
                         )
     return
