@@ -25,6 +25,20 @@
               }
             </div>
           }
+
+          @if (meaning.translations?.length) {
+            <p class="text-label">Translations:</p>
+            <div class="flex gap-4">
+              @for (word of meaning.translations; track word.id) {
+                <span class="py-2">
+                  <span>{{ word.translation }}</span>
+                  @if (!$last) {
+                    <span>,</span>
+                  }
+                </span>
+              }
+            </div>
+          }
         </div>
       </div>
     }

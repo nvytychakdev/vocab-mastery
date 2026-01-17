@@ -11,12 +11,18 @@ export type WordPartOfSpeech =
   | 'determiner'
   | 'interjection';
 
+export type WordLanguage = 'ru' | 'ua';
+
 export type WordBase = { word: string };
 export type WordMeaningBase = { definition: string; partOfSpeech: WordPartOfSpeech };
 export type WordExampleBase = { text: string };
+export type WordTranslationBase = { language: WordLanguage; translation: string };
 
 export type WordExample = Entity<WordExampleBase>;
-export type WordMeaning = Entity<WordMeaningBase & { examples: WordExample[]; synonyms?: Entity<WordBase>[] }>;
+export type WordTranslation = Entity<WordTranslationBase>;
+export type WordMeaning = Entity<
+  WordMeaningBase & { examples: WordExample[]; synonyms?: Entity<WordBase>[]; translations?: WordTranslation[] }
+>;
 export type Word = Entity<WordBase & { meanings: WordMeaning[] }>;
 
 export type WordListItem = Entity<WordBase>;
