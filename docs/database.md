@@ -145,47 +145,72 @@ user_id                       UUID FK -> users.id
 meaning_id                    UUID FK -> word_meanings.id
 status                        text -- 'new' | 'learning' | 'review' | 'mastered'
 difficulty                    int
-
 times_seen_recall             int
 times_correct_recall          int
 times_incorrect_recall        int
 next_review_at_recall         timestamptz
-
-
 times_seen_recognition        int
 times_correct_recognition     int
 times_incorrect_recognition   int
 next_review_at_recognition    timestamptz
-
 last_seen_at                  timestamptz
 created_at                    timestamptz 
 ```
 
 ```
+flashcard_engagement_state
+--------------------------------------
+user_id                       UUID PK FK -> users.id
+last_active_at                timestamptz NOT NULL
+last_session_date             date
+reminder_stage                text NOT NULL -- 'daily' | 'weekly' | 'disabled'
+missed_days_count             int NOT NULL DEFAULT 0
+next_reminder_at              timestamptz
+created_at                    timestamptz DEFAULT now()
+updated_at                    timestamptz DEFAULT now()
+```
+
+```
+flashcard_days
+--------------------------------------
+id                            UUID PK
+user_id                       UUID NOT NULL FK -> users.id
+date                          date NOT NULL
+timezone                      text NOT NULL
+started_at                    timestamptz
+completed_at                  timestamptz
+sessions_count                integer NOT NULL DEFAULT 0
+cards_answered                integer NOT NULL DEFAULT 0
+cards_correct                 integer NOT NULL DEFAULT 0
+created_at                    timestamptz NOT NULL DEFAULT now()
+updated_at                    timestamptz NOT NULL DEFAULT now()
+
+UNIQUE (user_id, date)
+```
+
+```
 flashcard_sessions
 --------------------------------------
-id                  UUID PK
-user_id             UUID FK -> users.id
-started_at          timestamptz
-ended_at            timestamptz
-cards_total         int
-cards_completed     int
+id                            UUID PK
+user_id                       UUID FK -> users.id
+started_at                    timestamptz
+ended_at                      timestamptz
+cards_total                   int
+cards_completed               int
 ```
 
 ```
 flashcard_attempts
 --------------------------------------
-id                  UUID PK
-session_id          UUID FK -> flashcard_sessions.id
-meaning_id          UUID FK -> word_meanings.id
-
-direction           text NOT NULL  -- 'recall' or 'recognition'
-prompt_language     text NOT NULL  -- 'EN' or user's native language, the language of the question
-answer_language     text NOT NULL  -- 'EN' or user's native language, the language of the answer options
-
-is_correct          boolean
-response_time_ms    int
-created_at          timestamptz
+id                            UUID PK
+session_id                    UUID FK -> flashcard_sessions.id
+meaning_id                    UUID FK -> word_meanings.id
+direction                     text NOT NULL  -- 'recall' or 'recognition'
+prompt_language               text NOT NULL  -- 'EN' or user's native language, the language of the question
+answer_language               text NOT NULL  -- 'EN' or user's native language, the language of the answer options
+is_correct                    boolean
+response_time_ms              int
+created_at                    timestamptz
 ```
 
 ## Usage Labels
