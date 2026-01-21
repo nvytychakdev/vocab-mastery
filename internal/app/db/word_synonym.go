@@ -10,19 +10,19 @@ import (
 )
 
 type WordSynonymRepo interface {
-	ListAllByMeaningIDs(wordIds uuid.UUIDs) ([]*model.WordSynonym, int, error)
+	ListByMeaningIDs(wordIds uuid.UUIDs) ([]*model.WordSynonym, int, error)
 }
 
-type wordSynonymsRepo struct {
+type wordSynonymRepo struct {
 	conn *pgxpool.Pool
 	psql sq.StatementBuilderType
 }
 
 func (db *PostgresDB) WordSynonym() WordSynonymRepo {
-	return &wordSynonymsRepo{conn: db.conn, psql: db.psql}
+	return &wordSynonymRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *wordSynonymsRepo) ListAllByMeaningIDs(wordIDs uuid.UUIDs) ([]*model.WordSynonym, int, error) {
+func (db *wordSynonymRepo) ListByMeaningIDs(wordIDs uuid.UUIDs) ([]*model.WordSynonym, int, error) {
 	queryBuilder := db.psql.
 		Select("w.id AS id", "ws.meaning_id", "w.word AS word", "w.created_at AS created_at").
 		From("word_synonyms ws").

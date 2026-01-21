@@ -17,7 +17,7 @@
 
           @if (meaning.synonyms?.length) {
             <p class="text-label">Synonyms:</p>
-            <div class="flex gap-4">
+            <div class="mb-4 flex gap-2">
               @for (synonym of meaning.synonyms; track synonym.id) {
                 <a href="#" vmButton type="link" [routerLink]="'../' + synonym.id">
                   {{ synonym.word }}
@@ -28,9 +28,9 @@
 
           @if (meaning.translations?.length) {
             <p class="text-label">Translations:</p>
-            <div class="flex gap-4">
+            <div class="mb-4 flex gap-2">
               @for (word of meaning.translations; track word.id) {
-                <span class="py-2">
+                <span class="p-2 whitespace-nowrap">
                   <span>{{ word.translation }}</span>
                   @if (!$last) {
                     <span>,</span>

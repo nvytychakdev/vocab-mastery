@@ -10,7 +10,8 @@ import (
 )
 
 type WordMeaningRepo interface {
-	ListAllByWordIDs(wordIds uuid.UUIDs) ([]*model.WordMeaning, int, error)
+	GetByID(meaningID uuid.UUID) (*model.WordMeaning, error)
+	ListByWordIDs(wordIds uuid.UUIDs) ([]*model.WordMeaning, int, error)
 }
 
 type wordMeaningRepo struct {
@@ -22,7 +23,29 @@ func (db *PostgresDB) WordMeaning() WordMeaningRepo {
 	return &wordMeaningRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *wordMeaningRepo) ListAllByWordIDs(wordIDs uuid.UUIDs) ([]*model.WordMeaning, int, error) {
+func (db *wordMeaningRepo) GetByID(meaningID uuid.UUID) (*model.WordMeaning, error) {
+
+	query, args, err := db.psql.
+		Select("wm.id", "wm.word_id", "wm.definition", "pos.code AS part_of_speech").
+		From("word_meanings wm").
+		Join("parts_of_speech pos ON wm.part_of_speech_id = pos.id").
+		Where(sq.Eq{"wm.id": meaningID}).ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var meaning model.WordMeaning
+	err = db.conn.QueryRow(context.Background(), query, args...).Scan(
+		&meaning.ID,
+		&meaning.WordID,
+		&meaning.Definition,
+		&meaning.PartOfSpeech,
+	)
+	return &meaning, err
+}
+
+func (db *wordMeaningRepo) ListByWordIDs(wordIDs uuid.UUIDs) ([]*model.WordMeaning, int, error) {
 	queryBuilder := db.psql.
 		Select("wm.id", "wm.word_id", "pos.code AS part_of_speech", "wm.definition").
 		From("word_meanings wm").

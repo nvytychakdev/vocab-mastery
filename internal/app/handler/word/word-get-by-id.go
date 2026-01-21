@@ -38,7 +38,7 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: word.CreatedAt,
 	}
 
-	meanings, _, err := wh.Deps.DB.WordMeaning().ListAllByWordIDs(uuid.UUIDs{word.ID})
+	meanings, _, err := wh.Deps.DB.WordMeaning().ListByWordIDs(uuid.UUIDs{word.ID})
 	if err != nil {
 		slog.Error("Not able to get meanings by word id", "error", err)
 		return
@@ -49,19 +49,19 @@ func (wh *WordHandler) WordGetByID(w http.ResponseWriter, r *http.Request) {
 		meaningIds = append(meaningIds, meaning.ID)
 	}
 
-	examples, _, err := wh.Deps.DB.WordExample().ListAllByMeaningIDs(meaningIds)
+	examples, _, err := wh.Deps.DB.WordExample().ListByMeaningIDs(meaningIds)
 	if err != nil {
 		slog.Error("Not able to get examples by meanings ids", "error", err)
 		return
 	}
 
-	synonyms, _, err := wh.Deps.DB.WordSynonym().ListAllByMeaningIDs(meaningIds)
+	synonyms, _, err := wh.Deps.DB.WordSynonym().ListByMeaningIDs(meaningIds)
 	if err != nil {
 		slog.Error("Not able to get synonyms by meanings ids", "error", err)
 		return
 	}
 
-	translations, _, err := wh.Deps.DB.WordTranslation().ListAllByMeaningIDs(meaningIds)
+	translations, _, err := wh.Deps.DB.WordTranslation().ListByMeaningIDs(meaningIds)
 	if err != nil {
 		slog.Error("Not able to get synonyms by meanings ids", "error", err)
 		return

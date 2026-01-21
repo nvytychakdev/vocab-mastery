@@ -13,6 +13,7 @@ import (
 	migrationsData "github.com/nvytychakdev/vocab-mastery/internal/app/db/migrations-data"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/auth"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/dictionary"
+	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/flashcard"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/language"
 	"github.com/nvytychakdev/vocab-mastery/internal/app/handler/word"
 	vmMiddleware "github.com/nvytychakdev/vocab-mastery/internal/app/middleware"
@@ -21,10 +22,13 @@ import (
 )
 
 func StartServer() {
+	db := db.Connect()
 	deps := &services.Deps{
-		DB:              db.Connect(),
-		AuthService:     services.NewAuthService(),
-		PasswordService: services.NewPasswordService(),
+		DB:                      db,
+		AuthService:             services.NewAuthService(),
+		PasswordService:         services.NewPasswordService(),
+		FlashcardSessionService: services.NewFlashcardSessionService(db),
+		FlashcardCardService:    services.NewFlashcardCardService(db),
 	}
 
 	router := chi.NewRouter()
@@ -46,6 +50,7 @@ func StartServer() {
 	dictionaryHandler := &dictionary.DictionaryHandler{Deps: deps}
 	langHandler := &language.LanguageHandler{Deps: deps}
 	wordHandler := &word.WordHandler{Deps: deps}
+	flashcardHandler := &flashcard.FlashcardHandler{Deps: deps}
 	mw := vmMiddleware.NewMiddleware(deps)
 
 	migrationRepo := deps.DB.Migration()
@@ -55,6 +60,7 @@ func StartServer() {
 	router.Mount("/api/v1/dictionaries", routes.DictionaryRouter(dictionaryHandler, wordHandler, mw))
 	router.Mount("/api/v1/words", routes.WordRouter(wordHandler, mw))
 	router.Mount("/api/v1/language", routes.LanguageRoutes(langHandler, mw))
+	router.Mount("/api/v1/flashcards", routes.FlashcardRouter(flashcardHandler, mw))
 
 	docgen.PrintRoutes(router)
 	slog.Info("Started server...")

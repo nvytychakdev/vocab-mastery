@@ -10,7 +10,7 @@ import (
 )
 
 type WordExampleRepo interface {
-	ListAllByMeaningIDs(meaningIds uuid.UUIDs) ([]*model.WordExample, int, error)
+	ListByMeaningIDs(meaningIds uuid.UUIDs) ([]*model.WordExample, int, error)
 }
 
 type wordExampleRepo struct {
@@ -22,7 +22,7 @@ func (db *PostgresDB) WordExample() WordExampleRepo {
 	return &wordExampleRepo{conn: db.conn, psql: db.psql}
 }
 
-func (db *wordExampleRepo) ListAllByMeaningIDs(meaningIDs uuid.UUIDs) ([]*model.WordExample, int, error) {
+func (db *wordExampleRepo) ListByMeaningIDs(meaningIDs uuid.UUIDs) ([]*model.WordExample, int, error) {
 	queryBuilder := db.psql.
 		Select("id", "meaning_id", "text").
 		From("word_examples").

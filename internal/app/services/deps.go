@@ -5,7 +5,9 @@ import (
 )
 
 type Deps struct {
-	DB              db.DB
-	AuthService     AuthService
-	PasswordService PasswordService
+	DB                      db.DB
+	AuthService             AuthService
+	PasswordService         PasswordService
+	FlashcardSessionService FlashcardSessionService
+	FlashcardCardService    FlashcardCardService
 }

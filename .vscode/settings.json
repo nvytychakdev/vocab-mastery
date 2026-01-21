@@ -15,7 +15,6 @@
     }
   },
   "todo-tree.tree.showBadges": false,
-
   "angular.enable": true,
   "angular.components.standalone": true,
   "angular.components.style": "css",
@@ -23,5 +22,6 @@
   "angular.fileGenerator.typeSeparator": "-",
   "angular.fileGenerator.skipFolderConfirmation": true,
   "angular.files.showPath": false,
-  "angular.terminal.cwd": "C:/Users/assin/Documents/Projects/vocab-mastery/client"
+  "angular.terminal.cwd": "C:/Users/assin/Documents/Projects/vocab-mastery/client",
+  "cSpell.words": ["jackc", "nvytychakdev", "pgxpool", "psql", "timestamptz"]
 }

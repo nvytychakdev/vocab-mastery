@@ -23,9 +23,14 @@ type DB interface {
 	WordMeaning() WordMeaningRepo
 	WordSynonym() WordSynonymRepo
 	WordExample() WordExampleRepo
-	WordTranslation() WordTranslationsRepo
+	WordTranslation() WordTranslationRepo
 	Translation() TranslationRepo
 	Migration() MigrationRepo
+	FlashcardDay() FlashcardDayRepo
+	FlashcardAttempt() FlashcardAttemptRepo
+	FlashcardEngagement() FlashcardEngagementRepo
+	FlashcardSession() FlashcardSessionRepo
+	UserWordProgress() UserWordProgressRepo
 }
 
 type PostgresDB struct {

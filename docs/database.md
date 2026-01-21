@@ -2,21 +2,30 @@
 
 ```
 User
- └── Dictionary (default or personal)
-      └── DictionaryWord
-           └── Word
-                ├── Meanings
-                │    ├── Examples
-                │    ├── Translations
-                │    └── Synonyms
-                └── Tags
+ ├── Dictionary (default or personal)
+ │    └── DictionaryWord
+ │         └── Word
+ │              ├── Meanings
+ │              │    ├── Examples
+ │              │    ├── Translations
+ │              │    └── Synonyms
+ │              └── Tags
+ │
+ └── Flashcards
+      ├── Engagement (1 per user)
+      │    └── Reminder / Activity State
+      │
+      ├── Days (1 per active day)
+          └── Sessions (1..N per day)
+               └── Attempts (1..N per session)
+                    └── Meaning (FK → WordMeaning)
 ```
 
 General rules:
-- Each user will be able to see list of default dictionaries, split by categories or difficuly
+- Each user will be able to see list of default dictionaries, split by categories or difficulty
 - Each user will be able to create personalized dictionary
-- Dictionaries will comtain list of words
-- Each word may contain list of meanings (at least one) with coresponding Examples, Translations and Synonyms references
+- Dictionaries will contain list of words
+- Each word may contain list of meanings (at least one) with corresponding Examples, Translations and Synonyms references
 - Each word may contain tags that can be used to categorize words despite of meaning
 
 Future plans:
@@ -157,8 +166,33 @@ last_seen_at                  timestamptz
 created_at                    timestamptz 
 ```
 
+### `flashcard_engagement`
+#### Purpose
+
+Tracks a user’s long-term engagement state with flashcards.
+This table is 1:1 with users and exists only for users who have used flashcards at least once.
+
+It is used for:
+
+- Reminder logic (daily / weekly / disabled)
+- Detecting inactivity
+- Tracking missed days
+- Determining when to send notifications
+
+#### Row lifecycle
+
+Created when:
+
+- User starts their first ever flashcard session
+
+Updated when:
+
+- User starts a flashcard session
+- User submits a flashcard answer
+- Reminder logic advances (daily → weekly → disabled)
+
 ```
-flashcard_engagement_state
+flashcard_engagement
 --------------------------------------
 user_id                       UUID PK FK -> users.id
 last_active_at                timestamptz NOT NULL
@@ -169,6 +203,28 @@ next_reminder_at              timestamptz
 created_at                    timestamptz DEFAULT now()
 updated_at                    timestamptz DEFAULT now()
 ```
+
+### `flashcard_days`
+#### Purpose
+
+Represents a single calendar day of flashcard activity for a user.
+
+Used to:
+
+- Track whether the user studied on a specific day
+- Store daily progress and completion
+- Support streaks and daily goals
+- Row lifecycle
+
+Created when:
+
+- User starts their first flashcard session for a given day
+
+Updated when:
+
+- A session starts or completes
+- Flashcard attempts are submitted
+- Daily session is completed
 
 ```
 flashcard_days
@@ -188,16 +244,60 @@ updated_at                    timestamptz NOT NULL DEFAULT now()
 UNIQUE (user_id, date)
 ```
 
+### `flashcard_sessions`
+#### Purpose
+
+Represents a single learning session within a day.
+
+Used to:
+
+- Allow multiple sessions per day
+- Resume unfinished sessions
+- Track progress independently of daily limits
+
+#### Row lifecycle
+
+Created when:
+
+- User starts a new flashcard session
+
+Updated when:
+
+- Cards are answered
+- Session is completed or abandoned
+
 ```
 flashcard_sessions
 --------------------------------------
-id                            UUID PK
-user_id                       UUID FK -> users.id
-started_at                    timestamptz
-ended_at                      timestamptz
-cards_total                   int
-cards_completed               int
+id                                 UUID PK
+user_id                            UUID FK -> users.id
+flashcard_day_id                   UUID FK -> flashcard_days.id
+current_meaning_id                 UUID FK -> word_meanings.id
+current_meaning_translation_id     UUID FC -> word_translations.id
+started_at                         timestamptz
+ended_at                           timestamptz
+cards_total                        int
+cards_completed                    int
 ```
+
+### `flashcard_attempts`
+#### Purpose
+
+Stores individual answers to flashcards.
+
+Used for:
+
+- Learning progress
+- Accuracy calculations
+- Spaced repetition / difficulty tuning
+- Analytics
+- Row lifecycle
+
+Created when:
+
+- User submits an answer for a flashcard
+
+**Never updated (append-only).**
 
 ```
 flashcard_attempts
