@@ -236,12 +236,30 @@ func (fc *flashcardSessionRepo) GetRandomMeaningToLearn(userID uuid.UUID, dictio
 }
 
 func (fc *flashcardSessionRepo) ListRandomAnswers(excludeMeaningID uuid.UUID) ([]*model.WordTranslation, int, error) {
+	sub := fc.psql.
+		Select().
+		Column("wt.id").
+		Column("wt.meaning_id").
+		Column("wt.language").
+		Column("wt.translation").
+		Column(
+			sq.Expr("ROW_NUMBER() OVER (PARTITION BY wt.meaning_id ORDER BY RANDOM()) AS rn"),
+		).
+		From("word_translations wt").
+		Where(sq.NotEq{"wt.meaning_id": excludeMeaningID})
+
 	query, args, err := fc.psql.
-		Select("DISTINCT ON (meaning_id) *").
-		From("word_translations").
-		Where(sq.NotEq{"meaning_id": excludeMeaningID}).
-		OrderBy("meaning_id, RANDOM()").
-		Limit(3).ToSql()
+		Select(
+			"id",
+			"meaning_id",
+			"language",
+			"translation",
+		).
+		FromSelect(sub, "ranked").
+		Where(sq.Expr("rn = 1")).
+		OrderBy("RANDOM()").
+		Limit(3).
+		ToSql()
 
 	rows, err := fc.conn.Query(context.Background(), query, args...)
 	if err != nil {

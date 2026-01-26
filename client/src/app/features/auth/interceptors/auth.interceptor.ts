@@ -2,8 +2,11 @@ import type { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { IS_AUTHORIZED_REQUEST } from '@core/models/authorized.model';
 import { AuthTokens } from '@domain/auth/auth-tokens';
-import { switchMap } from 'rxjs';
+import { RefreshTokenResponse } from '@domain/auth/auth.interface';
+import { finalize, Observable, switchMap } from 'rxjs';
 import { AuthService } from '../auth.service';
+
+let refreshToken$: Observable<RefreshTokenResponse> | null = null;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!req.context.get(IS_AUTHORIZED_REQUEST)) {
@@ -19,10 +22,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (refreshToken.isExpired()) throw new Error('Refresh token expired');
 
   if (accessToken.isExpired()) {
-    return auth.refreshToken(refreshToken.jwtToken).pipe(
-      switchMap(res => {
-        return next(authReq(req, res.accessToken));
-      })
+    if (!refreshToken$) {
+      refreshToken$ = auth.refreshToken(refreshToken.jwtToken);
+    }
+
+    return refreshToken$.pipe(
+      switchMap(res => next(authReq(req, res.accessToken))),
+      finalize(() => (refreshToken$ = null))
     );
   }
 

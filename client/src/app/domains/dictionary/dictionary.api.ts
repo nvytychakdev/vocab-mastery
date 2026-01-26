@@ -15,7 +15,7 @@ export class DictionaryApi extends ApiEntity<Dictionary, DictionaryListItem> {
   private readonly api = inject(Api);
 
   private getApiUrl(endpoint: DictionaryEndpoint, options?: ApiOptions<ApiUrlParams>) {
-    return this.api.getUrl(endpoint, options?.params);
+    return this.api.getUrl(endpoint, options);
   }
 
   protected override getEntityUrl(options?: ApiOptions<ApiUrlParams>): string {

@@ -143,6 +143,10 @@ func (fcs *flashcardCardService) GenerateCard(userID uuid.UUID, sessionID uuid.U
 		return nil, err
 	}
 
+	if session.IsCompleted() {
+		return nil, nil
+	}
+
 	meaning, err := fcs.GetSessionMeaning(userID, session)
 	if err != nil {
 		return nil, err
